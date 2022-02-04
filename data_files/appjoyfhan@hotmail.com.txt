@@ -1,0 +1,12 @@
+{
+    "first_name": "Joy",
+    "last_name": "Hanna",
+    "email_address": "joyfhan@hotmail.com",
+    "address_1": "3119 Skyview Ridge",
+    "address_2": "",
+    "address_3": "",
+    "city": "Chino Hills ",
+    "state": "CA",
+    "country": "USA",
+    "postal_code": "91709"
+}

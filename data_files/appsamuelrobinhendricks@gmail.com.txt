@@ -1,0 +1,12 @@
+{
+    "first_name": "Sam",
+    "last_name": "Hendricks",
+    "email_address": "samuelrobinhendricks@gmail.com",
+    "address_1": "6150 Denny Ave, North Hollywood Ca 91606",
+    "address_2": "",
+    "address_3": "6150 Denny Ave",
+    "city": "North Hollywood",
+    "state": "CA",
+    "country": "USA",
+    "postal_code": "91606-5009"
+}

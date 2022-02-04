@@ -1,0 +1,17 @@
+Fabric
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+coverage
+email_validator
+flask_sqlalchemy
+WTForms==2.3.3
+flask-wtf
+email_validator
+flask_sqlalchemy
+flask==1.1.2
+Flask-reCaptcha==0.4.2
+stripe
+# ecdsa
+# paramiko
+# pycrypto

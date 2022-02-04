@@ -1,0 +1,12 @@
+{
+    "first_name": "Kurt",
+    "last_name": "Eulau",
+    "email_address": "keulau@berkeley.edu",
+    "address_1": "2255 Showers Dr",
+    "address_2": "APT 333",
+    "address_3": "",
+    "city": "Mountain View",
+    "state": "CA",
+    "country": "United States",
+    "postal_code": "94040"
+}

@@ -1,0 +1,12 @@
+{
+    "first_name": "Ben",
+    "last_name": "Mok",
+    "email_address": "bmox1234@gmail.com",
+    "address_1": "5027 vannoy ave",
+    "address_2": "-",
+    "address_3": "-",
+    "city": "Castro valley",
+    "state": "CA",
+    "country": "USA",
+    "postal_code": "94546"
+}

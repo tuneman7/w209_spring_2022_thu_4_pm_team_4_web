@@ -1,0 +1,12 @@
+{
+    "first_name": "Sally",
+    "last_name": "Golding",
+    "email_address": "sallygolding@gmail.com",
+    "address_1": "56, Weltevreden Ave",
+    "address_2": "Rondebosch",
+    "address_3": "",
+    "city": "Cape Town",
+    "state": "Western Cape",
+    "country": "South Africa",
+    "postal_code": "7700"
+}

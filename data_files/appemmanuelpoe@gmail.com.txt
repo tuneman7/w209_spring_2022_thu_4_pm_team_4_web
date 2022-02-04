@@ -1,0 +1,12 @@
+{
+    "first_name": "Emmanuel",
+    "last_name": "Poe",
+    "email_address": "emmanuelpoe@gmail.com",
+    "address_1": "80 Burnham Pkwy",
+    "address_2": "",
+    "address_3": "",
+    "city": "Morristown",
+    "state": "NJ",
+    "country": "United States",
+    "postal_code": "07960"
+}

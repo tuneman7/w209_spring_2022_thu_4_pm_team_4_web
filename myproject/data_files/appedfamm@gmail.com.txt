@@ -1,0 +1,12 @@
+{
+    "first_name": "Jazon",
+    "last_name": "Edouard",
+    "email_address": "edfamm@gmail.com",
+    "address_1": "19/110 Soi 2, Ban Prangthong ",
+    "address_2": "Ampur Muang ",
+    "address_3": "",
+    "city": "Muang",
+    "state": "Phuket",
+    "country": "Thailand",
+    "postal_code": "83000"
+}

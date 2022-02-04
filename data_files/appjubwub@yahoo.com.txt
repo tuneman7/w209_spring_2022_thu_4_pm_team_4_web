@@ -1,0 +1,12 @@
+{
+    "first_name": "Jubilee",
+    "last_name": "Connolly",
+    "email_address": "jubwub@yahoo.com",
+    "address_1": "3 Marshall st",
+    "address_2": "",
+    "address_3": "",
+    "city": "Paxton",
+    "state": "MA",
+    "country": "us",
+    "postal_code": "01612"
+}

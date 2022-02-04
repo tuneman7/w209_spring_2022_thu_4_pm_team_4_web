@@ -1,0 +1,12 @@
+{
+    "first_name": "Marianne",
+    "last_name": "Dunbar",
+    "email_address": "mdunbar1122@gmail.com",
+    "address_1": "43 Woodcrest Ave",
+    "address_2": "",
+    "address_3": "",
+    "city": "Trumbull",
+    "state": "CT",
+    "country": "USA",
+    "postal_code": "06611"
+}
