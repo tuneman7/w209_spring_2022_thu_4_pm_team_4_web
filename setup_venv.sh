@@ -1,6 +1,7 @@
-python -m venv myproj
+python -m venv myproject
 source ./myproject/bin/activate
-pip install flask, sql-alchemyd
+pip install flask
+pip install sql-alchemyd
 pip install WTForms==2.3.3
 pip install flask-wtf
 pip install email_validator
