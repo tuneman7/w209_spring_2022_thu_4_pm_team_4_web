@@ -4,7 +4,10 @@
 
 
 <br/>
-  <p><br/>Help me automate my mailing list so I can print address labels rather than write them while on vacation.
+  <p>
+
+    <br/>
+    
     {% if already_registered_email is not none %}
     <br/>The email address <b>{{already_registered_email}}</b> has already signed up.
     {% endif %}
@@ -16,36 +19,8 @@
     {% if form is not none %}
 
   <div class="form-only-page">
-    <form method="post" class="form" action="/adduser" id="adduser" name="adduser">
-      {{ form.first_name(class_ = 'form-control first-input', placeholder = 'First Name', required = true, autofocus = true) }}
-      {{ form.last_name(class_ = 'form-control first-input', placeholder = 'Last Name', required = true, autofocus = true) }}
-      {{ form.email_address(class_ = 'form-control first-input', placeholder = 'Email Address', required = true, autofocus = true) }}
-      {{ form.address_1(class_ = 'form-control first-input', placeholder = 'Address 1', required = true, autofocus = true) }}
-      {{ form.address_2(class_ = 'form-control first-input', placeholder = 'Address 2', required = false, autofocus = true) }}
-      {{ form.address_3(class_ = 'form-control first-input', placeholder = 'Address 3', required = false, autofocus = true) }}
-      {{ form.city(class_ = 'form-control first-input', placeholder = 'City', required = true, autofocus = true) }}
-      {{ form.state(class_ = 'form-control first-input', placeholder = 'State', required = true, autofocus = true) }}
-      {{ form.country(class_ = 'form-control first-input', placeholder = 'Country', required = true, autofocus = true) }}
-      {{ form.postal_code(class_ = 'form-control first-input', placeholder = 'Postal Code', required = true, autofocus = true) }}  
-      {% if is_verified is not none %} 
-          <p><b>** Please check the Captcha Box below:</b></p>
-      {% endif %}
-      <style type="text/css">
-        .g-recaptcha{
-        transform:scale(0.60);
-        -webkit-transform:scale(0.60);
-        transform-origin:0 0;
-        -webkit-transform-origin:0 0;
-        margin-bottom: -5px;
-        }
-        </style>
 
-        {{ form.recaptcha(class_ = 'g-recaptcha', required = true, autofocus = true)  }}
-        {{ form.csrf_token }}
 
-      
-      <input type="submit" value="Get My Post Card" class="btn btn-primary btn-sm btn-block" id="btnSubmit" name="btnSubmit">
-    </form>
   </div>
 
 
