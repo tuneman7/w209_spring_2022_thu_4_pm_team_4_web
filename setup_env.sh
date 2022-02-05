@@ -1,4 +1,5 @@
-pip install flask, sql-alchemyd
+pip install flask
+pip install sql-alchemyd
 pip install WTForms==2.3.3
 pip install flask-wtf
 pip install email_validator

@@ -1,5 +1,5 @@
-python -m venv myproject
-source ./myproject/bin/activate
+python -m venv myproj
+source ./myproj/bin/activate
 pip install flask
 pip install sql-alchemyd
 pip install WTForms==2.3.3

@@ -79,7 +79,7 @@ mail_settings = {
     "MAIL_USE_TLS": False,
     "MAIL_USE_SSL": True,
     "MAIL_USERNAME": 'randomchiller@gmail.com',
-    "MAIL_PASSWORD": 'Karachi85!$'
+    "MAIL_PASSWORD": 'Bozo85!$'
 }
 
 app.config.update(mail_settings)
