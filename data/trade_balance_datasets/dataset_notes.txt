@@ -1,0 +1,9 @@
+From Amber:
+
+Here is some datasets about world trade balance. I have some notes help you navigate the spreadsheets:
+Exports_and_Imports_by_Areas_and_Co.xlsx - (from IMF) - total monthly exports and imports by country and region
+US_trade_2021.xlsx - (from Bloomberg) - US trade data in 2021 by partner countries.
+All WtoData_(xxx) datasets (from WTO) list exports/imports for all countries by sectors and partner countries.
+I did a quick sanity check for the US vs World trade on an aggregated level, and all datasets are pretty close, but not exactly the same. There are some discrepancies due to differences in calculation and product inclusion methodologies
+
+

@@ -1,0 +1,30 @@
+US Population
+County Level Population Data Sources
+Notes: I found two data sources for county level population estimates, I have not evaluated quality or completeness but I would assume we can find more data
+https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html#par_textimage_739801612
+https://www.openintro.org/data/?data=county_complete
+
+Real Estate Data Source
+Redfin: https://www.redfin.com/news/data-center/
+Free aggregated data at county, metro, national level
+https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/us_national_market_tracker.tsv000.gz
+https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/redfin_metro_market_tracker.tsv000.gz
+https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/county_market_tracker.tsv000.gz
+
+
+```{r}
+install.packages("R.utils")
+library(R.utils)
+library(readr)
+
+mydata_nat <- gunzip("Cal Berkeley MIDS/209/us_national_market_tracker.tsv000.gz", remove=FALSE)
+mydata_city <- gunzip("Cal Berkeley MIDS/209/redfin_metro_market_tracker.tsv000.gz", remove=FALSE)
+mydata_county <- gunzip("Cal Berkeley MIDS/209/county_market_tracker.tsv000.gz", remove=FALSE)
+
+mydata_nat_df <- read_tsv(mydata_nat)
+mydata_county_df <- read_tsv(mydata_county)
+mydata_city_df <- read_tsv(mydata_city)
+```
+
+MashVisor: https://www.mashvisor.com/api-doc/?java#the-property-object
+Proprietary Data, limited free data

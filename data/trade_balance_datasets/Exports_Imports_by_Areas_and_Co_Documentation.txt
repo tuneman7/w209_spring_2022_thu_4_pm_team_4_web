@@ -1,0 +1,11 @@
+Exports_and_Imports_by_Areas_and_Co.xlsx
+Source:
+
+Countries and Areas: 
+Monthly: Dollar Amount in Millions
+
+NationRegionName: added fieldname/label for unique record in dataset
+NationRegionType: derived field to denote whether unique record (NationRegion) is a country*, land region (Region), or Economic Region (economic)
+
+Notes:
+*Records which are aggregated countries in Region label as 'not specified' are categorized as countries

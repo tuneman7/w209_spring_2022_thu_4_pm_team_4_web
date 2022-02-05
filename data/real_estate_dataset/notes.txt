@@ -1,0 +1,5 @@
+From Justin:
+
+thanks for passing along the world trade data!  I wanted to pass along the real estate data just in case anyone wanted to review to compare options
+I was able to get some real estate and population data which goes back to 2012 (redfin) and 2010 (population)
+the text file has how I accessed the redfin data, the files are too large to attach, you'll have to manually download the datasets though can create a script to download directly from python or R
