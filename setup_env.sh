@@ -10,5 +10,8 @@ flask==1.1.2
 Flask-reCaptcha==0.4.2
 pip install --upgrade pip
 pip install flask_mail
+pip install numpy
+pip install pandas
+pip install altair
 #deactivate
 
