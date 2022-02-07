@@ -13,5 +13,6 @@ pip install flask_mail
 pip install numpy
 pip install pandas
 pip install altair
+pip install -U pandasql
 #deactivate
 
