@@ -12,9 +12,8 @@ import altair as alt
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas as pd
-from pandasql import sqldf
+import pandasql as psql
 
-mysql = lambda q: sqldf(q, globals())
 
 class Utility:
     '''
@@ -64,6 +63,7 @@ class import_export_data(Utility):
     def __init__(self):
         super().__init__()
 
+
     def print_internal_directory(self):
 
         for k,v in self.__dict__.items():
@@ -87,7 +87,48 @@ class import_export_data(Utility):
         
         return my_data
 
-    
+    def get_sql_for_world_or_region(self, source_country):
+        my_sql = '''
+        SELECT
+            'World' [Trading Partner],
+            sum([Total Trade ($M)])  [Total Trade ($M) ],
+            avg([RtW (%)])  [RtW (%)],
+            sum([Exports ($M)] )[Exports ($M)],
+            avg([RtW (%).1])  [RtW (%).1],
+            sum([Imports ($M)])  [Imports ($M)],
+            avg([RtW (%).2])  [RtW (%).2],
+            sum([Net Exports ($M)])  [Net Exports ($M)],
+            ''  [Exports Ticker],
+            ''  [Imports Ticker],
+            country,
+            year
+        FROM 
+            my_data_frame
+        WHERE 
+            country =  \'''' + source_country + '''\'
+        and
+            [Trading Partner] <> \'''' + source_country + '''\'
+        GROUP BY
+            country, year
+        '''
+        #print(my_sql)
+        return my_sql
+
+
+    def get_data_by_source_and_target_country(self,source_country,target_country):
+
+        my_data_frame = self.load_and_clean_up_top_20_file()
+
+        if target_country.lower() == "world":
+            my_sql = self.get_sql_for_world_or_region(source_country)
+        else:
+            my_sql = "SELECT * FROM my_data_frame WHERE country = '" +  source_country + "' and [Trading Partner] = '" + target_country + "' "
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+
 
         
 
