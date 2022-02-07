@@ -14,5 +14,6 @@ pip install numpy
 pip install pandas
 pip install altair
 pip install -U pandasql
+pip install matplotlib
 #deactivate
 
