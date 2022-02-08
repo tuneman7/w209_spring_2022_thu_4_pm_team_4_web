@@ -1,0 +1,44 @@
+Building the Web Application:
+What we have available can be viewed at:
+
+https://w209-spring-2022-thu-4-team-4.herokuapp.com
+
+This is a class in Javascript and HTML as Much as it is about the visualization objects.
+
+Flask is a application framework that renders using Python.
+
+Steps to get the application to work locally:
+
+[ ] -- Pull the application down from Github.
+
+git clone https://github.com/tuneman7/w209_spring_2022_thu_4_pm_team_4_web
+
+[ ] -- Open the applicatin in Visual Studio Code -- Or Pycharm community edition.
+[ ] -- Open a terminal window.
+[ ] -- Run setup_venv.sh to get the virutal environment set up.
+[ ] -- Run the script . rd.sh to start flask.
+[ ] -- Browse from the UI.
+
+EXAMINATION OF THE CODE:
+
+[ ] -- Data Libraries -- This is where much of our collaboration will occur.
+[ ] -- Altair Library -- Dependent on Data Libraries.
+    [ ] -- Once we have a visualization working on collab moving it over should not be too difficult.
+[ ] -- Rendering Framework -- Much work to be done.
+
+COMMENTARY:
+
+[ ] -- There is a lot of work to do.
+
+GENERAL PROCESS MOVING FORWARD:
+
+[ ] -- Meet more frequently for shorter periods of time.
+
+[ ] -- Iterative -- 1st or second passes will give way to final product.
+
+
+NOTE ON MAP:
+
+[ ] -- This can be done, but it is not that easy -- But likely equal work to doing it in tableau and them managing 
+     HTML chunks.
+
