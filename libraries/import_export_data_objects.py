@@ -151,6 +151,10 @@ class import_export_data(Utility):
     
         return return_data
 
+    def get_distinct_country_tuples(self):
+
+        return [(value,value) for value in self.get_distinct_country_list()]
+
 
 
 

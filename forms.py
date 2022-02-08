@@ -1,8 +1,17 @@
 from flask_wtf import Form, RecaptchaField
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, SelectField,HiddenField
 from wtforms.validators import DataRequired, EqualTo, Length,Email,Optional
+from libraries.import_export_data_objects import import_export_data as Import_Export_Data
 
 # Set your classes here.
+
+class CountryDetailVisualizationForm(Form):
+    my_data = Import_Export_Data()
+
+    source_country = SelectField('source_country',choices=my_data.get_distinct_country_tuples())
+    target_country = SelectField('target_country',choices=my_data.get_distinct_country_tuples())
+    current_source_country = HiddenField("current_source_country")
+    current_target_country = HiddenField("current_target_country")
 
 
 class RegisterForm(Form):

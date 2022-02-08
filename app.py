@@ -123,12 +123,19 @@ from libraries.altair_renderings import AltairRenderings
 import altair as alt
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def home():
-    chart_json = get_altaire_line_char_json_county_trade("United States", "China")
-    #print(chart_json)
-    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json)
+    my_altair = AltairRenderings()
 
+    source_country = "United States"
+    target_country = "China"
+    if request.method == 'POST':
+        source_country = request.form["source_country"]
+        target_country = request.form["target_country"]
+        
+    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country)
+    form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
+    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
 
 import glob
 

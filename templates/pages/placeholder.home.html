@@ -9,13 +9,57 @@
     <br/>
   </p> 
 
-  {% if visualization_form is not none %}
+  {% if form is not none %}
 
-      <p>
-        Bozo
-        <br/>
-      </p>
+    <div class="form-only-page">
+      <form method="post" class="form" action="/" id="adduser" name="adduser">
+        {{ form.source_country(**{"onchange":"this.form.submit()"}) }}
+        {{ form.target_country(**{"onchange":"this.form.submit()"}) }}
+        {{ form.current_target_country }}
+        {{ form.current_source_country }}
+          {{ form.csrf_token }}
+      </form>
+    </div>
 
+    <script>
+
+    
+
+    function set_drop_down_value(drop_down_id,value)
+    {
+      //console.log(value);
+      for (var option of document.getElementById(drop_down_id).options)
+        {
+          //console.log(option.value);
+        if (option.value === value)
+        {
+            option.selected = true;
+            return;
+        }
+        }
+
+    }
+
+      $(document).ready(function () {
+
+          set_drop_down_value("target_country","{{current_target_country}}");
+          set_drop_down_value("source_country","{{current_source_country}}");
+
+          $("#adduser").submit(function (e) {
+            alert("bozo")
+    
+              //stop submitting the form to see the disabled button effect
+              e.preventDefault();
+    
+              //disable the submit button
+              $("#btnSubmit").attr("disabled", true);
+    
+              return true;
+          });
+      });
+    </script>    
+
+    <br/>
   {% endif %}
 
   {% if chart_json is not none %}
