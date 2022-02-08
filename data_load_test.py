@@ -7,6 +7,7 @@ def main():
     print(imp_object.get_data_by_source_and_target_country(source_country='China',target_country='World'))
 
     print(imp_object.get_data_by_source_and_target_country(source_country='Australia',target_country='China'))
+    print(imp_object.get_distinct_country_list())
 
 
 

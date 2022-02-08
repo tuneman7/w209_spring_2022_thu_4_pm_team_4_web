@@ -118,12 +118,16 @@ def get_carousel_width():
 # Controllers.
 #----------------------------------------------------------------------------#
 
+from libraries.import_export_data_objects import import_export_data as Import_Export_Data
+from libraries.altair_renderings import AltairRenderings
+import altair as alt
 
 
 @app.route('/')
 def home():
-    my_output = "test"
-    return render_template('pages/placeholder.home.html',my_output)
+    chart_json = get_altaire_line_char_json_county_trade("United States", "China")
+    #print(chart_json)
+    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json)
 
 
 import glob

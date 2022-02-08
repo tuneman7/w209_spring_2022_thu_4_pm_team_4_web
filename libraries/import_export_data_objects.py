@@ -24,6 +24,7 @@ class Utility:
     def __init__(self):
         self.bozo ="bozo"
         self.screen_width = 76
+
     # define our clear function
     def clear(self):
         # for windows
@@ -55,6 +56,9 @@ class Utility:
 
 
 class import_export_data(Utility):
+    
+    ALL_COUNTRIES_DATA_FRAME = None
+
 
     def __init__(self,**kwargs):
         allowed_keys = {'zipcode', 'search_uri', 'description'}
@@ -62,6 +66,8 @@ class import_export_data(Utility):
 
     def __init__(self):
         super().__init__()
+        global ALL_COUNTRIES_DATA_FRAME
+        ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
 
 
     def print_internal_directory(self):
@@ -117,7 +123,9 @@ class import_export_data(Utility):
 
     def get_data_by_source_and_target_country(self,source_country,target_country):
 
-        my_data_frame = self.load_and_clean_up_top_20_file()
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
 
         if target_country.lower() == "world":
             my_sql = self.get_sql_for_world_or_region(source_country)
@@ -127,6 +135,23 @@ class import_export_data(Utility):
         my_return_data = psql.sqldf(my_sql)
 
         return my_return_data
+
+
+    def get_distinct_country_list(self):
+
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        my_sql = "SELECT distinct country from my_data_frame"
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return_data = [ str(value).strip("[]'") for value in my_return_data.values.tolist()]
+    
+        return return_data
+
+
 
 
 
