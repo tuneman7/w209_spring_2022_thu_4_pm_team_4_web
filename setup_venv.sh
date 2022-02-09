@@ -1,4 +1,4 @@
-python -m venv myproj
+bracketpython -m venv myproj
 source ./myproj/bin/activate
 pip install flask
 pip install sql-alchemyd
@@ -17,3 +17,4 @@ pip install pandas
 pip install altair
 pip install -U pandasql
 pip install matplotlib
+pip install vega_datasets

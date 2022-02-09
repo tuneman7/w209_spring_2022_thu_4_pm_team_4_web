@@ -137,6 +137,21 @@ def home():
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
     return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
 
+
+@app.route('/world1')
+def world1():
+    my_altair = AltairRenderings()
+    map_json,junk_json = my_altair.get_world_map()
+    return render_template('pages/placeholder.world.html',chart_json=map_json)
+
+
+@app.route('/world')
+def world():
+    my_altair = AltairRenderings()
+    junk_json,map_json = my_altair.get_world_map()
+    return render_template('pages/placeholder.world.html',chart_json=map_json)
+
+
 import glob
 
 def get_about_slides_show_images():

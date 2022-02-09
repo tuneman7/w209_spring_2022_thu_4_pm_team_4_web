@@ -1,0 +1,34 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+
+<br/>
+  <p>
+    <br/>
+    <br/>
+  </p> 
+
+
+  {% if chart_json is not none %}
+
+  <div id="vis"></div>
+
+  <script>
+    // Assign the specification to a local variable vlSpec.
+    var vlSpec = {{ chart_json | safe }};
+
+    // Embed the visualization in the container with id `vis`
+    vegaEmbed('#vis', vlSpec);
+  </script>
+
+  {% endif %}
+
+ 
+
+
+{% endblock %}
+
+<script>
+
+</script>

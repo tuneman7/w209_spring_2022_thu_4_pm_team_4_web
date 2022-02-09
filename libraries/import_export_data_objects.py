@@ -35,12 +35,14 @@ class Utility:
             _ = system('clear')
 
 
-    def get_data_from_file(self,str_file_name):
+    def get_data_from_file(self,str_file_name,current_dir=False):
         '''
         Read an entire file and push the data back.
         :param str_file_name:
         :return:
         '''
+        if current_dir==True:
+            str_file_name = os.path.join(self.get_this_dir(),str_file_name)
         with open(str_file_name, 'r') as file:
             data = file.read()
 

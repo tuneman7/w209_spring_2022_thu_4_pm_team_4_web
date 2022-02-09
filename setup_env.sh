@@ -15,5 +15,6 @@ pip install pandas
 pip install altair
 pip install -U pandasql
 pip install matplotlib
+pip install vega_datasets
 #deactivate
 

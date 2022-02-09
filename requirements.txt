@@ -55,4 +55,4 @@ pandas
 altair
 pandasql
 matplotlib
-
+vega_datasets
