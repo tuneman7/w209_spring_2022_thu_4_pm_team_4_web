@@ -13,48 +13,8 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas as pd
 import pandasql as psql
+from  libraries.utility import Utility
 
-
-class Utility:
-    '''
-    Utility class to handle things that all of the other classes may need.  File / screen access etc.
-    '''
-
-    screen_width = 76
-    def __init__(self):
-        self.bozo ="bozo"
-        self.screen_width = 76
-
-    # define our clear function
-    def clear(self):
-        # for windows
-        if name == 'nt':
-            _ = system('cls')
-        # for mac and linux(here, os.name is 'posix')
-        else:
-            _ = system('clear')
-
-
-    def get_data_from_file(self,str_file_name,current_dir=False):
-        '''
-        Read an entire file and push the data back.
-        :param str_file_name:
-        :return:
-        '''
-        if current_dir==True:
-            str_file_name = os.path.join(self.get_this_dir(),str_file_name)
-        with open(str_file_name, 'r') as file:
-            data = file.read()
-
-        return data
-
-    def get_this_dir(self):
-        '''
-        Return the working directory.
-        :return:
-        '''
-        thisdir = os.getcwd()
-        return thisdir
 
 
 class import_export_data(Utility):
@@ -86,6 +46,15 @@ class import_export_data(Utility):
         return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,top_20_file_name)
 
         return return_file_name
+
+    def get_world_countries_by_iso_label(self):
+        data_directory = "data"
+        file_name = "countries.tsv"
+
+        load_file_name = os.path.join(self.get_this_dir(),data_directory,file_name)
+
+        my_data = pd.read_csv(load_file_name,sep='\t')
+        return my_data
 
     def load_and_clean_up_top_20_file(self):
 

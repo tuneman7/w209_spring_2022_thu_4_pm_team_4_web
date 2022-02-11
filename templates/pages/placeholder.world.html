@@ -16,10 +16,21 @@
 
   <script>
     // Assign the specification to a local variable vlSpec.
-    var vlSpec = {{ chart_json | safe }};
+    // var view = new vega.View(vega.parse()
+    //   .renderer("canvas")
+    //   .initialize("#vis")
+    //   .run();
+
+    vlSpec = {{ chart_json | safe }};
 
     // Embed the visualization in the container with id `vis`
-    vegaEmbed('#vis', vlSpec);
+    vegaEmbed('#vis', vlSpec, {}
+).then(result => {
+    result.view.addEventListener('click', function(event, item) {
+       alert(item.tooltip.Country);
+    });
+}).catch(console.warn);
+
   </script>
 
   {% endif %}

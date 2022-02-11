@@ -1,4 +1,4 @@
-bracketpython -m venv myproj
+python -m venv myproj
 source ./myproj/bin/activate
 pip install flask
 pip install sql-alchemyd

@@ -15,14 +15,14 @@
       "name": "projection",
       "type": "mercator",
       "scale": 190,
-      "center":[23,0]
+      "center":[22,13]
     }
   ],
 
   "data": [
     {
       "name": "world",
-      "url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/world-110m.json",
+      "url": "./static/data/world-110m.json",
       "format": {
         "type": "topojson",
         "feature": "countries"
