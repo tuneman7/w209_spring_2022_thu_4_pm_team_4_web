@@ -16,5 +16,6 @@ pip install altair
 pip install -U pandasql
 pip install matplotlib
 pip install vega_datasets
+pip install jsonschema==3.2 
 #deactivate
 
