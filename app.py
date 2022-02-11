@@ -141,7 +141,7 @@ def home():
 @app.route('/world1')
 def world1():
     my_altair = AltairRenderings()
-    map_json,junk_json = my_altair.get_world_map()
+    junk_json,map_json = my_altair.get_world_map()
     return render_template('pages/placeholder.world.html',chart_json=map_json)
 
 

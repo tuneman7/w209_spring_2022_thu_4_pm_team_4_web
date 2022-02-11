@@ -1,5 +1,6 @@
 from libraries.import_export_data_objects import import_export_data as Import_Export_Data
 from libraries.utility import Utility
+import numpy as np
 
 import altair as alt
 from vega_datasets import data
@@ -50,26 +51,15 @@ class AltairRenderings:
     def get_world_map(self):
         source = alt.topo_feature(data.world_110m.url, 'countries')
 
-        background = alt.Chart(source).mark_geoshape(
-            fill='#666666',
-            stroke='white'
-        )
 
         my_data = self.my_data_object
 
         country_source = my_data.get_world_countries_by_iso_label()
 
-        multi = alt.selection_multi(fields=['country'], bind='legend')
-        color = alt.condition(multi,
-                        alt.Color('Country', type='ordinal',
-                        scale=alt.Scale(scheme='yellowgreenblue')),
-                        alt.value('lightgray'))
-        hover = alt.selection(type='single', on='mouseover', nearest=True,
-                            fields=['x', 'y'])
 
         foreground = (
             alt.Chart(source)
-            .mark_geoshape(stroke="black", strokeWidth=0.15)
+            .mark_geoshape(stroke="black", strokeWidth=1)
             .encode(
                 tooltip=[
                     alt.Tooltip("Country:N", title="Country")
@@ -81,27 +71,12 @@ class AltairRenderings:
             )
         )
 
-        c1 = alt.layer(foreground).configure_legend(
-            orient = 'bottom-right',
-            direction = 'horizontal',
-            padding = 10,
-            rowPadding = 15
-        )
-
-        labels = alt.Chart(source).mark_text().encode(
-            longitude='x',
-            latitude='y',
-            text='count',
-            size=alt.value(8),
-            opacity=alt.value(0.6)
-        )        
-
         my_map = (
-            (background + foreground)
+            (foreground)
             .configure_view(strokeWidth=0)
-            .properties(width=800, height=400)
-            .project("naturalEarth1", scale=190)
-        ).interactive()        
+            .properties(width=900, height=400)
+            .project("mercator", scale=185,center=np.array([24,12]))
+        )
         #my_map = alt.concat(my_map,scale=160)
         
         utility = Utility()
