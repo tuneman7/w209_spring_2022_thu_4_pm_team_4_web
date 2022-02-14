@@ -48,6 +48,48 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart.to_json()
 
+    def get_altaire_bar_top5_partners(self,source_country):
+
+        my_data = self.my_data_object
+
+        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+
+        source_data = my_data.get_top5data_by_source_country(source_country)
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        base = alt.Chart(source_data)#.transform_fold(['Total Trade ($M)'])
+
+        bars = base.mark_bar().encode(
+            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
+            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
+            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
+        )
+
+        #text = base.mark_text(
+        #    align='left',
+        #    baseline='middle',
+        #    dx=3
+        #).encode(
+        #    x=alt.X('Total Trade ($M):Q'),
+        #    y=alt.Y('Trading Partner:N', sort='-x'),
+        #    text=alt.Text('Total Trade ($M):Q', format=',')
+        #)
+
+
+        return_chart = alt.layer(bars).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+        )
+        return return_chart.to_json()
+
     def get_world_map(self):
         source = alt.topo_feature(data.world_110m.url, 'countries')
 
@@ -59,7 +101,7 @@ class AltairRenderings:
 
         foreground = (
             alt.Chart(source)
-            .mark_geoshape(stroke="black", strokeWidth=1)
+            .mark_geoshape(fill='lightgray', stroke="black", strokeWidth=1)
             .encode(
                 tooltip=[
                     alt.Tooltip("Country:N", title="Country")

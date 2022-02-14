@@ -107,6 +107,27 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    def get_top5data_by_source_country(self,source_country):
+
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        my_sql = '''
+        SELECT * 
+        FROM (
+            SELECT *,
+                RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
+            FROM my_data_frame
+            WHERE country = ''' + "'" + source_country + '''\'
+        ) t
+        WHERE rnk <= 5
+        ORDER BY rnk
+        '''
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
 
     def get_distinct_country_list(self):
 
