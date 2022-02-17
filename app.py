@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 # from flask.ext.sqlalchemy import SQLAlchemy
 import json
 import logging
@@ -145,12 +145,34 @@ def world1():
     junk_json,map_json = my_altair.get_world_map()
     return render_template('pages/placeholder.world.html',chart_json=map_json)
 
+@app.route('/worldmodal')
+def worldmodal():
+    my_altair = AltairRenderings()
+    junk_json,map_json = my_altair.get_world_map()
+    return render_template('pages/placeholder.world_modal.html',map_json=map_json)
+
 
 @app.route('/world')
 def world():
     my_altair = AltairRenderings()
     map_json,junk_map_json = my_altair.get_world_map()
     return render_template('pages/placeholder.world.html',chart_json=map_json)
+
+
+@app.route("/ajaxfile",methods=["POST","GET"])
+def ajaxfile():
+    my_altair = AltairRenderings()
+
+    source_country = "United States"
+    target_country = "China"
+    if request.method == 'POST':
+        source_country = request.form["source_country"]
+        target_country = request.form["target_country"]
+        
+    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country)
+    form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
+    return jsonify({'htmlresponse': render_template('modal/modal_chart.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)})
+ 
 
 
 import glob

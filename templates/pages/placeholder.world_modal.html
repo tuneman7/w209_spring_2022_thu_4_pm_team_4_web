@@ -1,0 +1,73 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+
+<br/>
+  <p>
+    <br/>
+    <br/>
+  </p> 
+
+
+  {% if map_json is not none %}
+
+  <div id="vis"></div>
+
+  <script>
+    // Assign the specification to a local variable vlSpec.
+    // var view = new vega.View(vega.parse()
+    //   .renderer("canvas")
+    //   .initialize("#vis")
+    //   .run();
+
+    vlSpec = {{ map_json | safe }};
+
+    // Embed the visualization in the container with id `vis`
+    vegaEmbed('#vis', vlSpec, {}
+).then(result => {
+    result.view.addEventListener('click', function(event, item) {
+       alert(item.tooltip.Country);
+       render_modal();
+    });
+}).catch(console.warn);
+
+
+      function render_modal(){
+          $.ajax({
+              url: '/ajaxfile',
+              type: 'post',
+              data: {source_country: "United States",target_country:"China"},
+              success: function(data){ 
+                  $('.modal-body').html(data); 
+                  $('.modal-body').append(data.htmlresponse);
+                  $('#empModal').modal('show'); 
+              }
+          });
+        };
+  
+  </script>  
+
+<div class="modal fade" id="empModal" >
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title"></h4>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+          </div>
+          <div class="modal-body">
+          </div>
+      </div>
+  </div>
+</div>
+
+  {% endif %}
+
+ 
+
+
+{% endblock %}
+
+<script>
+
+</script>
