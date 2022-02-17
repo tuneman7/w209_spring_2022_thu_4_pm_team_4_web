@@ -1,6 +1,14 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
+<!--Don Irwin override bootstrap's modal css so it will be larger-->
+<style>
+
+.modal-lg {
+    max-width: 100% !important;
+}
+
+</style>>
 
 
 <br/>
@@ -15,6 +23,9 @@
   <div id="vis"></div>
 
   <script>
+
+  const country_list = {{ country_list | safe }};
+
     // Assign the specification to a local variable vlSpec.
     // var view = new vega.View(vega.parse()
     //   .renderer("canvas")
@@ -27,35 +38,52 @@
     vegaEmbed('#vis', vlSpec, {}
 ).then(result => {
     result.view.addEventListener('click', function(event, item) {
-       alert(item.tooltip.Country);
-       render_modal();
+       //alert(item.tooltip.Country);
+       render_modal(item.tooltip.Country);
     });
 }).catch(console.warn);
 
+function is_country_in_list(country){
 
-      function render_modal(){
+  if( country_list.indexOf(country) != -1)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+};
+
+      function render_modal(country){
+        //Do nothing if it is not in our list
+        if(!(is_country_in_list(country))){return;}
+        //Implicit else
           $.ajax({
-              url: '/ajaxfile',
+              url: '/mapmodaldata',
               type: 'post',
-              data: {source_country: "United States",target_country:"China"},
+              data: {source_country: country,target_country:"China"},
               success: function(data){ 
                   $('.modal-body').html(data); 
                   $('.modal-body').append(data.htmlresponse);
-                  $('#empModal').modal('show'); 
+                  $('#map_modal').modal('show'); 
               }
           });
         };
+
+
   
   </script>  
 
-<div class="modal fade" id="empModal" >
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
+<div class="modal fade" id="map_modal" >
+  <div class="modal-dialog modal-lg" >
+      <div class="modal-content modal-lg">
+          <div class="modal-header modal-lg">
               <h4 class="modal-title"></h4>
             <button type="button" class="close" data-dismiss="modal">×</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body modal-lg">
           </div>
       </div>
   </div>

@@ -149,7 +149,8 @@ def world1():
 def worldmodal():
     my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
-    return render_template('pages/placeholder.world_modal.html',map_json=map_json)
+    country_list = my_altair.get_top_20_countries()
+    return render_template('pages/placeholder.world_modal.html',map_json=map_json,country_list=json.dumps(country_list))
 
 
 @app.route('/world')
@@ -159,9 +160,10 @@ def world():
     return render_template('pages/placeholder.world.html',chart_json=map_json)
 
 
-@app.route("/ajaxfile",methods=["POST","GET"])
+@app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():
     my_altair = AltairRenderings()
+
 
     source_country = "United States"
     target_country = "China"
@@ -171,7 +173,7 @@ def ajaxfile():
         
     chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country)
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
-    return jsonify({'htmlresponse': render_template('modal/modal_chart.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)})
+    return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,country_list=None)})
  
 
 

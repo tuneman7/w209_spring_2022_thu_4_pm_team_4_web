@@ -90,6 +90,10 @@ class AltairRenderings:
         )
         return return_chart.to_json()
 
+    def get_top_20_countries(self):
+
+        return self.my_data_object.get_distinct_country_list()
+
     def get_world_map(self):
 
         world_map_source = alt.topo_feature(data.world_110m.url, 'countries')
