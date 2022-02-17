@@ -91,7 +91,8 @@ class AltairRenderings:
         return return_chart.to_json()
 
     def get_world_map(self):
-        source = alt.topo_feature(data.world_110m.url, 'countries')
+
+        world_map_source = alt.topo_feature(data.world_110m.url, 'countries')
 
 
         my_data = self.my_data_object
@@ -100,7 +101,7 @@ class AltairRenderings:
 
 
         foreground = (
-            alt.Chart(source)
+            alt.Chart(world_map_source)
             .mark_geoshape(fill='lightgray', stroke="black", strokeWidth=1)
             .encode(
                 tooltip=[

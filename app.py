@@ -72,18 +72,6 @@ app.config['RECAPTCHA_USE_SSL']= False
 
 
 
-from flask_mail import Mail, Message
-mail_settings = {
-    "MAIL_SERVER": 'smtp.gmail.com',
-    "MAIL_PORT": 465,
-    "MAIL_USE_TLS": False,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": 'randomchiller@gmail.com',
-    "MAIL_PASSWORD": 'Bozo85!$'
-}
-
-app.config.update(mail_settings)
-mail = Mail(app)
 
 
 from flask_recaptcha import ReCaptcha
