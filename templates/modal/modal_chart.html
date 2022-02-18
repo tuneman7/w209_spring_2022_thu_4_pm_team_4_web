@@ -1,6 +1,15 @@
 
   {% if form is not none %}
 
+  <!--Don Irwin use this on the tool tip so that it will be on top always-->
+<style>
+
+  .on_top_always {
+    z-index: 999 !important;
+  }
+  
+  </style>>
+
     <div class="form-only-page">
       <form method="post" class="form" action="/ajaxfile" id="adduser" name="adduser">
         {{ form.source_country(**{"onchange":"refresh_charts(this.value,this.form.target_country.value)"}) }}
@@ -10,6 +19,8 @@
           {{ form.csrf_token }}
       </form>
     </div>
+
+
 
     <script>
 
@@ -73,7 +84,7 @@
     <div id="altair-timeseries"></div>
     </div>
     <!-- Placeholder for the tooltip -->
-    <div id="vis-tooltip" class="vg-tooltip"></div>
+    <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
     </div>
     <!-- Render Charts -->
     <script type="text/javascript">
