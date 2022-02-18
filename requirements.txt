@@ -56,3 +56,4 @@ altair
 pandasql
 matplotlib
 vega_datasets
+jsonschema==3.2
