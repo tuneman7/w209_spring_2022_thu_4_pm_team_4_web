@@ -5,6 +5,7 @@ import numpy as np
 import altair as alt
 from vega_datasets import data
 import os
+import pandas as pd
 
 class AltairRenderings:
 
@@ -60,29 +61,90 @@ class AltairRenderings:
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
         slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
 
-        base = alt.Chart(source_data)#.transform_fold(['Total Trade ($M)'])
+        base = alt.Chart(source_data)
 
-        bars = base.mark_bar().encode(
+        bars = base.mark_bar(color = '#aec7e8').encode(
             x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
             y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
         )
 
-        #text = base.mark_text(
-        #    align='left',
-        #    baseline='middle',
-        #    dx=3
-        #).encode(
-        #    x=alt.X('Total Trade ($M):Q'),
-        #    y=alt.Y('Trading Partner:N', sort='-x'),
-        #    text=alt.Text('Total Trade ($M):Q', format=',')
-        #)
+        text = base.mark_text(align='left', dx=5, dy=-5).encode(
+            x=alt.X('Total Trade ($M):Q'),
+            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
+            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
+        )
 
-
-        return_chart = alt.layer(bars).add_selection(
+        return_chart = alt.layer(bars, text).add_selection(
             slider_selection
         ).transform_filter(
             slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).configure_axis(
+            grid=False
+        ).configure_view(
+            strokeWidth=0
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+        )
+        return return_chart.to_json()
+
+    def get_altaire_dual_axis_bar_top5(self,source_country):
+
+        my_data = self.my_data_object
+
+        title = "Top 5 Trading Product Types by Values ($M in USD)"
+
+        exports_data = my_data.get_top5data_by_imports_exports(source_country, 'exports')
+        exports_data['Value'] = exports_data['Value'] * -1.0
+        exports_data = exports_data.rename(columns={'Value': 'Export_Value', 'Product/Sector-reformatted': 'Export_Product'})
+        imports_data = my_data.get_top5data_by_imports_exports(source_country, 'imports')
+        imports_data = imports_data.rename(columns={'Value': 'Import_Value', 'Product/Sector-reformatted': 'Import_Product'})
+        df = pd.merge(exports_data, imports_data, 
+                      how = 'inner', on = ['rnk', 'Year'], 
+                     left_index = False, right_index = False)
+        domain_x = max(max(abs(df['Export_Value'])), max(df['Import_Value']))
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        base = alt.Chart(df).encode(x='Export_Value:Q')
+
+        export_bars = base.mark_bar(color = '#aec7e8').encode(
+            x=alt.X('Export_Value:Q',axis=alt.Axis(title='Trade Value ($M in USD)'), scale=alt.Scale(domain=[-domain_x,domain_x])),
+            y=alt.Y('Export_Product:N',axis=alt.Axis(title='Export Product'), sort='x'),
+            tooltip=alt.Tooltip('Export_Value', format="$,.0f")
+        )
+        import_bars = base.mark_bar(color = '#e7969c').encode( 
+            x=alt.X('Import_Value:Q',axis=alt.Axis(title='Trade Value ($M in USD)'), scale=alt.Scale(domain=[-domain_x,domain_x])),
+            y=alt.Y('Import_Product:N',axis=alt.Axis(title='Import Product'), sort='-x'),
+            tooltip=alt.Tooltip('Import_Value', format="$,.0f")
+        )
+
+        text_import = base.mark_text(align='left', dx=5, dy=-5).encode(
+            x=alt.X('Import_Value:Q'),
+            y=alt.Y('Import_Product:N', sort='-x', axis=None),
+            text=alt.Text('Import_Value:Q', format='$,.0f')
+        )
+        text_export = base.mark_text(align='right', dx=-5, dy=-5).encode(
+            x=alt.X('Export_Value:Q'),
+            y=alt.Y('Export_Product:N', sort='x', axis=None),
+            text=alt.Text('Export_Value:Q', format='$,.0f')
+        )
+
+        return_chart = alt.layer(export_bars, import_bars, text_export, text_import).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).configure_axis(
+            grid=False
+        ).configure_view(
+            strokeWidth=0
         ).properties(
             width=700,
             height=350,

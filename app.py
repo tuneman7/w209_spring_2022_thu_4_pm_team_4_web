@@ -138,6 +138,7 @@ def home():
     return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
 
 @app.route('/top5trading', methods=['POST', 'GET'])
+## Comment the block to see the chart of top 5 product types##
 def top5trading():
     my_altair = AltairRenderings()
 
@@ -148,7 +149,18 @@ def top5trading():
     chart_json = my_altair.get_altaire_bar_top5_partners(source_country)
     form = CountryToWorldVisualizationForm(request.form,current_source_country=source_country) 
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
+#####################END comment block########################
 
+def top5products():
+    my_altair = AltairRenderings()
+
+    source_country = "United States"
+    if request.method == 'POST':
+        source_country = request.form["source_country"]
+        
+    chart_json = my_altair.get_altaire_dual_axis_bar_top5(source_country)
+    form = CountryToWorldVisualizationForm(request.form,current_source_country=source_country) 
+    return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
 
 
 @app.route('/world1')

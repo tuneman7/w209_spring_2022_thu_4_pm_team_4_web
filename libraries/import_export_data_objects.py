@@ -20,6 +20,7 @@ from  libraries.utility import Utility
 class import_export_data(Utility):
     
     ALL_COUNTRIES_DATA_FRAME = None
+    ALL_COUNTRIES_BY_TYPE_DF = None
 
 
     def __init__(self,**kwargs):
@@ -29,8 +30,9 @@ class import_export_data(Utility):
     def __init__(self):
         super().__init__()
         global ALL_COUNTRIES_DATA_FRAME
+        global ALL_COUNTRIES_BY_TYPE_DF
         ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
-
+        ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file()
 
     def print_internal_directory(self):
 
@@ -47,6 +49,16 @@ class import_export_data(Utility):
 
         return return_file_name
 
+    def get_WTO_full_file_name(self) :
+
+        data_directory = "data"
+        trade_balance_sub_dir = "trade_balance_datasets"
+        WTO_file_name = "WtoData_all.csv"
+
+        return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,WTO_file_name)
+
+        return return_file_name
+
     def get_world_countries_by_iso_label(self):
         data_directory = "data"
         file_name = "countries.tsv"
@@ -59,6 +71,14 @@ class import_export_data(Utility):
     def load_and_clean_up_top_20_file(self):
 
         file_to_load = self.get_top_20_full_file_name()
+
+        my_data = pd.read_csv(file_to_load)
+        
+        return my_data
+
+    def load_and_clean_up_WTO_file(self):
+
+        file_to_load = self.get_WTO_full_file_name()
 
         my_data = pd.read_csv(file_to_load)
         
@@ -122,7 +142,36 @@ class import_export_data(Utility):
             WHERE country = ''' + "'" + source_country + '''\'
         ) t
         WHERE rnk <= 5
-        ORDER BY rnk
+        '''
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+    def get_top5data_by_imports_exports(self,source_country, direction):
+
+        global ALL_COUNTRIES_BY_TYPE_DF
+
+        my_data_frame = ALL_COUNTRIES_BY_TYPE_DF
+
+        my_sql = '''
+        SELECT *
+        FROM (
+            SELECT 
+                Year, Value,
+                [Product/Sector-reformatted],
+                RANK() OVER(
+                    PARTITION BY Year 
+                    ORDER BY Value DESC) AS rnk
+            FROM my_data_frame
+            WHERE      
+                [Reporting Economy] =  \'''' + source_country + '''\'
+            and
+                Direction = \'''' + direction + '''\'
+            and
+                [Product/Sector-reformatted] NOT LIKE '%Total%'
+        ) t
+        WHERE rnk <= 5
         '''
 
         my_return_data = psql.sqldf(my_sql)
