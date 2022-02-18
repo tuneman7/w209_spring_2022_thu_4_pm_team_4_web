@@ -8,7 +8,8 @@ def main():
 
     print(imp_object.get_data_by_source_and_target_country(source_country='Australia',target_country='China'))
     print(imp_object.get_distinct_country_list())
-
+    print(imp_object.get_top5data_by_imports_exports("United States", 'exports'))
+    print(imp_object.get_top5data_by_imports_exports("United States", 'imports'))
 
 
 main()

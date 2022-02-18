@@ -139,6 +139,7 @@ def top5trading():
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
 #####################END comment block########################
 
+@app.route('/top5products', methods=['POST', 'GET'])
 def top5products():
     my_altair = AltairRenderings()
 
