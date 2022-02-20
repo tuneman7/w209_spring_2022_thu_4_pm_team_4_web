@@ -20,3 +20,4 @@ pip install -U pandasql
 pip install matplotlib
 pip install vega_datasets
 pip install jsonschema==3.2 
+pip install jupyter
