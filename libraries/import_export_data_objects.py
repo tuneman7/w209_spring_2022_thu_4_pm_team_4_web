@@ -178,6 +178,34 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    def get_top_trading_and_net_value(self,source_country):
+
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        my_sql = '''
+        SELECT 
+        [Trading Partner],
+        [year],
+        [Exports ($M)]-[Imports ($M)] as net_trade,
+        [Exports ($M)],
+        [Imports ($M)]
+        FROM (
+            SELECT *,
+                RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
+            FROM my_data_frame
+            WHERE country = ''' + "'" + source_country + '''\'
+        ) t
+        WHERE rnk <= 5
+        '''
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+        
+
     def get_distinct_country_list(self):
 
         global ALL_COUNTRIES_DATA_FRAME

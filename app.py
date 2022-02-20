@@ -111,6 +111,23 @@ from libraries.altair_renderings import AltairRenderings
 import altair as alt
 
 
+@app.route('/fourchartmatrix', methods=['POST', 'GET'])
+def fourchartmatrix():
+    my_altair = AltairRenderings()
+
+    source_country = "United States"
+    target_country = "China"
+    if request.method == 'POST':
+        source_country = request.form["source_country"]
+        target_country = request.form["target_country"]
+        
+    line_chart_1 = my_altair.get_altaire_line_chart_county_trade_for_matrix(source_country, target_country)
+    top5_partners = my_altair.get_altaire_bar_top5_partners_for_matrix(source_country)
+    
+    form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
+    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
+
+
 @app.route('/', methods=['POST', 'GET'])
 def home():
     my_altair = AltairRenderings()
@@ -121,7 +138,7 @@ def home():
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
         
-    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country)
+    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country).to_json()
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
     return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
 
@@ -134,7 +151,7 @@ def top5trading():
     if request.method == 'POST':
         source_country = request.form["source_country"]
         
-    chart_json = my_altair.get_altaire_bar_top5_partners(source_country)
+    chart_json = my_altair.get_altaire_bar_top5_partners(source_country).to_json()
     form = CountryToWorldVisualizationForm(request.form,current_source_country=source_country) 
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
 #####################END comment block########################
@@ -147,7 +164,7 @@ def top5products():
     if request.method == 'POST':
         source_country = request.form["source_country"]
         
-    chart_json = my_altair.get_altaire_dual_axis_bar_top5(source_country)
+    chart_json = my_altair.get_altaire_dual_axis_bar_top5(source_country).to_json()
     form = CountryToWorldVisualizationForm(request.form,current_source_country=source_country) 
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
 
@@ -156,14 +173,14 @@ def top5products():
 def world1():
     my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
-    return render_template('pages/placeholder.world.html',chart_json=map_json)
+    return render_template('pages/placeholder.world.html',chart_json=map_json.to_json())
 
 @app.route('/worldmodal')
 def worldmodal():
     my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
     country_list = my_altair.get_top_20_countries()
-    return render_template('pages/placeholder.world_modal.html',map_json=map_json,country_list=json.dumps(country_list))
+    return render_template('pages/placeholder.world_modal.html',map_json=map_json.to_json(),country_list=json.dumps(country_list))
 
 
 @app.route('/world')
@@ -184,7 +201,7 @@ def ajaxfile():
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
         
-    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country)
+    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country).to_json()
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
     return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,country_list=None)})
  

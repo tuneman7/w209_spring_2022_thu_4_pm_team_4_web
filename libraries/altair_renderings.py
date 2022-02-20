@@ -47,7 +47,87 @@ class AltairRenderings:
 
         
         return_chart = alt.layer(line,points)
-        return return_chart.to_json()
+        return return_chart
+
+    def get_altaire_line_chart_county_trade_for_matrix(self,source_country,target_country):
+
+        my_data = self.my_data_object
+
+        title = "Trade between " + source_country + " and " + target_country + " for the years 2014 through 2020"
+
+        source_and_target_data = my_data.get_data_by_source_and_target_country(source_country,target_country)
+
+        base = alt.Chart(source_and_target_data).transform_fold(['Total Trade ($M)','Exports ($M)','Imports ($M)'])
+
+        line = base.mark_line().encode(
+            x=alt.X('year:O',axis=alt.Axis(title='Year')),
+            y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
+            color="key:N"
+            
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+            )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('year:O',axis=alt.Axis(title='')),
+            y=alt.Y('value:Q',axis=alt.Axis(title='')),
+            tooltip=['Total Trade ($M)','Exports ($M)','Imports ($M)']
+        ).properties(width=700)
+
+        
+        return_chart = alt.layer(line,points)
+        return return_chart
+
+    def get_altaire_bar_top5_partners_for_matrix(self,source_country):
+
+        my_data = self.my_data_object
+
+        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+
+        source_data = my_data.get_top5data_by_source_country(source_country)
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        base = alt.Chart(source_data)
+
+        bars = base.mark_bar(color = '#aec7e8').encode(
+            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
+            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
+            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
+        )
+
+        text = base.mark_text(align='left', dx=5, dy=-5).encode(
+            x=alt.X('Total Trade ($M):Q'),
+            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
+            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
+        )
+
+        return_chart = alt.layer(bars, text).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).configure_axis(
+            grid=False
+        ).configure_view(
+            strokeWidth=0
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+        )
+        return return_chart
+
 
     def get_altaire_bar_top5_partners(self,source_country):
 
@@ -90,7 +170,96 @@ class AltairRenderings:
             height=350,
             title=title
         )
-        return return_chart.to_json()
+        return return_chart
+
+
+    def get_altaire_bar_top5_partners(self,source_country):
+
+        my_data = self.my_data_object
+
+        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+
+        source_data = my_data.get_top5data_by_source_country(source_country)
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        base = alt.Chart(source_data)
+
+        bars = base.mark_bar(color = '#aec7e8').encode(
+            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
+            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
+            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
+        )
+
+        text = base.mark_text(align='left', dx=5, dy=-5).encode(
+            x=alt.X('Total Trade ($M):Q'),
+            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
+            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
+        )
+
+        return_chart = alt.layer(bars, text).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).configure_axis(
+            grid=False
+        ).configure_view(
+            strokeWidth=0
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+        )
+        return return_chart
+
+    def get_top_five_trading_countries(self,source_country):
+
+        my_data = self.my_data_object
+
+        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+
+        source_data = my_data.get_top_trading_and_net_value(source_country)
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        base = alt.Chart(source_data)
+
+        bars = base.mark_bar(color = '#aec7e8').encode(
+            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
+            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
+            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
+        )
+
+        text = base.mark_text(align='left', dx=5, dy=-5).encode(
+            x=alt.X('Total Trade ($M):Q'),
+            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
+            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
+        )
+
+        return_chart = alt.layer(bars, text).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).configure_axis(
+            grid=False
+        ).configure_view(
+            strokeWidth=0
+        ).properties(
+            width=700,
+            height=350,
+            title=title
+        )
+        return return_chart
+
+
 
     def get_altaire_dual_axis_bar_top5(self,source_country):
 
@@ -150,7 +319,7 @@ class AltairRenderings:
             height=350,
             title=title
         )
-        return return_chart.to_json()
+        return return_chart
 
     def get_top_20_countries(self):
 
@@ -192,7 +361,7 @@ class AltairRenderings:
         this_dir = utility.get_this_dir()
         file_name = os.path.join(this_dir,"libraries","world.json")
         my_json = utility.get_data_from_file(file_name)
-        return my_json,my_map.to_json()
+        return my_json,my_map
 
         
 
