@@ -1,5 +1,5 @@
 rm -rf ./myproj
-python -m venv myproj
+python3 -m venv myproj
 source ./myproj/bin/activate
 pip install flask
 pip install sql-alchemyd
