@@ -188,6 +188,7 @@ class import_export_data(Utility):
         SELECT 
         [Trading Partner],
         [year],
+        [Total Trade ($M)],
         [Exports ($M)]-[Imports ($M)] as net_trade,
         [Exports ($M)],
         [Imports ($M)]

@@ -216,7 +216,7 @@ class AltairRenderings:
         )
         return return_chart
 
-    def get_top_five_trading_countries(self,source_country):
+    def get_import_export_balance_top_five(self,source_country):
 
         my_data = self.my_data_object
 
@@ -228,21 +228,40 @@ class AltairRenderings:
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
         slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
 
-        base = alt.Chart(source_data)
+        base = alt.Chart(source_data).transform_fold(
+                                                    ["Exports ($M)","Imports ($M)"],
+                                                    as_ = ['column','value']
+                                                    )
 
-        bars = base.mark_bar(color = '#aec7e8').encode(
-            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
-            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
-            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
+        bars = base.mark_bar().encode(
+            x=alt.X('Trading Partner'),
+            y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($M)')),
+            tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
+            color='column:N'
+
         )
 
-        text = base.mark_text(align='left', dx=5, dy=-5).encode(
-            x=alt.X('Total Trade ($M):Q'),
-            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
-            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
+        line = bars.mark_line(color='green').encode(
+            x=alt.X('Trading Partner'),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
+            tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
+            color=alt.value("Green")
+            
         )
 
-        return_chart = alt.layer(bars, text).add_selection(
+
+        invisible_dots = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Trading Partner'),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
+            tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")]
+        )
+
+
+        return_chart = alt.layer(bars + invisible_dots+line).add_selection(
             slider_selection
         ).transform_filter(
             slider_selection
