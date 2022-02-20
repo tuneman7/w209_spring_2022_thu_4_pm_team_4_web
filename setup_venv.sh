@@ -1,3 +1,4 @@
+rm -rf ./myproj
 python -m venv myproj
 source ./myproj/bin/activate
 pip install flask

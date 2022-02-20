@@ -1,8 +1,0 @@
-#!/Users/adonisirwin/system_data_folder/00AA_SCHOOL/MIDS/w209/web_modal/myproj/bin/python
-# -*- coding: utf-8 -*-
-import re
-import sys
-from email_validator import main
-if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    sys.exit(main())
