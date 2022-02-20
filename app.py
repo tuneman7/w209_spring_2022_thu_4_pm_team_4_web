@@ -123,6 +123,7 @@ def fourchartmatrix():
         
     line_chart_1 = my_altair.get_altaire_line_chart_county_trade_for_matrix(source_country, target_country)
     top5_partners = my_altair.get_altaire_bar_top5_partners_for_matrix(source_country)
+    top_5_products = my_altair.get_altaire_dual_axis_bar_top5(source_country)
     
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
     return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
@@ -188,6 +189,12 @@ def world():
     my_altair = AltairRenderings()
     map_json,junk_map_json = my_altair.get_world_map()
     return render_template('pages/placeholder.world.html',chart_json=map_json)
+
+@app.route('/mynewmap')
+def my_new_map():
+    my_altair = AltairRenderings()
+    my_map = my_altair.my_new_map()
+    return render_template('pages/placeholder.world.html',chart_json=my_map.to_json())
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])

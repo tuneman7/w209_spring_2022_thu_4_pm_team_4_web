@@ -382,6 +382,15 @@ class AltairRenderings:
         my_json = utility.get_data_from_file(file_name)
         return my_json,my_map
 
+
+    def my_new_map(self):
+        source = alt.topo_feature(data.world_110m.url, 'countries')
+        my_map=alt.Chart(source).mark_geoshape(
+        fill='blue',
+        stroke='grey',).encode(tooltip='id:N').project('naturalEarth1').properties(width=800, height=600).configure_view(stroke=None)
+
+        return my_map
+
         
 
 
