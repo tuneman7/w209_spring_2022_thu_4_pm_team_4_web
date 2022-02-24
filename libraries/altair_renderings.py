@@ -53,11 +53,11 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart
 
-    def get_altaire_line_chart_county_trade_for_matrix(self,source_country,target_country):
+    def get_altaire_line_chart_county_trade_for_matrix(self,source_country,target_country,width=340,height=200):
 
         my_data = self.my_data_object
 
-        title = "Trade between " + source_country + " and " + target_country + " for the years 2014 through 2020"
+        title = "Trade between " + source_country + " and " + target_country + " 2014 - 2020"
 
         source_and_target_data = my_data.get_data_by_source_and_target_country(source_country,target_country)
 
@@ -69,8 +69,8 @@ class AltairRenderings:
             color="key:N"
             
         ).properties(
-            width=700,
-            height=350,
+            width=width,
+            height=height,
             title=title
             )
 
@@ -83,7 +83,7 @@ class AltairRenderings:
             x=alt.X('year:O',axis=alt.Axis(title='')),
             y=alt.Y('value:Q',axis=alt.Axis(title='')),
             tooltip=['Total Trade ($M)','Exports ($M)','Imports ($M)']
-        ).properties(width=700)
+        ).properties(width=width)
 
         
         return_chart = alt.layer(line,points)
@@ -205,8 +205,8 @@ class AltairRenderings:
                                                     )
 
         bars = base.mark_bar(opacity=0.6).encode(
-            x=alt.X('Trading Partner'),
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($M)')),
+            x=alt.X('Trading Partner', sort='-y'),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
             color='column:N'
 
