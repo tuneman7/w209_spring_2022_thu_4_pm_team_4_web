@@ -23,16 +23,17 @@ class import_export_data(Utility):
     ALL_COUNTRIES_BY_TYPE_DF = None
 
 
-    def __init__(self,**kwargs):
-        allowed_keys = {'zipcode', 'search_uri', 'description'}
-        self.__dict__.update((k, v) for k, v in kwargs.items() if k in allowed_keys)
-
-    def __init__(self):
+    def __init__(self,load_data_from_url=False):
         super().__init__()
         global ALL_COUNTRIES_DATA_FRAME
         global ALL_COUNTRIES_BY_TYPE_DF
-        ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
-        ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file()
+        if load_data_from_url == False:
+            ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
+            ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file()
+        else:
+            ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file_fromurl()
+            ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file_fromurl()
+
 
     def print_internal_directory(self):
 
@@ -68,6 +69,16 @@ class import_export_data(Utility):
         my_data = pd.read_csv(load_file_name,sep='\t')
         return my_data
 
+    def load_and_clean_up_top_20_file_fromurl(self):
+
+        #url = "https://tuneman7.github.io/WtoData_all.csv"
+        url = "https://tuneman7.github.io/top20_2014-2020_all.csv"
+
+        my_data = pd.read_csv(url)
+        
+        return my_data
+
+
     def load_and_clean_up_top_20_file(self):
 
         file_to_load = self.get_top_20_full_file_name()
@@ -81,6 +92,15 @@ class import_export_data(Utility):
         file_to_load = self.get_WTO_full_file_name()
 
         my_data = pd.read_csv(file_to_load)
+        
+        return my_data
+
+    def load_and_clean_up_WTO_file_fromurl(self):
+
+        url = "https://tuneman7.github.io/WtoData_all.csv"
+        #url = "https://tuneman7.github.io/top20_2014-2020_all.csv"
+
+        my_data = pd.read_csv(url)
         
         return my_data
 
@@ -111,6 +131,32 @@ class import_export_data(Utility):
         #print(my_sql)
         return my_sql
 
+    def get_sql_for_world_or_region(self, source_country):
+        my_sql = '''
+        SELECT
+            'World' [Trading Partner],
+            sum([Total Trade ($M)])  [Total Trade ($M) ],
+            avg([RtW (%)])  [RtW (%)],
+            sum([Exports ($M)] )[Exports ($M)],
+            avg([RtW (%).1])  [RtW (%).1],
+            sum([Imports ($M)])  [Imports ($M)],
+            avg([RtW (%).2])  [RtW (%).2],
+            sum([Net Exports ($M)])  [Net Exports ($M)],
+            ''  [Exports Ticker],
+            ''  [Imports Ticker],
+            country,
+            year
+        FROM 
+            my_data_frame
+        WHERE 
+            country =  \'''' + source_country + '''\'
+        and
+            [Trading Partner] <> \'''' + source_country + '''\'
+        GROUP BY
+            country, year
+        '''
+        #print(my_sql)
+        return my_sql
 
     def get_data_by_source_and_target_country(self,source_country,target_country):
 
@@ -133,16 +179,29 @@ class import_export_data(Utility):
 
         my_data_frame = ALL_COUNTRIES_DATA_FRAME
 
-        my_sql = '''
-        SELECT * 
-        FROM (
-            SELECT *,
-                RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
-            FROM my_data_frame
-            WHERE country = ''' + "'" + source_country + '''\'
-        ) t
-        WHERE rnk <= 5
-        '''
+        if source_country.lower() == 'world':
+            my_sql = '''
+            SELECT * 
+            FROM (
+                SELECT *,
+                    RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
+                FROM my_data_frame
+                where country in (select distinct country from my_data_frame)
+            ) t
+            WHERE rnk <= 5
+            '''
+        else:
+
+            my_sql = '''
+            SELECT * 
+            FROM (
+                SELECT *,
+                    RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
+                FROM my_data_frame
+                WHERE country = ''' + "'" + source_country + '''\'
+            ) t
+            WHERE rnk <= 5
+            '''
 
         my_return_data = psql.sqldf(my_sql)
 
@@ -153,26 +212,47 @@ class import_export_data(Utility):
         global ALL_COUNTRIES_BY_TYPE_DF
 
         my_data_frame = ALL_COUNTRIES_BY_TYPE_DF
+        if source_country.lower() != "world":
+            my_sql = '''
+            SELECT *
+            FROM (
+                SELECT 
+                    Year, Value,
+                    [Product/Sector-reformatted],
+                    RANK() OVER(
+                        PARTITION BY Year 
+                        ORDER BY Value DESC) AS rnk
+                FROM my_data_frame
+                WHERE      
+                    [Reporting Economy] =  \'''' + source_country + '''\'
+                and
+                    Direction = \'''' + direction + '''\'
+                and
+                    [Product/Sector-reformatted] NOT LIKE '%Total%'
+            ) t
+            WHERE rnk <= 5
+            '''
+        else:
+            my_sql = '''
+            SELECT *
+            FROM (
+                SELECT 
+                    Year, Value,
+                    [Product/Sector-reformatted],
+                    RANK() OVER(
+                        PARTITION BY Year 
+                        ORDER BY Value DESC) AS rnk
+                FROM my_data_frame
+                WHERE      
+                    [Reporting Economy] in (select distinct [Reporting Economy] from my_data_frame)
+                and
+                    Direction = \'''' + direction + '''\'
+                and
+                    [Product/Sector-reformatted] NOT LIKE '%Total%'
+            ) t
+            WHERE rnk <= 5
+            '''
 
-        my_sql = '''
-        SELECT *
-        FROM (
-            SELECT 
-                Year, Value,
-                [Product/Sector-reformatted],
-                RANK() OVER(
-                    PARTITION BY Year 
-                    ORDER BY Value DESC) AS rnk
-            FROM my_data_frame
-            WHERE      
-                [Reporting Economy] =  \'''' + source_country + '''\'
-            and
-                Direction = \'''' + direction + '''\'
-            and
-                [Product/Sector-reformatted] NOT LIKE '%Total%'
-        ) t
-        WHERE rnk <= 5
-        '''
 
         my_return_data = psql.sqldf(my_sql)
 
@@ -183,23 +263,53 @@ class import_export_data(Utility):
         global ALL_COUNTRIES_DATA_FRAME
 
         my_data_frame = ALL_COUNTRIES_DATA_FRAME
-
-        my_sql = '''
-        SELECT 
-        [Trading Partner],
-        [year],
-        [Total Trade ($M)],
-        [Exports ($M)]-[Imports ($M)] as net_trade,
-        [Exports ($M)],
-        [Imports ($M)]
-        FROM (
-            SELECT *,
-                RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
-            FROM my_data_frame
-            WHERE country = ''' + "'" + source_country + '''\'
-        ) t
-        WHERE rnk <= 5
-        '''
+        if source_country.lower() != "world":
+            my_sql = '''
+            SELECT 
+            [Trading Partner],
+            [year],
+            [Total Trade ($M)],
+            [Exports ($M)]-[Imports ($M)] as net_trade,
+            'Net: ' || '$' || printf("%,d",cast([Exports ($M)]-[Imports ($M)] as text)) as net_trade_text,
+            [Exports ($M)],
+            [Imports ($M)],
+            ''' + "'" + source_country + "'" + ''' as 'source_country'
+            FROM (
+                SELECT *,
+                    RANK() OVER(PARTITION BY year ORDER BY [Total Trade ($M)] DESC) AS rnk
+                FROM my_data_frame
+                WHERE country = ''' + "'" + source_country + '''\'
+            ) t
+            WHERE rnk <= 5
+            '''
+        else:
+            my_sql = '''
+            SELECT 
+            distinct
+            [Trading Partner],
+            [year],
+            [Total Trade ($M)],
+            [Exports ($M)]-[Imports ($M)] as net_trade,
+            'Net: ' || '$' || printf("%,d",cast([Exports ($M)]-[Imports ($M)] as text)) as net_trade_text,
+            [Exports ($M)],
+            [Imports ($M)],
+            'World' as source_country
+            FROM (
+                SELECT 
+                    [Trading Partner],
+                    sum([Total Trade ($M)]) as [Total Trade ($M)],
+                    sum([Exports ($M)]) as [Exports ($M)],
+                    sum([Imports ($M)]) as [Imports ($M)],
+                    year,
+                    RANK() OVER(PARTITION BY year ORDER BY sum([Total Trade ($M)]) DESC) AS rnk
+                FROM my_data_frame
+                WHERE country in (select distinct country from my_data_frame )
+                --and [Trading Partner] <> 'European Union'
+                group by [Trading Partner],year
+            ) t
+            WHERE rnk <= 5
+            group by [Trading Partner], [year]            
+            '''            
 
         my_return_data = psql.sqldf(my_sql)
 

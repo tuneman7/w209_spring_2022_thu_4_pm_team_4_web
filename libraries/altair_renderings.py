@@ -6,12 +6,16 @@ import altair as alt
 from vega_datasets import data
 import os
 import pandas as pd
+import pandasql as psql
 
 class AltairRenderings:
 
 
-    def __init__(self):
-        self.my_data_object = Import_Export_Data()
+    def __init__(self,load_data_from_url=False):
+        if load_data_from_url == True:
+            self.my_data_object = Import_Export_Data()
+        else:
+            self.my_data_object = Import_Export_Data(load_data_from_url=load_data_from_url)
 
     def get_altaire_line_char_json_county_trade(self,source_country,target_country):
 
@@ -85,11 +89,12 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart
 
-    def get_altaire_bar_top5_partners_for_matrix(self,source_country):
+    def get_altaire_bar_top5_partners_for_matrix(self,source_country,width=320,height=130):
 
         my_data = self.my_data_object
 
-        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+        title = source_country + "'s Top 5 Trading Partners"
+
 
         source_data = my_data.get_top5data_by_source_country(source_country)
 
@@ -117,14 +122,10 @@ class AltairRenderings:
             slider_selection
         ).resolve_scale(
             y = 'independent'
-        ).configure_axis(
-            grid=False
-        ).configure_view(
-            strokeWidth=0
         ).properties(
-            width=700,
-            height=350,
-            title=title
+            title=title,
+            width=width,
+            height=height
         )
         return return_chart
 
@@ -133,7 +134,7 @@ class AltairRenderings:
 
         my_data = self.my_data_object
 
-        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+        title = source_country + "'s Top 5 Trading Partners by Total Trade Values ($M in USD)"
 
         source_data = my_data.get_top5data_by_source_country(source_country)
 
@@ -173,67 +174,37 @@ class AltairRenderings:
         return return_chart
 
 
-    def get_altaire_bar_top5_partners(self,source_country):
+
+    def get_import_export_balance_top_five(self,source_country,year=None):
 
         my_data = self.my_data_object
 
-        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
-
-        source_data = my_data.get_top5data_by_source_country(source_country)
-
-        # A slider filter
-        year_slider = alt.binding_range(min=2014, max=2020, step=1)
-        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
-
-        base = alt.Chart(source_data)
-
-        bars = base.mark_bar(color = '#aec7e8').encode(
-            x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
-            y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
-            tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
-        )
-
-        text = base.mark_text(align='left', dx=5, dy=-5).encode(
-            x=alt.X('Total Trade ($M):Q'),
-            y=alt.Y('Trading Partner:N', sort='-x',axis=None),
-            text=alt.Text('Total Trade ($M):Q', format='$,.0f')
-        )
-
-        return_chart = alt.layer(bars, text).add_selection(
-            slider_selection
-        ).transform_filter(
-            slider_selection
-        ).resolve_scale(
-            y = 'independent'
-        ).configure_axis(
-            grid=False
-        ).configure_view(
-            strokeWidth=0
-        ).properties(
-            width=700,
-            height=350,
-            title=title
-        )
-        return return_chart
-
-    def get_import_export_balance_top_five(self,source_country):
-
-        my_data = self.my_data_object
-
-        title = "Top 5 Trading Partners by Total Trade Values ($M in USD)"
+        title = source_country + "'s Top 5 Trading Partners"
+        if source_country.lower() == "world":
+            source_country = "world"
 
         source_data = my_data.get_top_trading_and_net_value(source_country)
 
+        if year is not None:
+            sql = "select '$' || printf(\"%,d\",cast(sum(net_trade) as text)) as total_net_trade from source_data where year = '" + str(year) + "'"
+            my_result= psql.sqldf(sql)
+            total_net_trade=my_result["total_net_trade"][0]
+            title += ", Net Trade: "+ total_net_trade +" for Year: " + str(year)
+            sql = "select * from source_data where year = '" + str(year) + "'"
+            source_data = psql.sqldf(sql)
+
+
         # A slider filter
-        year_slider = alt.binding_range(min=2014, max=2020, step=1)
-        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+        if year is None:
+            year_slider = alt.binding_range(min=2014, max=2020, step=1)
+            slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
 
         base = alt.Chart(source_data).transform_fold(
                                                     ["Exports ($M)","Imports ($M)"],
                                                     as_ = ['column','value']
                                                     )
 
-        bars = base.mark_bar().encode(
+        bars = base.mark_bar(opacity=0.6).encode(
             x=alt.X('Trading Partner'),
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($M)')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
@@ -241,12 +212,11 @@ class AltairRenderings:
 
         )
 
-        line = bars.mark_line(color='green').encode(
+        line = bars.mark_line(color='Lime').encode(
             x=alt.X('Trading Partner'),
-            y=alt.Y('net_trade:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
-            color=alt.value("Green")
-            
+            color=alt.value("Lime"),                 
         )
 
 
@@ -256,27 +226,62 @@ class AltairRenderings:
             size=1000
         ).encode(
             x=alt.X('Trading Partner'),
-            y=alt.Y('net_trade:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")]
         )
 
-
-        return_chart = alt.layer(bars + invisible_dots+line).add_selection(
-            slider_selection
-        ).transform_filter(
-            slider_selection
-        ).resolve_scale(
-            y = 'independent'
-        ).configure_axis(
-            grid=False
-        ).configure_view(
-            strokeWidth=0
-        ).properties(
-            width=700,
-            height=350,
-            title=title
+        visible_dots = base.mark_circle(
+            color='Lime',
+            opacity=1.0,
+            size=60
+        ).encode(
+            x=alt.X('Trading Partner'),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title=''))
         )
-        return return_chart
+
+        #am here
+        line_text = base.mark_text(
+            color="black",
+            opacity=1,
+            fontSize=13,
+            dy=-14
+        ).encode(
+            x=alt.X('Trading Partner'),
+            y=alt.Y('net_trade:Q',axis=alt.Axis(title='')),
+            text=alt.Text('net_trade_text')
+        )
+
+        if year is None:
+            return  alt.layer(bars + invisible_dots+line+line_text+visible_dots).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).resolve_scale(
+                y = 'independent'
+            ).configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).properties(
+                width=700,
+                height=350,
+                title=title
+            )
+
+        else:
+            return alt.layer(bars + invisible_dots+line+line_text+visible_dots).resolve_scale(
+                y = 'independent'
+            ).configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).properties(
+                width=700,
+                height=350,
+                title=title
+            )
+
+        
 
 
 

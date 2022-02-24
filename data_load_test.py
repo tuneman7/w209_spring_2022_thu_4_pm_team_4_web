@@ -10,6 +10,7 @@ def main():
     print(imp_object.get_distinct_country_list())
     print(imp_object.get_top5data_by_imports_exports("United States", 'exports'))
     print(imp_object.get_top5data_by_imports_exports("United States", 'imports'))
+    print(imp_object.get_top_trading_and_net_value("world"))
 
 
 main()
