@@ -317,7 +317,7 @@ class import_export_data(Utility):
 
         
 
-    def get_distinct_country_list(self):
+    def get_distinct_country_list(self,add_world=False):
 
         global ALL_COUNTRIES_DATA_FRAME
 
@@ -328,12 +328,14 @@ class import_export_data(Utility):
         my_return_data = psql.sqldf(my_sql)
 
         return_data = [ str(value).strip("[]'") for value in my_return_data.values.tolist()]
+        if add_world == True:
+            return_data.append("World")
     
         return return_data
 
-    def get_distinct_country_tuples(self):
+    def get_distinct_country_tuples(self,add_world=False):
 
-        return [(value,value) for value in self.get_distinct_country_list()]
+        return [(value,value) for value in self.get_distinct_country_list(add_world=add_world)]
 
 
 

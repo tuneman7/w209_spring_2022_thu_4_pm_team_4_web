@@ -199,18 +199,20 @@ def my_new_map():
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():
+
     my_altair = AltairRenderings()
 
-
+    title = ""
     source_country = "United States"
-    target_country = "China"
+    target_country = "World"
     if request.method == 'POST':
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
-        
-    chart_json = my_altair.get_charts_for_click_from_world_map(source_country).to_json()
-    form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
-    return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,country_list=None)})
+    if target_country.lower() == "world":        
+        title = "Trade between " + source_country + " and " + target_country + ". To see trade with another country select from drop-down: "
+        chart_json = my_altair.get_charts_for_click_from_world_map(source_country,width=350,height=200).to_json()
+        form = CountryToWorldVisualizationFormWithWorld(request.form,current_source_country=source_country) 
+        return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,current_target_country=target_country,country_list=None,modal_title=title)})
  
 
 

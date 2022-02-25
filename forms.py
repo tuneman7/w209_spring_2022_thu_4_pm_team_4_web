@@ -20,6 +20,14 @@ class CountryToWorldVisualizationForm(Form):
     source_country = SelectField('source_country',choices=my_data.get_distinct_country_tuples())
     current_source_country = HiddenField("current_source_country")
 
+class CountryToWorldVisualizationFormWithWorld(Form):
+    my_data = Import_Export_Data()
+
+    target_country = SelectField('target_country',choices=my_data.get_distinct_country_tuples(add_world=True))
+    source_country = HiddenField("source_country")
+    current_target_country = HiddenField("current_target_country")
+
+
 class RegisterForm(Form):
     name = TextField(
         'Username', validators=[DataRequired(), Length(min=6, max=25)]

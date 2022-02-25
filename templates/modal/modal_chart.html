@@ -10,13 +10,15 @@
   
   </style>
 
-    <div class="form-only-page">
-      <form method="post" class="form" action="/ajaxfile" id="adduser" name="adduser">
-        {{ form.source_country(**{"onchange":"refresh_charts(this.value,this.form.target_country.value)"}) }}
-        {{ form.target_country(**{"onchange":"refresh_charts(this.form.source_country.value,this.value)"}) }}
-        {{ form.current_target_country }}
-        {{ form.current_source_country }}
+    <div>
+      <form method="post" class="form" action="/ajaxfile" id="rendermodalcharts" name="rendermodealcharts">
+
+        <center>{{modal_title }} &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.current_target_country.value,this.form.target_country.value)"}) }}</center>
+        <br/>
+        {{ form.source_country }}
           {{ form.csrf_token }}
+
+
       </form>
     </div>
 
@@ -41,7 +43,14 @@
 
     }
 
-    function refresh_charts(source_country_value,target_country_value){
+    function refresh_charts(current_target_country_value,target_country_value){
+
+          alert(current_target_country_value)
+          if(current_target_country_value == target_country_value)
+          {
+            return;
+          }
+
           $.ajax({
               url: '/mapmodaldata',
               type: 'post',
@@ -58,28 +67,21 @@
       $(document).ready(function () {
 
           set_drop_down_value("target_country","{{current_target_country}}");
-          set_drop_down_value("source_country","{{current_source_country}}");
+          document.getElementById("source_country").value = "{{source_country}}";
 
-          $("#adduser").submit(function (e) {
-            alert("bozo")
-    
-              //stop submitting the form to see the disabled button effect
-              e.preventDefault();
-    
-              //disable the submit button
-              $("#btnSubmit").attr("disabled", true);
-    
-              return true;
-          });
+          if(document.getElementById("current_target_country")!=null)
+          {
+            document.getElementById("current_target_country").value = "{{current_target_country}}";
+          }
+
+          console.log(document.getElementById("source_country").value)
+
       });
     </script>    
 
-    <br/>
   {% endif %}
 
   {% if chart_json is not none %}
-
-      <br/>
 
     <div id="altair-timeseries"></div>
     </div>
