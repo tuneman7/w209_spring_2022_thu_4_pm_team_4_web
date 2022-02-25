@@ -175,7 +175,7 @@ class AltairRenderings:
 
 
 
-    def get_import_export_balance_top_five(self,source_country,year=None):
+    def get_import_export_balance_top_five(self,source_country,year=None,for_matrix=False,height=200,width=300):
 
         my_data = self.my_data_object
 
@@ -251,7 +251,7 @@ class AltairRenderings:
             text=alt.Text('net_trade_text')
         )
 
-        if year is None:
+        if for_matrix==False:
             return  alt.layer(bars + invisible_dots+line+line_text+visible_dots).add_selection(
                 slider_selection
             ).transform_filter(
@@ -267,17 +267,17 @@ class AltairRenderings:
                 height=350,
                 title=title
             )
-
         else:
-            return alt.layer(bars + invisible_dots+line+line_text+visible_dots).resolve_scale(
+
+            return  alt.layer(bars + invisible_dots+line+line_text+visible_dots).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).resolve_scale(
                 y = 'independent'
-            ).configure_axis(
-                grid=False
-            ).configure_view(
-                strokeWidth=0
             ).properties(
-                width=700,
-                height=350,
+                width=width,
+                height=height,
                 title=title
             )
 
@@ -395,6 +395,25 @@ class AltairRenderings:
         stroke='grey',).encode(tooltip='id:N').project('naturalEarth1').properties(width=800, height=600).configure_view(stroke=None)
 
         return my_map
+
+    def get_charts_for_click_from_world_map(self,source_country,width=300,height=200):
+        top_5  = self.get_altaire_bar_top5_partners_for_matrix(source_country,width=width,height=height)
+        trade  = self.get_import_export_balance_top_five(source_country,for_matrix=True,width=width,height=height)
+        time_s = self.get_altaire_line_chart_county_trade_for_matrix(source_country,"World",width=width,height=height)
+
+        row_1 = (time_s | top_5)
+        row_2 = (trade | time_s)
+
+
+        my_chart = (row_1 & row_2 ).configure_axis(
+        grid=False
+        ).configure_view(
+        strokeWidth=0
+        )
+
+        return my_chart
+
+
 
         
 

@@ -135,7 +135,7 @@ class import_export_data(Utility):
         my_sql = '''
         SELECT
             'World' [Trading Partner],
-            sum([Total Trade ($M)])  [Total Trade ($M) ],
+            sum([Total Trade ($M)])  [Total Trade ($M)],
             avg([RtW (%)])  [RtW (%)],
             sum([Exports ($M)] )[Exports ($M)],
             avg([RtW (%).1])  [RtW (%).1],

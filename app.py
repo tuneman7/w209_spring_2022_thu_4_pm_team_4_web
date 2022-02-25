@@ -208,7 +208,7 @@ def ajaxfile():
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
         
-    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country).to_json()
+    chart_json = my_altair.get_charts_for_click_from_world_map(source_country).to_json()
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
     return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,country_list=None)})
  
