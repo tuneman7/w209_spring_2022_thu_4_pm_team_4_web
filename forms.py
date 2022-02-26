@@ -27,6 +27,16 @@ class CountryToWorldVisualizationFormWithWorld(Form):
     source_country = HiddenField("source_country")
     current_target_country = HiddenField("current_target_country")
 
+class CountryVisualizationFormWithDirection(Form):
+    my_data = Import_Export_Data()
+
+    target_country = SelectField('target_country',choices=my_data.get_distinct_country_tuples(add_world=True))
+    source_country = SelectField('source_country',choices=my_data.get_distinct_country_tuples(add_world=True))
+    direction = SelectField('direction')
+    current_source_country = HiddenField("current_source_country")
+    current_target_country = HiddenField("current_target_country")
+    current_direction = SelectField('current_direction')
+
 
 class RegisterForm(Form):
     name = TextField(

@@ -258,6 +258,48 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    def imports_exports_by_sectors(self,source_country, target_country, direction):
+
+        global ALL_COUNTRIES_BY_TYPE_DF
+
+        my_data_frame = ALL_COUNTRIES_BY_TYPE_DF
+        if source_country.lower() != "world":
+            my_sql = '''
+            SELECT 
+                Year, Value,
+                [Product/Sector-reformatted],
+                [Reporting Economy]
+            FROM my_data_frame
+            WHERE      
+                ([Reporting Economy] =  \'''' + source_country + '''\'
+                or
+                [Reporting Economy] =  \'''' + target_country + '''\'
+                )
+            and
+                Direction = \'''' + direction + '''\'
+            and
+                [Product/Sector-reformatted] NOT LIKE '%Total%'
+            '''
+        else:
+            my_sql = '''
+            SELECT 
+                Year, Value,
+                [Product/Sector-reformatted],
+                [Reporting Economy]
+            FROM my_data_frame
+            WHERE      
+                [Reporting Economy] in (select distinct [Reporting Economy] from my_data_frame)
+            and
+                Direction = \'''' + direction + '''\'
+            and
+                [Product/Sector-reformatted] NOT LIKE '%Total%'
+            '''
+
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
     def get_top_trading_and_net_value(self,source_country):
 
         global ALL_COUNTRIES_DATA_FRAME

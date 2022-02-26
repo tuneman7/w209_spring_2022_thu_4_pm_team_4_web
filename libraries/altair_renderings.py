@@ -281,9 +281,6 @@ class AltairRenderings:
                 title=title
             )
 
-        
-
-
 
     def get_altaire_dual_axis_bar_top5(self,source_country):
 
@@ -343,6 +340,68 @@ class AltairRenderings:
             height=350,
             title=title
         )
+        return return_chart
+
+    def get_altaire_dual_pie_chart_by_types(self,source_country,target_country, direction):
+
+        my_data = self.my_data_object
+        title = source_country + " vs. "+ target_country + " Trade Type Distribution"
+        
+        df = my_data.imports_exports_by_sectors(source_country, target_country, direction)
+        country_data = df.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
+        #source_country_data = df[df['Reporting Economy']==source_country].rename(
+        #    columns={'Product/Sector-reformatted': 'Product_Type'})
+        #target_country_data = df[df['Reporting Economy']==target_country].rename(
+        #    columns={'Product/Sector-reformatted': 'Product_Type'})
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # radio button for export/import option
+        #direction = ["exports", "imports"]
+        #direction_radio = alt.binding_radio(options=direction)
+
+        #direction_select = alt.selection_single(fields=['Direction'], bind=direction_radio, name="Direction", init = {'Direction': 'exports'})
+
+
+        base = alt.Chart(country_data).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal", scale=alt.Scale(scheme='tableau20')),
+            tooltip=alt.Tooltip('Product_Type')
+        )
+
+        source_pie_chart = base.transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=source_country)
+        ).mark_arc(outerRadius=120).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=source_country)
+
+        #source_pie_chart_direction = source_pie_chart.add_selection(
+        #    direction_select
+        #).transform_filter(
+        #    direction_select
+        #)
+        base_target = alt.Chart(country_data).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal"),
+            tooltip=alt.Tooltip('Product_Type')
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=target_country)
+        )
+
+        target_pie_chart = base.mark_arc(outerRadius=120).transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=target_country)
+        ).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=target_country)
+
+        return_chart = alt.hconcat(source_pie_chart, target_pie_chart)
+
         return return_chart
 
     def get_top_20_countries(self):
