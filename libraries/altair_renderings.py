@@ -464,7 +464,7 @@ class AltairRenderings:
         base = alt.Chart(source_and_target_data)
 
         line = base.mark_line().encode(
-            x=alt.X('Year):T',axis=alt.Axis(title='Year')),
+            x=alt.X('Year',axis=alt.Axis(title='Year')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title="GDP $B",labelExpr='"$" + datum.value / 1E9 + "B"'))#,
             #color="Country:N"
             
@@ -480,7 +480,7 @@ class AltairRenderings:
             opacity=0.0,
             size=1000
         ).encode(
-            x=alt.X('year(Year):T',axis=alt.Axis(title='')),
+            x=alt.X('Year',axis=alt.Axis(title='')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
             tooltip=['Country','GDP $B']
         ).properties(width=width)
