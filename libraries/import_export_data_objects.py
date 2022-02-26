@@ -55,7 +55,11 @@ class import_export_data(Utility):
     def get_GDP_full_file_name(self):
         data_directory = "data"
         trade_balance_sub_dir = "trade_balance_datasets"
-        WTO_file_name = "wb_econind_gdp_data.csv"
+        GDP_file_name = "wb_econind_gdp_data.csv"
+        return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,GDP_file_name)
+
+        return return_file_name
+
 
     def get_WTO_full_file_name(self) :
 
@@ -363,7 +367,7 @@ class import_export_data(Utility):
 
         my_return = psql.sqldf(sql)
 
-        return 
+        return my_return
 
 
 
