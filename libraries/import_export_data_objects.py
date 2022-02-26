@@ -368,7 +368,18 @@ class import_export_data(Utility):
         my_return = psql.sqldf(sql)
 
         return my_return
+    
+    def get_gdp_data_compare(self,source_country,target_country):
 
+        global ALL_COUNTRIES_GDP_DATA
+
+        my_data = ALL_COUNTRIES_GDP_DATA
+
+        sql = "SELECT * FROM my_data WHERE Country = '" +  source_country + "' or Country = '" + target_country + "' "
+
+        my_return = psql.sqldf(sql)
+
+        return my_return
 
 
 
