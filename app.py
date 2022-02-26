@@ -138,10 +138,12 @@ def home():
     if request.method == 'POST':
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
+
+    text_that_i_want_on_site = "my text text"
         
     chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country).to_json()
     form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
-    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country)
+    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,text_that_i_want_on_site=text_that_i_want_on_site)
 
 @app.route('/top5trading', methods=['POST', 'GET'])
 ## Comment the block to see the chart of top 5 product types##

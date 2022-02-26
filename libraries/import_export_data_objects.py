@@ -21,15 +21,18 @@ class import_export_data(Utility):
     
     ALL_COUNTRIES_DATA_FRAME = None
     ALL_COUNTRIES_BY_TYPE_DF = None
+    ALL_COUNTRIES_GDP_DATA = None
 
 
     def __init__(self,load_data_from_url=False):
         super().__init__()
         global ALL_COUNTRIES_DATA_FRAME
         global ALL_COUNTRIES_BY_TYPE_DF
+        global ALL_COUNTRIES_GDP_DATA
         if load_data_from_url == False:
             ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
             ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file()
+            ALL_COUNTRIES_GDP_DATA = self.load_and_clean_up_GDP_file()
         else:
             ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file_fromurl()
             ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file_fromurl()
@@ -49,6 +52,10 @@ class import_export_data(Utility):
         return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,top_20_file_name)
 
         return return_file_name
+    def get_GDP_full_file_name(self):
+        data_directory = "data"
+        trade_balance_sub_dir = "trade_balance_datasets"
+        WTO_file_name = "wb_econind_gdp_data.csv"
 
     def get_WTO_full_file_name(self) :
 
@@ -86,6 +93,15 @@ class import_export_data(Utility):
         my_data = pd.read_csv(file_to_load)
         
         return my_data
+
+    def load_and_clean_up_GDP_file(self):
+
+        file_to_load = self.get_GDP_full_file_name()
+
+        my_data = pd.read_csv(file_to_load)
+        
+        return my_data
+
 
     def load_and_clean_up_WTO_file(self):
 
@@ -336,6 +352,20 @@ class import_export_data(Utility):
     def get_distinct_country_tuples(self,add_world=False):
 
         return [(value,value) for value in self.get_distinct_country_list(add_world=add_world)]
+
+    def get_gdp_data_by_country(self,source_country):
+
+        global ALL_COUNTRIES_GDP_DATA
+
+        my_data = ALL_COUNTRIES_GDP_DATA
+
+        sql = "select * from my_data where Country = '" + source_country + "'"
+
+        my_return = psql.sqldf(sql)
+
+        return 
+
+
 
 
 
