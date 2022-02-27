@@ -7,12 +7,6 @@ from vega_datasets import data
 import os
 import pandas as pd
 import pandasql as psql
-<<<<<<< HEAD
-#import geopandas as gpd
-#import gpdvega
-=======
-
->>>>>>> b4ec916c9364ecb28d4a55462a191f7eb9343771
 
 class AltairRenderings:
 
@@ -518,7 +512,8 @@ class AltairRenderings:
 
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP per Capita $",labelExpr='"$" + datum.value'))#,
+            y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP per Capita $",labelExpr='"$" + datum.value')),#,
+            strokeWidth=alt.value(3)
             #color="Country:N"
             
         ).properties(
@@ -558,7 +553,8 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('value:Q',axis=alt.Axis(title="GDP and Trade % Change",labelExpr='datum.value + "%"')),
-            color="key:N"
+            color="key:N",
+            strokeWidth=alt.value(3)
         ).properties(
             width=700,
             height=350,
@@ -594,7 +590,8 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title="GDP Growth %",labelExpr='datum.value + "%"')),
-            color="Country:N"
+            color="Country:N",
+            strokeWidth=alt.value(3)
             
         ).properties(
             width=700,
