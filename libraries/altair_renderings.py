@@ -8,6 +8,7 @@ import os
 import pandas as pd
 import pandasql as psql
 
+
 class AltairRenderings:
 
 
@@ -411,24 +412,32 @@ class AltairRenderings:
     def get_world_map(self):
 
         world_map_source = alt.topo_feature(data.world_110m.url, 'countries')
-
-
+        
         my_data = self.my_data_object
 
         country_source = my_data.get_world_countries_by_iso_label()
+        country_source.loc[84,'Country'] = 'South Korea'
+        country_source = country_source.drop(4)
+        
+        all_gdp=my_data.get_gdp_all_data()
+        year2020 = all_gdp[all_gdp['Year'] == 2020]
+        top20_2020 = year2020.sort_values(['GDP'], ascending=False).head(20)[['Country','GDP']]
+            
+        country_gdp = pd.merge(country_source, top20_2020, on='Country', how = 'outer')
 
 
         foreground = (
             alt.Chart(world_map_source)
-            .mark_geoshape(fill='lightgray', stroke="black", strokeWidth=1)
+            .mark_geoshape(stroke="black", strokeWidth=1)
             .encode(
-                tooltip=[
-                    alt.Tooltip("Country:N", title="Country")
-                ],
+                color = alt.condition('datum.GDP > 0', 
+                                    alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM")),
+                                    alt.value('lightgrey')),
+                tooltip=[alt.Tooltip("Country:N", title="Country")]
             )
             .transform_lookup(
                 lookup="id",
-                from_=alt.LookupData(country_source, "id", ["Country"]),
+                from_=alt.LookupData(country_gdp, "id", ["Country",'GDP']),
             )
         )
 
@@ -455,31 +464,31 @@ class AltairRenderings:
 
     #     return my_map
 
-    # def my_new_map(self):
-    #     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    #     interested_countries = ['Australia','Brazil','Canada','China','France','Germany','India','Indonesia','Iran','Italy','Japan',
-    #                    'Mexico','Netherlands','Russia','Saudi Arabia','South Korea','Spain','Switzerland','United Kingdom','United States of America']
-    #     gdp = list(range(100,300,10))
+    def my_new_map(self):
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        interested_countries = ['Australia','Brazil','Canada','China','France','Germany','India','Indonesia','Iran','Italy','Japan',
+                       'Mexico','Netherlands','Russia','Saudi Arabia','South Korea','Spain','Switzerland','United Kingdom','United States of America']
+        gdp = list(range(100,300,10))
 
-    #     country_gdp = pd.DataFrame(
-    #         {'name': interested_countries,
-    #         'GDP': gdp
-    #         })
+        country_gdp = pd.DataFrame(
+            {'name': interested_countries,
+            'GDP': gdp
+            })
 
-    #     world_gdp = pd.merge(world, country_gdp, on='name', how = 'outer')
-    #     world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
+        world_gdp = pd.merge(world, country_gdp, on='name', how = 'outer')
+        world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
 
-    #     my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
-    #         ).project(
-    #         ).encode(
-    #             color='GDP',
-    #             tooltip='name' 
-    #         ).properties(
-    #             width=700,
-    #             height=500
-    #         )
+        my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
+            ).project(
+            ).encode(
+                color='GDP',
+                tooltip='name' 
+            ).properties(
+                width=700,
+                height=500
+            )
 
-    #     return my_map
+        return my_map
 
     def get_charts_for_click_from_world_map(self,source_country,width=300,height=200):
         top_5  = self.get_altaire_bar_top5_partners_for_matrix(source_country,width=width,height=height)
@@ -504,7 +513,7 @@ class AltairRenderings:
 
         my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
 
-        title = "GDP per Capita " + source_country
+        title = "GDP " + source_country
 
         source_and_target_data = my_data_to_graph
 
@@ -512,8 +521,7 @@ class AltairRenderings:
 
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP per Capita $",labelExpr='"$" + datum.value')),#,
-            strokeWidth=alt.value(3)
+            y=alt.Y('GDP:Q',axis=alt.Axis(title="GDP $B",labelExpr='"$" + datum.value / 1E9 + "B"'))#,
             #color="Country:N"
             
         ).properties(
@@ -529,51 +537,14 @@ class AltairRenderings:
             size=1000
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
-            y=alt.Y('GDP per capita:Q',axis=alt.Axis(title='')),
-            tooltip=['Country','GDP $B','GDP per capita']
+            y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
+            tooltip=['Country','GDP $B']
         ).properties(width=700)
 
         
         return_chart = alt.layer(line,points).configure_axis(grid=False)
         return return_chart
 
-
-    def get_time_series_gdp_trade_trend_chart(self,source_country):
-
-        my_data = self.my_data_object
-
-        my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
-
-        title = "GDP & Trade Growth Compare " + source_country
-
-        source_and_target_data = my_data_to_graph
-
-        base = alt.Chart(source_and_target_data).transform_fold(['GDP Pct Growth','Trade Total Change %'])
-
-        line = base.mark_line().encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('value:Q',axis=alt.Axis(title="GDP and Trade % Change",labelExpr='datum.value + "%"')),
-            color="key:N",
-            strokeWidth=alt.value(3)
-        ).properties(
-            width=700,
-            height=350,
-            title=title
-            )
-
-                #Throw points on so that the tool tips will work better.
-        points = base.mark_circle(
-            color='red',
-            opacity=0.0,
-            size=1000
-        ).encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='')),
-            y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['GDP Growth Pct','Trade Total Change %']
-        ).properties(width=700)
-
-        return_chart = alt.layer(line,points).configure_axis(grid=False)
-        return return_chart
 
     def get_time_series_gdp_compare_chart(self,source_country,target_country):
 
@@ -590,8 +561,7 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title="GDP Growth %",labelExpr='datum.value + "%"')),
-            color="Country:N",
-            strokeWidth=alt.value(3)
+            color="Country:N"
             
         ).properties(
             width=700,
