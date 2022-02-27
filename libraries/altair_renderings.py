@@ -7,6 +7,8 @@ from vega_datasets import data
 import os
 import pandas as pd
 import pandasql as psql
+import geopandas as gpd
+import gpdvega
 
 class AltairRenderings:
 
@@ -447,11 +449,37 @@ class AltairRenderings:
         return my_json,my_map
 
 
+    # def my_new_map(self):
+    #     source = alt.topo_feature(data.world_110m.url, 'countries')
+    #     my_map=alt.Chart(source).mark_geoshape(
+    #     fill='blue',
+    #     stroke='grey',).encode(tooltip='id:N').project('naturalEarth1').properties(width=800, height=600).configure_view(stroke=None)
+
+    #     return my_map
+
     def my_new_map(self):
-        source = alt.topo_feature(data.world_110m.url, 'countries')
-        my_map=alt.Chart(source).mark_geoshape(
-        fill='blue',
-        stroke='grey',).encode(tooltip='id:N').project('naturalEarth1').properties(width=800, height=600).configure_view(stroke=None)
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        interested_countries = ['Australia','Brazil','Canada','China','France','Germany','India','Indonesia','Iran','Italy','Japan',
+                       'Mexico','Netherlands','Russia','Saudi Arabia','South Korea','Spain','Switzerland','United Kingdom','United States of America']
+        gdp = list(range(100,300,10))
+
+        country_gdp = pd.DataFrame(
+            {'name': interested_countries,
+            'GDP': gdp
+            })
+
+        world_gdp = pd.merge(world, country_gdp, on='name', how = 'outer')
+        world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
+
+        my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
+            ).project(
+            ).encode(
+                color='GDP',
+                tooltip='name' 
+            ).properties(
+                width=700,
+                height=500
+            )
 
         return my_map
 
