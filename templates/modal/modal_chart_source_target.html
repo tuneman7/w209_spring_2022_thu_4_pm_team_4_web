@@ -13,7 +13,9 @@
     <div>
       <form method="post" class="form" action="/ajaxfile" id="rendermodalcharts" name="rendermodealcharts">
 
-        <center>{{modal_title }} &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.current_target_country.value,this.form.target_country.value)"}) }}</center>
+        <center>
+          Trade between <b>  {{source_country}} </b> and <b> {{target_country}} </b>. To see <b> {{source_country}} </b>'s trade with another country select from drop-down: 
+          &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.source_country.value,this.form.target_country.value)"}) }}</center>
         <br/>
         {{ form.source_country }}
           {{ form.csrf_token }}
@@ -24,84 +26,85 @@
 
 
 
+
     <script>
 
     
 
-    function set_drop_down_value(drop_down_id,value)
-    {
-      //console.log(value);
-      for (var option of document.getElementById(drop_down_id).options)
-        {
-          //console.log(option.value);
-        if (option.value === value)
-        {
-            option.selected = true;
-            return;
-        }
-        }
-
-    }
-
-    function refresh_charts(current_target_country_value,target_country_value){
-
-          alert(current_target_country_value)
-          if(current_target_country_value == target_country_value)
+      function set_drop_down_value(drop_down_id,value)
+      {
+        //console.log(value);
+        for (var option of document.getElementById(drop_down_id).options)
           {
-            return;
-          }
-
-          $.ajax({
-              url: '/mapmodaldata',
-              type: 'post',
-              data: {source_country : source_country_value,target_country:target_country_value},
-              success: function(data){ 
-                  $('.modal-body').html(data); 
-                  $('.modal-body').append(data.htmlresponse);
-                  $('#map_modal').modal('show'); 
-              }
-          });
-        };
-
-
-      $(document).ready(function () {
-
-          set_drop_down_value("target_country","{{current_target_country}}");
-          document.getElementById("source_country").value = "{{source_country}}";
-
-          if(document.getElementById("current_target_country")!=null)
+            //console.log(option.value);
+          if (option.value === value)
           {
-            document.getElementById("current_target_country").value = "{{current_target_country}}";
+              option.selected = true;
+              return;
           }
-
-          console.log(document.getElementById("source_country").value)
-
-      });
-    </script>    
-
-  {% endif %}
-
-  {% if chart_json is not none %}
-
-    <div id="altair-timeseries"></div>
-    </div>
-    <!-- Placeholder for the tooltip -->
-    <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
-    </div>
-    <!-- Render Charts -->
-    <script type="text/javascript">
-    function parse(url, div) {
-    var opt = { mode: "vega-lite",
-        renderer: "svg",
-        actions: { export: true, source: false, editor: false }
-        };
-    vegaEmbed("#" + div, url, opt, function (error, result) {
-      vegaTooltip.vegaLite(result.view, url);
-      });
+          }
+  
       }
-    //Parse your Json variable here
-    parse({{ chart_json | safe }}, "altair-timeseries")
-    </script>
+  
+      function refresh_charts(current_source_country,target_country_value){
+  
+            if(current_source_country == target_country_value)
+            {
+              return;
+            }
+  
+            $.ajax({
+                url: '/mapmodaldata',
+                type: 'post',
+                data: {source_country : current_source_country,target_country:target_country_value},
+                success: function(data){ 
+                    $('.modal-body').html(data); 
+                    $('.modal-body').append(data.htmlresponse);
+                    $('#map_modal').modal('show'); 
+                }
+            });
+            
+          };
+  
+  
+        $(document).ready(function () {
+  
+            set_drop_down_value("target_country","{{current_target_country}}");
+            document.getElementById("source_country").value = "{{source_country}}";
+  
+            if(document.getElementById("current_target_country")!=null)
+            {
+              document.getElementById("current_target_country").value = "{{current_target_country}}";
+            }
+  
+            console.log(document.getElementById("source_country").value)
+  
+        });
+      </script>    
+  
+    {% endif %}
+  
+    {% if chart_json is not none %}
+  
+      <div id="altair-timeseries"></div>
+      </div>
+      <!-- Placeholder for the tooltip -->
+      <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
+      </div>
+      <!-- Render Charts -->
+      <script type="text/javascript">
+      function parse(url, div) {
+      var opt = { mode: "vega-lite",
+          renderer: "svg",
+          actions: { export: true, source: false, editor: false }
+          };
+      vegaEmbed("#" + div, url, opt, function (error, result) {
+        vegaTooltip.vegaLite(result.view, url);
+        });
+        }
+      //Parse your Json variable here
+      parse({{ chart_json | safe }}, "altair-timeseries")
+      </script>
 
   {% endif %}
 

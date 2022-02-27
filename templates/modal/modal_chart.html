@@ -13,7 +13,9 @@
     <div>
       <form method="post" class="form" action="/ajaxfile" id="rendermodalcharts" name="rendermodealcharts">
 
-        <center>{{modal_title }} &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.source_country.value,this.form.target_country.value)"}) }}</center>
+        <center>
+          Trade between <b> {{source_country}} </b> and <b> {{target_country}} </b> top 20 trading nations. To see trade with another country select from drop-down: "
+           &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.source_country.value,this.form.target_country.value)"}) }}</center>
         <br/>
         {{ form.source_country }}
           {{ form.csrf_token }}

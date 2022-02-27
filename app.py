@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,escape
 # from flask.ext.sqlalchemy import SQLAlchemy
 import json
 import logging
@@ -227,16 +227,16 @@ def ajaxfile():
         source_country = request.form["source_country"]
         target_country = request.form["target_country"]
     if target_country.lower() == "world":        
-        title = "Trade between " + source_country + " and " + target_country + " top 20 trading nations. To see trade with another country select from drop-down: "
+        title = "Trade between <b>" + source_country + "</b> and <b>" + target_country + "</b> top 20 trading nations. To see trade with another country select from drop-down: "
         chart_json = my_altair.get_charts_for_click_from_world_map(source_country,width=350,height=200).to_json()
         form = CountryToWorldVisualizationFormWithWorld(request.form,current_source_country=source_country) 
-        return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,current_target_country=target_country,country_list=None,modal_title=title)})
+        return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,current_target_country=target_country,country_list=None,modal_title=escape(title))})
 
     if target_country.lower() !="world":
-        title = "Trade between " + source_country + " and " + target_country + ". To see " + source_country +"'s trade with another country select from drop-down: "
+        title = "Trade between <b>" + source_country + "</b> and <b>" + target_country + "</b>. To see <b>" + source_country +"'s trade with another country select from drop-down: "
         chart_json = my_altair.get_charts_for_country_dill_down(source_country,target_country,width=350,height=200).to_json()
         form = CountryToWorldVisualizationFormWithWorld(request.form,current_source_country=source_country) 
-        return jsonify({'htmlresponse': render_template('modal/modal_chart_source_target.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,current_target_country=target_country,country_list=None,modal_title=title)})
+        return jsonify({'htmlresponse': render_template('modal/modal_chart_source_target.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,target_country=target_country,country_list=None,modal_title=escape(title))})
 
         #"modal_chart_source_target.html"
  
