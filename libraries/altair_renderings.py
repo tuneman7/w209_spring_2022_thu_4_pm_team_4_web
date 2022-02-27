@@ -7,8 +7,12 @@ from vega_datasets import data
 import os
 import pandas as pd
 import pandasql as psql
+<<<<<<< HEAD
 #import geopandas as gpd
 #import gpdvega
+=======
+
+>>>>>>> b4ec916c9364ecb28d4a55462a191f7eb9343771
 
 class AltairRenderings:
 
@@ -457,31 +461,31 @@ class AltairRenderings:
 
     #     return my_map
 
-    def my_new_map(self):
-        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-        interested_countries = ['Australia','Brazil','Canada','China','France','Germany','India','Indonesia','Iran','Italy','Japan',
-                       'Mexico','Netherlands','Russia','Saudi Arabia','South Korea','Spain','Switzerland','United Kingdom','United States of America']
-        gdp = list(range(100,300,10))
+    # def my_new_map(self):
+    #     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+    #     interested_countries = ['Australia','Brazil','Canada','China','France','Germany','India','Indonesia','Iran','Italy','Japan',
+    #                    'Mexico','Netherlands','Russia','Saudi Arabia','South Korea','Spain','Switzerland','United Kingdom','United States of America']
+    #     gdp = list(range(100,300,10))
 
-        country_gdp = pd.DataFrame(
-            {'name': interested_countries,
-            'GDP': gdp
-            })
+    #     country_gdp = pd.DataFrame(
+    #         {'name': interested_countries,
+    #         'GDP': gdp
+    #         })
 
-        world_gdp = pd.merge(world, country_gdp, on='name', how = 'outer')
-        world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
+    #     world_gdp = pd.merge(world, country_gdp, on='name', how = 'outer')
+    #     world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
 
-        my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
-            ).project(
-            ).encode(
-                color='GDP',
-                tooltip='name' 
-            ).properties(
-                width=700,
-                height=500
-            )
+    #     my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
+    #         ).project(
+    #         ).encode(
+    #             color='GDP',
+    #             tooltip='name' 
+    #         ).properties(
+    #             width=700,
+    #             height=500
+    #         )
 
-        return my_map
+    #     return my_map
 
     def get_charts_for_click_from_world_map(self,source_country,width=300,height=200):
         top_5  = self.get_altaire_bar_top5_partners_for_matrix(source_country,width=width,height=height)

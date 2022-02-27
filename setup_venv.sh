@@ -1,3 +1,4 @@
+
 rm -rf ./myproj
 python3 -m venv myproj
 source ./myproj/bin/activate
@@ -21,5 +22,5 @@ pip install matplotlib
 pip install vega_datasets
 pip install jsonschema==3.2 
 pip install jupyter
-pip install geopandas
-pip install gpdvega
+#conda install --channel conda-forge geopandas
+#conda install --channel conda-forge gpdvega
