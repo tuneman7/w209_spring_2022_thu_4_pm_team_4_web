@@ -623,6 +623,167 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart
 
+    def get_charts_for_country_dill_down(self,source_country,target_country,width=300,height=200):
+        time_s  = self.get_altaire_line_chart_county_trade_for_matrix(source_country,target_country)
+        pie     = self.get_altaire_dual_pie_chart_by_types_for_matrix(source_country,target_country, "exports")
+        gdp     = self.get_time_series_gdp_compare_chart_form_matrix(source_country,target_country)
+
+        row_1 = (time_s | pie).resolve_scale(
+            color='independent')
+        row_2 = (gdp ).resolve_scale(
+            color='independent')
+
+
+        my_chart = (row_1 & row_2 ).configure_axis(
+        grid=False
+        ).configure_view(
+        strokeWidth=0
+        ).configure_view(
+            stroke=None
+        )
+
+        return my_chart
+
+    def get_altaire_dual_pie_chart_by_types_for_matrix(self,source_country,target_country, direction,width=300,height=200):
+
+        my_data = self.my_data_object
+        title = source_country + " vs. "+ target_country + " Trade Type Distribution"
+        
+        df = my_data.imports_exports_by_sectors(source_country, target_country, direction)
+        country_data = df.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
+        #source_country_data = df[df['Reporting Economy']==source_country].rename(
+        #    columns={'Product/Sector-reformatted': 'Product_Type'})
+        #target_country_data = df[df['Reporting Economy']==target_country].rename(
+        #    columns={'Product/Sector-reformatted': 'Product_Type'})
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # radio button for export/import option
+        #direction = ["exports", "imports"]
+        #direction_radio = alt.binding_radio(options=direction)
+
+        #direction_select = alt.selection_single(fields=['Direction'], bind=direction_radio, name="Direction", init = {'Direction': 'exports'})
+
+
+        base = alt.Chart(country_data).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal", scale=alt.Scale(scheme='tableau20')),
+            tooltip=alt.Tooltip('Product_Type')
+        )
+
+        source_pie_chart = base.transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=source_country)
+        ).mark_arc(outerRadius=(width/4)).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=source_country,width=(width/2),height=height)
+
+        #source_pie_chart_direction = source_pie_chart.add_selection(
+        #    direction_select
+        #).transform_filter(
+        #    direction_select
+        #)
+        base_target = alt.Chart(country_data).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal"),
+            tooltip=alt.Tooltip('Product_Type')
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=target_country)
+        )
+
+        target_pie_chart = base.mark_arc(outerRadius=(width/4)).transform_filter(
+            alt.FieldEqualPredicate(field='Reporting Economy', equal=target_country)
+        ).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=target_country,width=(width/2),height=height)
+
+        return_chart = alt.hconcat(source_pie_chart, target_pie_chart)
+
+        return return_chart
+
+
+
+    def get_time_series_gdp_compare_chart_form_matrix(self,source_country,target_country,width=300,height=200):
+
+        my_data = self.my_data_object
+
+        my_data_to_graph = my_data.get_gdp_data_compare(source_country,target_country)
+
+        title = "GDP Growth " + source_country + " and " + target_country + " 2014 to 2020"
+
+        source_and_target_data = my_data_to_graph
+
+        base = alt.Chart(source_and_target_data)
+
+        line = base.mark_line().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+            y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title="GDP Growth %",labelExpr='datum.value + "%"')),
+            color="Country:N"
+            
+        ).properties(
+            width=width,
+            height=height,
+            title=title
+            )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('GDP Pct Growth:Q',scale=alt.Scale(domain=(-10, 10)),axis=alt.Axis(title='')),
+            tooltip=['Country','GDP Pct Growth %']
+        ).properties(width=width)
+
+        
+        return_chart = alt.layer(line,points)
+        return return_chart
+
+
+    def get_time_series_gdp_chart_for_matrix(self,source_country,width=300,height=150):
+
+        my_data = self.my_data_object
+
+        my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
+
+        title = "GDP " + source_country
+
+        source_and_target_data = my_data_to_graph
+
+        base = alt.Chart(source_and_target_data)
+
+        line = base.mark_line().encode(
+            x=alt.X('Year',axis=alt.Axis(title='Year')),
+            y=alt.Y('GDP:Q',axis=alt.Axis(title="GDP $B",labelExpr='"$" + datum.value / 1E9 + "B"'))#,
+            #color="Country:N"
+            
+        ).properties(
+            width=width,
+            height=height,
+            title=title
+            )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Year',axis=alt.Axis(title='')),
+            y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
+            tooltip=['Country','GDP $B']
+        ).properties(width=width)
+
+        
+        return_chart = alt.layer(line,points)
+        return return_chart
 
 
 

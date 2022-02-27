@@ -13,7 +13,7 @@
     <div>
       <form method="post" class="form" action="/ajaxfile" id="rendermodalcharts" name="rendermodealcharts">
 
-        <center>{{modal_title }} &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.source_country.value,this.form.target_country.value)"}) }}</center>
+        <center>{{modal_title }} &nbsp; {{ form.target_country(**{"onchange":"refresh_charts(this.form.current_target_country.value,this.form.target_country.value)"}) }}</center>
         <br/>
         {{ form.source_country }}
           {{ form.csrf_token }}
@@ -43,9 +43,10 @@
 
     }
 
-    function refresh_charts(current_source_country,target_country_value){
+    function refresh_charts(current_target_country_value,target_country_value){
 
-          if(current_source_country == target_country_value)
+          alert(current_target_country_value)
+          if(current_target_country_value == target_country_value)
           {
             return;
           }
@@ -53,14 +54,13 @@
           $.ajax({
               url: '/mapmodaldata',
               type: 'post',
-              data: {source_country : current_source_country,target_country:target_country_value},
+              data: {source_country : source_country_value,target_country:target_country_value},
               success: function(data){ 
                   $('.modal-body').html(data); 
                   $('.modal-body').append(data.htmlresponse);
                   $('#map_modal').modal('show'); 
               }
           });
-          
         };
 
 
