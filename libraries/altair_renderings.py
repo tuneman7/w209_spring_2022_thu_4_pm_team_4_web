@@ -491,13 +491,54 @@ class AltairRenderings:
 
         return my_map
 
+    def get_time_series_gdp_chart_for_matrix(self,source_country,width=300,height=200):
+
+        my_data = self.my_data_object
+
+        my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
+
+        title = source_country + "'s GDP"
+
+        source_and_target_data = my_data_to_graph
+
+        base = alt.Chart(source_and_target_data)
+
+        line = base.mark_line().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+            y=alt.Y('GDP:Q',axis=alt.Axis(title="GDP $B",labelExpr='"$" + datum.value / 1E9 + "B"')),
+            #color="Country:N"
+            
+        ).properties(
+            width=width,
+            height=height,
+            title=title
+            )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
+            tooltip=['Country','GDP $B']
+        ).properties(width=width)
+
+        
+        return_chart = alt.layer(line,points).configure_axis(grid=False)
+        return return_chart
+
     def get_charts_for_click_from_world_map(self,source_country,width=300,height=200):
         top_5  = self.get_altaire_bar_top5_partners_for_matrix(source_country,width=width,height=height)
         trade  = self.get_import_export_balance_top_five(source_country,for_matrix=True,width=width,height=height)
         time_s = self.get_altaire_line_chart_county_trade_for_matrix(source_country,"World",width=width,height=height)
+        gdp = self.get_time_series_gdp_chart_for_matrix(source_country,width=width,height=height)
 
-        row_1 = (time_s | top_5)
-        row_2 = (trade | time_s)
+        row_1 = (time_s | top_5).resolve_scale(
+            color='independent')
+        row_2 = (trade | gdp).resolve_scale(
+            color='independent')
 
 
         my_chart = (row_1 & row_2 ).configure_axis(
