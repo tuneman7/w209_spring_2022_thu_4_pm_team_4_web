@@ -418,6 +418,7 @@ class AltairRenderings:
         country_source = my_data.get_world_countries_by_iso_label()
         country_source.loc[84,'Country'] = 'South Korea'
         country_source = country_source.drop(4)
+        country_gdp['GDP'] = country_gdp['GDP'].fillna(0)
         
         all_gdp=my_data.get_gdp_all_data()
         year2020 = all_gdp[all_gdp['Year'] == 2020]
