@@ -508,6 +508,10 @@ class AltairRenderings:
 
         source_and_target_data = my_data_to_graph
 
+        # A slider filter
+        year_slider = alt.binding_range(min=2011, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
         base = alt.Chart(source_and_target_data)
 
         line = base.mark_line().encode(
@@ -534,7 +538,8 @@ class AltairRenderings:
         ).properties(width=700)
 
         
-        return_chart = alt.layer(line,points).configure_axis(grid=False)
+        return_chart = alt.layer(line,points)
+
         return return_chart
 
 
