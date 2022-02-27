@@ -445,7 +445,7 @@ class AltairRenderings:
         my_map = (
             (foreground)
             .configure_view(strokeWidth=0)
-            .properties(width=900, height=500)
+            .properties(width=900, height=550)
             .project("mercator", scale=185,center=np.array([24,12]))
         )
         #my_map = alt.concat(my_map,scale=160)
