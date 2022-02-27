@@ -423,6 +423,18 @@ class import_export_data(Utility):
 
         return my_return
 
+    def get_gdp_all_data(self):
+
+        global ALL_COUNTRIES_GDP_DATA
+
+        my_data = ALL_COUNTRIES_GDP_DATA
+
+        sql = "SELECT * FROM my_data"
+
+        my_return = psql.sqldf(sql)
+
+        return my_return
+
 
 
 
