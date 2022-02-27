@@ -559,10 +559,6 @@ class AltairRenderings:
 
         source_and_target_data = my_data_to_graph
 
-        # A slider filter
-        year_slider = alt.binding_range(min=2011, max=2020, step=1)
-        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
-
         base = alt.Chart(source_and_target_data)
 
         line = base.mark_line().encode(
@@ -588,83 +584,8 @@ class AltairRenderings:
         ).properties(width=700)
 
         
-        return_chart = alt.layer(line,points)
-
-        return return_chart
-
-    def get_time_series_gdp_trade_trend_chart(self,source_country):
-
-        my_data = self.my_data_object
-
-        my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
-
-        title = "GDP & Trade Growth Compare " + source_country
-
-        source_and_target_data = my_data_to_graph
-
-        base = alt.Chart(source_and_target_data).transform_fold(['GDP Pct Growth','Trade Total Change %'])
-
-        line = base.mark_line().encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('value:Q',axis=alt.Axis(title="GDP and Trade % Change",labelExpr='datum.value + "%"')),
-            color="key:N"
-        ).properties(
-            width=700,
-            height=350,
-            title=title
-            )
-
-                #Throw points on so that the tool tips will work better.
-        points = base.mark_circle(
-            color='red',
-            opacity=0.0,
-            size=1000
-        ).encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='')),
-            y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['GDP Growth Pct','Trade Total Change %']
-        ).properties(width=700)
-
         return_chart = alt.layer(line,points).configure_axis(grid=False)
         return return_chart
-
-    def get_time_series_gdp_trade_chart_for_matrix(self,source_country):
-
-        my_data = self.my_data_object
-
-        my_data_to_graph = my_data.get_gdp_data_by_country(source_country)
-
-        title = "GDP & Trade Growth Compare " + source_country
-
-        source_and_target_data = my_data_to_graph
-
-        base = alt.Chart(source_and_target_data).transform_fold(['GDP Pct Growth','Trade Total Change %'])
-
-        line = base.mark_line().encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('value:Q',axis=alt.Axis(title="GDP and Trade % Change",labelExpr='datum.value + "%"')),
-            color="key:N"
-        ).properties(
-            width=700,
-            height=350,
-            title=title
-            )
-
-                #Throw points on so that the tool tips will work better.
-        points = base.mark_circle(
-            color='red',
-            opacity=0.0,
-            size=1000
-        ).encode(
-            x=alt.X('Year:N',axis=alt.Axis(title='')),
-            y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['GDP Growth Pct','Trade Total Change %']
-        ).properties(width=700)
-
-        return_chart = alt.layer(line,points).configure_axis(grid=False)
-        return return_chart
-
-
 
 
     def get_time_series_gdp_compare_chart(self,source_country,target_country):
@@ -746,8 +667,7 @@ class AltairRenderings:
     def get_charts_for_country_dill_down(self,source_country,target_country,width=300,height=200):
         time_s  = self.get_altaire_line_chart_county_trade_for_matrix(source_country,target_country)
         pie     = self.get_altaire_dual_pie_chart_by_types_for_matrix(source_country,target_country, "exports")
-        #gdp     = self.get_time_series_gdp_compare_chart_form_matrix(source_country,target_country)
-        gdp     = self.get_time_series_gdp_trade_chart_for_matrix(source_country,target_country)
+        gdp     = self.get_time_series_gdp_compare_chart_form_matrix(source_country,target_country)
 
         row_1 = (time_s | pie).resolve_scale(
             color='independent')
@@ -911,7 +831,6 @@ class AltairRenderings:
 
 
         
-
 
 
 
