@@ -418,7 +418,7 @@ class AltairRenderings:
         country_source = my_data.get_world_countries_by_iso_label()
         country_source.loc[84,'Country'] = 'South Korea'
         country_source = country_source.drop(4)
-        
+
         all_gdp=my_data.get_gdp_all_data()
         year2020 = all_gdp[all_gdp['Year'] == 2020]
         top20_2020 = year2020.sort_values(['GDP'], ascending=False).head(20)[['Country','GDP']]
@@ -445,7 +445,7 @@ class AltairRenderings:
         my_map = (
             (foreground)
             .configure_view(strokeWidth=0)
-            .properties(width=900, height=400)
+            .properties(width=900, height=500)
             .project("mercator", scale=185,center=np.array([24,12]))
         )
         #my_map = alt.concat(my_map,scale=160)
