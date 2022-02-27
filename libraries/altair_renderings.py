@@ -418,13 +418,13 @@ class AltairRenderings:
         country_source = my_data.get_world_countries_by_iso_label()
         country_source.loc[84,'Country'] = 'South Korea'
         country_source = country_source.drop(4)
-        country_gdp['GDP'] = country_gdp['GDP'].fillna(0)
         
         all_gdp=my_data.get_gdp_all_data()
         year2020 = all_gdp[all_gdp['Year'] == 2020]
         top20_2020 = year2020.sort_values(['GDP'], ascending=False).head(20)[['Country','GDP']]
             
         country_gdp = pd.merge(country_source, top20_2020, on='Country', how = 'outer')
+        country_gdp['GDP'] = country_gdp['GDP'].fillna(0)
 
 
         foreground = (
