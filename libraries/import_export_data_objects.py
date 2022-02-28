@@ -22,6 +22,7 @@ class import_export_data(Utility):
     ALL_COUNTRIES_DATA_FRAME = None
     ALL_COUNTRIES_BY_TYPE_DF = None
     ALL_COUNTRIES_GDP_DATA = None
+    EXCHANGE_RATE_DATA = None
 
 
     def __init__(self,load_data_from_url=False):
@@ -29,10 +30,13 @@ class import_export_data(Utility):
         global ALL_COUNTRIES_DATA_FRAME
         global ALL_COUNTRIES_BY_TYPE_DF
         global ALL_COUNTRIES_GDP_DATA
+        global EXCHANGE_RATE_DATA
         if load_data_from_url == False:
+            EXCHANGE_RATE_DATA = self.load_exchange_rate_data()
             ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file()
             ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file()
             ALL_COUNTRIES_GDP_DATA = self.load_and_clean_up_GDP_file()
+            
         else:
             ALL_COUNTRIES_DATA_FRAME = self.load_and_clean_up_top_20_file_fromurl()
             ALL_COUNTRIES_BY_TYPE_DF = self.load_and_clean_up_WTO_file_fromurl()
@@ -71,6 +75,17 @@ class import_export_data(Utility):
 
         return return_file_name
 
+    def get_WTO_full_file_name(self) :
+
+        data_directory = "data"
+        trade_balance_sub_dir = "trade_balance_datasets"
+        WTO_file_name = "WtoData_all.csv"
+
+        return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,WTO_file_name)
+
+        return return_file_name
+
+
     def get_world_countries_by_iso_label(self):
         data_directory = "data"
         file_name = "countries.tsv"
@@ -79,6 +94,44 @@ class import_export_data(Utility):
 
         my_data = pd.read_csv(load_file_name,sep='\t')
         return my_data
+
+    def get_exchange_rate_files(self) :
+
+        data_directory = "data"
+        exchange_rate_dir = "exchange_rates"
+        exchange_rate = "exchange_rates_from_oecd_website.csv"
+        country_codes = "wikipedia-iso-country-codes.csv"
+
+        exchange_rate_file = os.path.join(self.get_this_dir(),data_directory,exchange_rate_dir,exchange_rate)
+
+        country_code_file = os.path.join(self.get_this_dir(),data_directory,exchange_rate_dir,country_codes)
+
+        return exchange_rate_file, country_code_file
+
+    def load_exchange_rate_data(self):
+
+        exchange_rate_file, country_code_file = self.get_exchange_rate_files()
+
+        exchange_rates = pd.read_csv(exchange_rate_file)
+
+        country_codes = pd.read_csv(country_code_file)
+
+        mysql = '''
+            select 
+                country_codes.[English short name lower case] as Country,
+                exchange_rates.TIME as year,
+                exchange_rates.Value as rate
+            from 
+                exchange_rates
+            join country_codes
+                on
+                country_codes.[Alpha-3 code] = exchange_rates.LOCATION
+
+        '''
+
+        return psql.sqldf(mysql)
+        
+
 
     def load_and_clean_up_top_20_file_fromurl(self):
 
@@ -92,9 +145,31 @@ class import_export_data(Utility):
 
     def load_and_clean_up_top_20_file(self):
 
+        global EXCHANGE_RATE_DATA
+
         file_to_load = self.get_top_20_full_file_name()
 
         my_data = pd.read_csv(file_to_load)
+
+        sql = '''
+            select 
+                my_data.*,
+                EXCHANGE_RATE_DATA_1.rate as country_exchange_rate,
+                EXCHANGE_RATE_DATA_2.rate as trading_partner_exchange_rate
+            from my_data
+            join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
+                on
+                    EXCHANGE_RATE_DATA_1.year = my_data.year
+                and
+                    EXCHANGE_RATE_DATA_1.Country = my_data.Country
+            join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
+                on
+                    EXCHANGE_RATE_DATA_2.year = my_data.year
+                and
+                    EXCHANGE_RATE_DATA_2.Country = my_data.[Trading Partner]
+
+        '''
+        my_data = psql.sqldf(sql)
         
         return my_data
 
@@ -103,8 +178,24 @@ class import_export_data(Utility):
         file_to_load = self.get_GDP_full_file_name()
 
         my_data = pd.read_csv(file_to_load)
+
+        global EXCHANGE_RATE_DATA
+
+        sql = '''
+        select 
+            my_data.*,
+            EXCHANGE_RATE_DATA.rate as exchange_rate
+        from my_data
+        left join EXCHANGE_RATE_DATA
+            on 
+                EXCHANGE_RATE_DATA.Country = my_data.Country
+            and
+                EXCHANGE_RATE_DATA.year = my_data.Year
+
+
+        '''
         
-        return my_data
+        return psql.sqldf(sql)
 
 
     def load_and_clean_up_WTO_file(self):
@@ -112,8 +203,25 @@ class import_export_data(Utility):
         file_to_load = self.get_WTO_full_file_name()
 
         my_data = pd.read_csv(file_to_load)
+
+        global EXCHANGE_RATE_DATA
+
+        sql = '''
+            select 
+                my_data.*,
+                EXCHANGE_RATE_DATA_1.rate as reporting_economy_exchange_rate,
+                EXCHANGE_RATE_DATA_2.rate as partner_economy_exchange_rate
+            from my_data
+            left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
+                on
+                EXCHANGE_RATE_DATA_1.Country = my_data.[Reporting Economy]
+            left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
+                on
+                EXCHANGE_RATE_DATA_2.Country = my_data.[Partner Economy]
+
+        '''
         
-        return my_data
+        return psql.sqldf(sql)
 
     def load_and_clean_up_WTO_file_fromurl(self):
 
