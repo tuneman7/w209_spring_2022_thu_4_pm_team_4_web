@@ -543,6 +543,39 @@ class import_export_data(Utility):
 
         return my_return
 
+    def get_Chinadata_by_country(self):
+
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        my_sql = '''
+        SELECT *,
+            SUM(total_trade) OVER (PARTITION BY country, year) as total_toWorld_trade,
+            SUM(exports) OVER (PARTITION BY country, year) as total_toWorld_exports,
+            SUM(imports) OVER (PARTITION BY country, year) as total_toWorld_imports,
+            SUM(net_exports) OVER (PARTITION BY country, year) as total_toWorld_net_exports
+        FROM (
+            SELECT
+                country,
+                year,
+                SUM([Total Trade ($M)]) as total_trade,
+                SUM([Exports ($M)]) as exports,
+                SUM([Net Exports ($M)]) as net_exports,
+                SUM([Imports ($M)]) as imports,
+                CASE
+                    WHEN [Trading Partner] = "China" THEN "China"
+                    ELSE "Others"
+                END as isChinaPartner
+            FROM my_data_frame
+            where country <> "China"
+            GROUP BY isChinaPartner, country, year) t
+        '''
+        
+        my_return_data = psql.sqldf(my_sql)
+        return my_return_data
+
+
 
 
 

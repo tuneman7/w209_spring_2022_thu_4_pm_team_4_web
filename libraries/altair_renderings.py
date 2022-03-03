@@ -7,6 +7,7 @@ from vega_datasets import data
 import os
 import pandas as pd
 import pandasql as psql
+import math
 
 
 class AltairRenderings:
@@ -797,11 +798,6 @@ class AltairRenderings:
             slider_selection
         ).properties(title=source_country,width=(width/2),height=height)
 
-        #source_pie_chart_direction = source_pie_chart.add_selection(
-        #    direction_select
-        #).transform_filter(
-        #    direction_select
-        #)
         base_target = alt.Chart(country_data).encode(
             theta=alt.Theta(field="Value", type="quantitative"),
             color=alt.Color(field="Product_Type", type="nominal"),
@@ -901,9 +897,88 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart
 
+    def get_altaire_multi_pie_charts_for_China(self,width=1000,height=900):
 
+        my_data = self.my_data_object
+        title = "Percentage of Total Trades Done with China"
+        
+        df = my_data.get_Chinadata_by_country()
+        country_list = df['country'].unique()
+        num_country_per_line = math.ceil(len(country_list)/3.0)
 
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
 
+        base = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isChinaPartner", type="nominal", scale=alt.Scale(scheme='set2')),
+            tooltip=alt.Tooltip('total_trade')
+        )
+
+        chart1 = alt.hconcat()
+        for country in country_list[0:num_country_per_line]: 
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_arc(outerRadius=(width/30))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_text(radius=(width/30+20), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart1 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/3))
+        
+        chart2 = alt.hconcat()
+        for country in country_list[num_country_per_line:num_country_per_line*2]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_arc(outerRadius=(width/30))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_text(radius=(width/30+20), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart2 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/3))
+
+        chart3 = alt.hconcat()
+        for country in country_list[num_country_per_line*2:]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_arc(outerRadius=(width/30))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='country', equal=country)
+            ).mark_text(radius=(width/30+20), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+
+            chart3 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/3))
+
+        return_chart = chart1 & chart2 & chart3
+        ## https://stackoverflow.com/questions/67997825/python-altair-generate-a-table-on-selection
+        ## https://altair-viz.github.io/user_guide/transform/filter.html?highlight=filter
+        ## https://vega.github.io/vega/docs/schemes/
+        return return_chart
 
         
 

@@ -146,7 +146,6 @@ def home():
     return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,text_that_i_want_on_site=text_that_i_want_on_site)
 
 @app.route('/top5trading', methods=['POST', 'GET'])
-## Comment the block to see the chart of top 5 product types##
 def top5trading():
     my_altair = AltairRenderings()
 
@@ -157,7 +156,7 @@ def top5trading():
     chart_json = my_altair.get_altaire_bar_top5_partners(source_country).to_json()
     form = CountryToWorldVisualizationForm(request.form,current_source_country=source_country) 
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
-#####################END comment block########################
+
 
 @app.route('/top5products', methods=['POST', 'GET'])
 def top5products():
@@ -172,20 +171,26 @@ def top5products():
     return render_template('pages/placeholder.top5trading.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country)
 
 @app.route('/piechart', methods=['POST', 'GET'])
-def pie_chart():
+#def pie_chart():
+#    my_altair = AltairRenderings()
+
+#    source_country = "United States"
+#    target_country = "China"
+#    direction = "exports"
+#    if request.method == 'POST':
+#        source_country = request.form["source_country"]
+#        target_country = request.form["target_country"]
+#        direction = request.form["exports"]
+
+#    chart_json = my_altair.get_altaire_dual_pie_chart_by_types(source_country, target_country, direction).to_json()
+#    form = CountryVisualizationFormWithDirection(request.form,current_target_country=target_country,current_source_country=source_country, direction = direction) 
+#    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country, direction = direction)
+def China_pie_chart():
     my_altair = AltairRenderings()
 
-    source_country = "United States"
-    target_country = "China"
-    direction = "exports"
-    if request.method == 'POST':
-        source_country = request.form["source_country"]
-        target_country = request.form["target_country"]
-        direction = request.form["exports"]
-
-    chart_json = my_altair.get_altaire_dual_pie_chart_by_types(source_country, target_country, direction).to_json()
-    form = CountryVisualizationFormWithDirection(request.form,current_target_country=target_country,current_source_country=source_country, direction = direction) 
-    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country, direction = direction)
+    source_country = "China"
+    chart_json = my_altair.get_altaire_multi_pie_charts_for_China().to_json()
+    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 
 @app.route('/world1')

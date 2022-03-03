@@ -3,11 +3,6 @@
     "",
     "\\libraries",
     "\\myproj",
-    "\\myproj\\lib",
-    "\\myproj\\lib\\python3.9",
-    "\\myproj\\lib\\python3.9\\site-packages",
-    "\\myproj\\lib\\python3.9\\site-packages\\notebook",
-    "\\myproj\\lib\\python3.9\\site-packages\\notebook\\base",
     "\\screenshots",
     "\\templates",
     "\\templates\\pages"
