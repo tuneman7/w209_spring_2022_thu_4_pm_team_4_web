@@ -1,0 +1,101 @@
+SeriesName,SeriesCode,EconomicIndicator
+"Agriculture, forestry, and fishing, value added (% of GDP)",NV.AGR.TOTL.ZS,AFF value added
+Births attended by skilled health staff (% of total),SH.STA.BRTC.ZS,
+Chemicals (% of value added in manufacturing),NV.MNF.CHEM.ZS.UN,
+Deposit interest rate (%),FR.INR.DPST,Deposit interest rate pct
+Export unit value index (2000 = 100),TX.UVI.MRCH.XD.WD,
+Export value index (2000 = 100),TX.VAL.MRCH.XD.WD,
+Export volume index (2000 = 100),TX.QTY.MRCH.XD.WD,
+Exports of goods and services (% of GDP),NE.EXP.GNFS.ZS,Exports G & S Pct GDP
+Exports of goods and services (annual % growth),NE.EXP.GNFS.KD.ZG,Exports G & S annual growth %
+"Exports of goods and services (BoP, current US$)",BX.GSR.GNFS.CD,Exports G & S Pct US dollar
+Exports of goods and services (constant LCU),NE.EXP.GNFS.KN,Exports G & S Pct constant LCU
+External balance on goods and services (% of GDP),NE.RSB.GNFS.ZS,External balance on G & S pct GDP
+Final consumption expenditure (% of GDP),NE.CON.TOTL.ZS,Final Consumption Pct GDP
+Final consumption expenditure (annual % growth),NE.CON.TOTL.KD.ZG,Final Consumption pct Growth
+"Food, beverages and tobacco (% of value added in manufacturing)",NV.MNF.FBTO.ZS.UN,
+"Foreign direct investment, net (BoP, current US$)",BN.KLT.DINV.CD,
+"Foreign direct investment, net inflows (% of GDP)",BX.KLT.DINV.WD.GD.ZS,Foreign Direct Investment pct GDP
+"Foreign direct investment, net inflows (BoP, current US$)",BX.KLT.DINV.CD.WD,
+GDP (constant 2015 US$),NY.GDP.MKTP.KD,GDP 2015 US dollar
+GDP (constant LCU),NY.GDP.MKTP.KN,GDP (constant LCU)
+GDP (current LCU),NY.GDP.MKTP.CN,GDP curr LCU
+GDP (current US$),NY.GDP.MKTP.CD,GDP
+GDP growth (annual %),NY.GDP.MKTP.KD.ZG,GDP Growth Pct
+GDP per capita (constant LCU),NY.GDP.PCAP.KN,GDP per capita constant LCU
+GDP per capita (current US$),NY.GDP.PCAP.CD,GDP per capita
+GDP per capita growth (annual %),NY.GDP.PCAP.KD.ZG,GDP per capita Growth Pct
+General government final consumption expenditure (% of GDP),NE.CON.GOVT.ZS,Govt Final Consumption expenditure Pct GDP
+General government final consumption expenditure (annual % growth),NE.CON.GOVT.KD.ZG,Govt Final Consumption expenditure Growth Pct
+GNI (constant LCU),NY.GNP.MKTP.KN,GNI const LCU
+GNI (current US$),NY.GNP.MKTP.CD,GNI current $US
+GNI growth (annual %),NY.GNP.MKTP.KD.ZG,GNI growth pct
+GNI per capita (constant LCU),NY.GNP.PCAP.KN,GNI per capita const LCU
+GNI per capita growth (annual %),NY.GNP.PCAP.KD.ZG,GNI per capita Growth Pct
+"GNI per capita, Atlas method (current US$)",NY.GNP.PCAP.CD,GNI per capita Atlas
+"GNI per capita, PPP (current international $)",NY.GNP.PCAP.PP.CD,GNI per capita PPP
+"GNI, Atlas method (current US$)",NY.GNP.ATLS.CD,GNI Atlas curr $US
+"GNI, PPP (current international $)",NY.GNP.MKTP.PP.CD,GNI PPP
+Gross capital formation (% of GDP),NE.GDI.TOTL.ZS,Gross capital formation
+Gross capital formation (annual % growth),NE.GDI.TOTL.KD.ZG,
+Gross capital formation (constant LCU),NE.GDI.TOTL.KN,Gross capital formation constant LCU
+Gross domestic savings (% of GDP),NY.GDS.TOTL.ZS,Gross domestic savings
+Gross fixed capital formation (% of GDP),NE.GDI.FTOT.ZS,Gross fixed capital formation
+Gross fixed capital formation (annual % growth),NE.GDI.FTOT.KD.ZG,Gross fixed capital formation growth pct
+Gross fixed capital formation (constant LCU),NE.GDI.FTOT.KN,
+"Gross fixed capital formation, private sector (% of GDP)",NE.GDI.FPRV.ZS,"Gross fixed capital formation, private sector"
+Gross national expenditure (% of GDP),NE.DAB.TOTL.ZS,Gross national expenditure Pct GDP
+Gross national expenditure (constant LCU),NE.DAB.TOTL.KN,Gross national expenditure constant LCU
+Gross national expenditure (current US$),NE.DAB.TOTL.CD,Gross national expenditure $US
+Gross national expenditure (current US$),NE.DAB.TOTL.CD,
+Gross national expenditure deflator (base year varies by country),NE.DAB.DEFL.ZS,
+Gross savings (% of GDP),NY.GNS.ICTR.ZS,Gross savings Pct GDP
+Gross savings (% of GNI),NY.GNS.ICTR.GN.ZS,Gross savings Pct GNI
+Gross savings (current LCU),NY.GNS.ICTR.CN,Gross savings curr LCU
+Gross savings (current US$),NY.GNS.ICTR.CD,Gross savings curr $US
+High-technology exports (% of manufactured exports),TX.VAL.TECH.MF.ZS,High-tech exports pct manufactured exp
+High-technology exports (current US$),TX.VAL.TECH.CD,High-tech exports $US
+Households and NPISHs final consumption expenditure (% of GDP),NE.CON.PRVT.ZS,HH final consumer expenditure
+Households and NPISHs Final consumption expenditure (annual % growth),NE.CON.PRVT.KD.ZG,HH and NPSISHs Final consumption annual growth
+Households and NPISHs Final consumption expenditure per capita growth (annual %),NE.CON.PRVT.PC.KD.ZG,HH and NPSISHs Final consumption exp
+Import unit value index (2000 = 100),TM.UVI.MRCH.XD.WD,
+Imports of goods and services (% of GDP),NE.IMP.GNFS.ZS,Imports of G & S Pct GDP
+Imports of goods and services (annual % growth),NE.IMP.GNFS.KD.ZG,Imports of G & S Pct annual growth
+"Imports of goods and services (BoP, current US$)",BM.GSR.GNFS.CD,Imports of G & S current US dollar
+Imports of goods and services (constant LCU),NE.IMP.GNFS.KN,Imports of G & S (constant LCU)
+"Industry (including construction), value added (% of GDP)",NV.IND.TOTL.ZS,Industry Pct GDP
+"Industry (including construction), value added (annual % growth)",NV.IND.TOTL.KD.ZG,Industry Pct Growth
+"Industry (including construction), value added (constant LCU)",NV.IND.TOTL.KN,Industry constant LCU
+"Industry (including construction), value added (current US$)",NV.IND.TOTL.CD,Industry curr $US
+"Inflation, consumer prices (annual %)",FP.CPI.TOTL.ZG,"Inflation, consumer prices"
+"Inflation, GDP deflator (annual %)",NY.GDP.DEFL.KD.ZG,"Inflation, GDP deflator Pct"
+Machinery and transport equipment (% of value added in manufacturing),NV.MNF.MTRN.ZS.UN,
+Manufactures exports (% of merchandise exports),TX.VAL.MANF.ZS.UN,Manufactures exports (pct merch exp)
+Manufactures imports (% of merchandise imports),TM.VAL.MANF.ZS.UN,Manufactures imports (pct merch imp)
+"Manufacturing, value added (% of GDP)",NV.IND.MANF.ZS,Manufacturing Pct GDP
+"Manufacturing, value added (annual % growth)",NV.IND.MANF.KD.ZG,Manufacturing Pct Growth
+"Manufacturing, value added (constant LCU)",NV.IND.MANF.KN,Manufacturing constant LCU
+"Manufacturing, value added (current US$)",NV.IND.MANF.CD,Manufacturing curr $US
+Medium and high-tech exports (% manufactured exports),TX.MNF.TECH.ZS.UN,
+Medium and high-tech manufacturing value added (% manufacturing value added),NV.MNF.TECH.ZS.UN,
+Merchandise exports (current US$),TX.VAL.MRCH.CD.WT,Merchandise exports curr USD
+Merchandise exports by the reporting economy (current US$),TX.VAL.MRCH.WL.CD,
+"Merchandise exports by the reporting economy, residual (% of total merchandise exports)",TX.VAL.MRCH.RS.ZS,
+Merchandise imports (current US$),TM.VAL.MRCH.CD.WT,Merchandise imports curr USD
+Merchandise imports by the reporting economy (current US$),TM.VAL.MRCH.WL.CD,
+Merchandise trade (% of GDP),TG.VAL.TOTL.GD.ZS,Merchandise trade pct GDP
+"Net trade in goods (BoP, current US$)",BN.GSR.MRCH.CD,Net trade in Goods US dollar
+"Net trade in goods and services (BoP, current US$)",BN.GSR.GNFS.CD,Net trade in G & S US dollar
+Other manufacturing (% of value added in manufacturing),NV.MNF.OTHR.ZS.UN,
+Population growth (annual %),SP.POP.GROW,Population growth
+"Population, total",SP.POP.TOTL,Population
+"Service exports (BoP, current US$)",BX.GSR.NFSV.CD,Service exports curr $USD
+"Service imports (BoP, current US$)",BM.GSR.NFSV.CD,Service imports curr $USD
+"Services, value added (% of GDP)",NV.SRV.TOTL.ZS,Services Pct GDP
+"Services, value added (annual % growth)",NV.SRV.TOTL.KD.ZG,Services value added GDP
+"Services, value added (constant LCU)",NV.SRV.TOTL.KN,"Services, value added const LCU"
+"Services, value added (current US$)",NV.SRV.TOTL.CD,"Services, value added curr $US"
+Textiles and clothing (% of value added in manufacturing),NV.MNF.TXTL.ZS.UN,Textiles and clothing %  manufacturing
+Trade (% of GDP),NE.TRD.GNFS.ZS,Trade Pct GDP
+Urban population (% of total population),SP.URB.TOTL.IN.ZS,Urban population pct tot Pop
+Urban population growth (annual %),SP.URB.GROW,Urban population growth Pct
