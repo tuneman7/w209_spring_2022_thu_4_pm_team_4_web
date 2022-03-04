@@ -75,16 +75,6 @@ class import_export_data(Utility):
 
         return return_file_name
 
-    def get_WTO_full_file_name(self) :
-
-        data_directory = "data"
-        trade_balance_sub_dir = "trade_balance_datasets"
-        WTO_file_name = "WtoData_all.csv"
-
-        return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,WTO_file_name)
-
-        return return_file_name
-
 
     def get_world_countries_by_iso_label(self):
         data_directory = "data"
@@ -546,37 +536,98 @@ class import_export_data(Utility):
     def get_Chinadata_by_country(self):
 
         global ALL_COUNTRIES_DATA_FRAME
+        global ALL_COUNTRIES_GDP_DATA
 
-        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+        trade_data = ALL_COUNTRIES_DATA_FRAME
+        gdp_df = ALL_COUNTRIES_GDP_DATA
+
+        country_sql = "SELECT DISTINCT country FROM trade_data"
+        
+        country_set = psql.sqldf(country_sql)['country'].values.tolist()
 
         my_sql = '''
-        SELECT *,
-            SUM(total_trade) OVER (PARTITION BY country, year) as total_toWorld_trade,
-            SUM(exports) OVER (PARTITION BY country, year) as total_toWorld_exports,
-            SUM(imports) OVER (PARTITION BY country, year) as total_toWorld_imports,
-            SUM(net_exports) OVER (PARTITION BY country, year) as total_toWorld_net_exports
+        SELECT
+            gdp_data.*,
+            trade_subset.*
         FROM (
-            SELECT
-                country,
-                year,
-                SUM([Total Trade ($M)]) as total_trade,
-                SUM([Exports ($M)]) as exports,
-                SUM([Net Exports ($M)]) as net_exports,
-                SUM([Imports ($M)]) as imports,
-                CASE
-                    WHEN [Trading Partner] = "China" THEN "China"
-                    ELSE "Others"
-                END as isChinaPartner
-            FROM my_data_frame
-            where country <> "China"
-            GROUP BY isChinaPartner, country, year) t
+            SELECT 
+                Country,
+                Year,
+                [GDP Growth Pct],
+                [Trade Pct GDP],
+                [Trade Pct GDP] - LAG([Trade Pct GDP], 1) OVER (
+                PARTITION BY country ORDER BY year) AS TradePctGDPChange
+            FROM gdp_df
+        ) gdp_data
+        LEFT JOIN (
+            SELECT *,
+                total_trade / total_toWorld_trade - 
+                LAG(total_trade / total_toWorld_trade, 1) OVER (
+                PARTITION BY country ORDER BY year) AS china_target_pct_chg
+
+            FROM (
+                SELECT *,
+                    SUM(total_trade) OVER (PARTITION BY country, year) as total_toWorld_trade,
+                    SUM(exports) OVER (PARTITION BY country, year) as total_toWorld_exports,
+                    SUM(imports) OVER (PARTITION BY country, year) as total_toWorld_imports,
+                    SUM(net_exports) OVER (PARTITION BY country, year) as total_toWorld_net_exports
+                FROM (
+                    SELECT
+                        country,
+                        year,
+                        SUM([Total Trade ($M)]) as total_trade,
+                        SUM([Exports ($M)]) as exports,
+                        SUM([Net Exports ($M)]) as net_exports,
+                        SUM([Imports ($M)]) as imports,
+                        CASE
+                            WHEN [Trading Partner] = "China" THEN "China"
+                            ELSE "Others"
+                        END as isChinaPartner
+                    FROM trade_data
+                    GROUP BY isChinaPartner, country, year) t
+                ) s
+        ) AS trade_subset
+        ON (gdp_data.Country = trade_subset.country
+            and gdp_data.Year = trade_subset.year)
+        WHERE gdp_data.Country in (''' +  str(country_set)[1:-1] + ''')
         '''
-        
         my_return_data = psql.sqldf(my_sql)
+        #print(my_return_data.head(10))
         return my_return_data
 
 
+    #def get_gdp_data_by_country(self):
 
+    #    global ALL_COUNTRIES_GDP_DATA
+
+    #    trade_data = get_Chinadata_by_country()
+
+    #    gdp_data = ALL_COUNTRIES_GDP_DATA
+
+    #    sql = '''
+    #    SELECT
+    #        gdp_data.Country,
+    #        gdp_data.Year,
+    #        gdp_data.[GDP Growth Pct],
+    #        gdp_data.[Trade Pct GDP],
+    #        trade_subset.isChinaPartner,
+    #        trade_subset.Total
+    #        trade_subset.total_toWorld_trade,
+    #        trade_subset.total_toWorld_exports,
+    #        trade_subset.total_toWorld_imports,
+    #        trade_subset.total_toWorld_net_exports,
+    #        trade_subset.total_toWorld_net_exports,
+    #    FROM gdp_data
+    #    LEFT JOIN (
+
+    #    ) AS trade_subset
+    #    ON (gdp_data.Country = trade_subset.country
+    #        and gdp_data.Year = trade_subset.year)
+    #    '''
+
+    #    my_return = psql.sqldf(sql)
+
+    #    return my_return
 
 
 
