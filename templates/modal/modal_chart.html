@@ -51,6 +51,8 @@
           {
             return;
           }
+          
+          page_loading();
 
           $.ajax({
               url: '/mapmodaldata',
@@ -67,6 +69,8 @@
 
 
       $(document).ready(function () {
+
+        page_not_loading();
 
           set_drop_down_value("target_country","{{current_target_country}}");
           document.getElementById("source_country").value = "{{source_country}}";
