@@ -1,0 +1,106 @@
+
+<!--Don Irwin override bootstrap's modal css so it will be larger-->
+<style>
+
+#vg-tooltip-element {
+  z-index: 2000;
+
+}
+
+.modal-lg {
+    max-width: 140% !important;
+}
+.modal-lg {
+    width: 1100px !important;
+  }
+
+
+
+
+</style>
+
+
+<br/>
+  <p>
+    <br/>
+    <br/>
+  </p> 
+
+
+  {% if map_json is not none %}
+
+  <div id="vis"></div>
+
+  <script>
+
+  const country_list = {{ country_list | safe }};
+
+    // Assign the specification to a local variable vlSpec.
+    // var view = new vega.View(vega.parse()
+    //   .renderer("canvas")
+    //   .initialize("#vis")
+    //   .run();
+
+    vlSpec = {{ map_json | safe }};
+
+    // Embed the visualization in the container with id `vis`
+    vegaEmbed('#vis', vlSpec, {}
+).then(result => {
+    result.view.addEventListener('click', function(event, item) {
+       //alert(item.tooltip.Country);
+       render_modal(item.tooltip.Country);
+    });
+}).catch(console.warn);
+
+function is_country_in_list(country){
+
+  if( country_list.indexOf(country) != -1)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+};
+
+      function render_modal(country){
+        //Do nothing if it is not in our list
+        if(!(is_country_in_list(country))){return;}
+        //Implicit else
+          $.ajax({
+              url: '/mapmodaldata',
+              type: 'post',
+              data: {source_country: country,target_country:"World"},
+              success: function(data){ 
+                  $('.modal-body').html(data); 
+                  $('.modal-body').append(data.htmlresponse);
+                  $('#map_modal').modal('show'); 
+              }
+          });
+        };
+
+
+  
+  </script>  
+
+<div class="modal fade" id="map_modal" >
+  <div class="modal-dialog modal-lg" >
+      <div class="modal-content modal-lg">
+          <div class="modal-header modal-lg">
+              <h4 class="modal-title"></h4>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+          </div>
+          <div class="modal-body modal-lg">
+          </div>
+      </div>
+  </div>
+</div>
+
+  {% endif %}
+
+ 
+
+
+
