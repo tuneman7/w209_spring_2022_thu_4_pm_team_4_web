@@ -139,7 +139,7 @@ def home():
     map_json=map_json.to_json(),
     country_list=json.dumps(country_list))
 
-
+    
 
 @app.route('/top5trading', methods=['POST', 'GET'])
 def top5trading():

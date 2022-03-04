@@ -21,5 +21,3 @@ pip install matplotlib
 pip install vega_datasets
 pip install jsonschema==3.2 
 pip install jupyter
-#conda install --channel conda-forge geopandas
-#conda install --channel conda-forge gpdvega
