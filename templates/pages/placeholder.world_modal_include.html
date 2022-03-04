@@ -1,4 +1,4 @@
-<a id="world_map">
+
 <!--Don Irwin override bootstrap's modal css so it will be larger-->
 <style>
 
@@ -21,6 +21,12 @@
 
 
   {% if map_json is not none %}
+
+
+  <a id="world_map">
+    <h1>World Map</h1>
+    </a>
+    
 
   <div id="vis"></div>
 
@@ -62,6 +68,8 @@ function is_country_in_list(country){
         //Do nothing if it is not in our list
         if(!(is_country_in_list(country))){return;}
         //Implicit else
+          page_loading();
+
           $.ajax({
               url: '/mapmodaldata',
               type: 'post',
@@ -90,9 +98,11 @@ function is_country_in_list(country){
   </div>
 </div>
 
+
+
   {% endif %}
 
-</a>
+
  
 
 
