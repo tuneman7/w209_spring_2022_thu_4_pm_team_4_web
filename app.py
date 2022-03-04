@@ -131,19 +131,15 @@ def fourchartmatrix():
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
+
     my_altair = AltairRenderings()
+    junk_json,map_json = my_altair.get_world_map()
+    country_list = my_altair.get_top_20_countries()
+    return render_template('pages/placeholder.home.html',
+    map_json=map_json.to_json(),
+    country_list=json.dumps(country_list))
 
-    source_country = "United States"
-    target_country = "China"
-    if request.method == 'POST':
-        source_country = request.form["source_country"]
-        target_country = request.form["target_country"]
-
-    text_that_i_want_on_site = "my text text"
-        
-    chart_json = my_altair.get_altaire_line_char_json_county_trade(source_country, target_country).to_json()
-    form = CountryDetailVisualizationForm(request.form,current_target_country=target_country,current_source_country=source_country) 
-    return render_template('pages/placeholder.home.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country,text_that_i_want_on_site=text_that_i_want_on_site)
+    
 
 @app.route('/top5trading', methods=['POST', 'GET'])
 def top5trading():
