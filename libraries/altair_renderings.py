@@ -1109,7 +1109,24 @@ class AltairRenderings:
         ## https://vega.github.io/vega/docs/schemes/
         return return_chart
 
+    def get_asian_trading_partners(self):
+
         
+
+        indo = self.get_altaire_bar_top5_partners_for_matrix("Indonesia")
+        aus = self.get_altaire_bar_top5_partners_for_matrix("Australia")
+        sk = self.get_altaire_bar_top5_partners_for_matrix("South Korea")
+        jap = self.get_altaire_bar_top5_partners_for_matrix("Japan")
+
+        row_1  = (sk | jap )
+        row_3  = (indo | aus )
+        my_chart = (row_1 & row_3).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
 
 
 

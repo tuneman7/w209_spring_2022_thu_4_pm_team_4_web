@@ -31,7 +31,11 @@
                         <tbody>
                             {% for index,event in world_events.iterrows() %}
                             
-                            <tr onclick="show_event_modal('{{ event['event_name']|replace('-','')|replace(' ','') }}')">
+                            <tr onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
+                            '{{event['event_description']}}',
+                             '{{ event["year_begin"] }}',
+                             '{{event["year_end"]}}',
+                             '{{event["event_name"]}}')">
                                 <td>{{ event["event_name"] }}</td>
                                 <td>{{ event["year_begin"] }}</td>
                                 <td>{% if event["year_end"] == "" %}
@@ -92,10 +96,10 @@
                         </div>
 
                         <div class="row">
-                          <div class="col-md-4">
+                          <div class="col-md-3">
                             <div id="event_detail_text"></div>
                           </div>
-                          <div class="col-md-8">
+                          <div class="col-md-9">
                             <div id="event_render_container"></div>
                           </div>
                         </div>
@@ -124,7 +128,6 @@ function show_event_modal(event_name)
 
 function show_event_details(event_name,event_text,year_begin,year_end,event_title)
 {
-
 
     if(year_end=='')
     {

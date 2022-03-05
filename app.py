@@ -108,6 +108,7 @@ def get_carousel_width():
 
 from libraries.import_export_data_objects import import_export_data as Import_Export_Data
 from libraries.altair_renderings import AltairRenderings
+from libraries.utility import Utility
 import altair as alt
 
 
@@ -249,12 +250,23 @@ def introduction_content():
 
 @app.route("/render_world_event_graphs",methods=["POST","GET"])
 def render_world_event_graphs():
+    my_altair = AltairRenderings()
+    utility = Utility()
     print("render_world_event_graphs()")
     event_name = "JCPOA"
     chart_json=None
+    event_text=None
     if request.method == 'POST':
         event_name = request.form["event_name"]
-    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json)})
+
+    if event_name == "RCEP":
+        chart_json = my_altair.get_asian_trading_partners().to_json()
+        file_name = event_name.lower() +".txt"
+        load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+        event_text = utility.get_data_from_file(load_file_name)
+
+
+    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
 
 
 

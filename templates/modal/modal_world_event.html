@@ -1,7 +1,10 @@
-    {{event_name}}
-    <br/>
-    {{chart_json}}
-  
+
+    <div id="detail_text">
+        {% if event_text is not none %}
+            {{event_text|safe}}
+        {%endif%}
+    </div>
+
     {% if chart_json is not none %}
   
       <div id="world_event_rendering_chart"></div>
