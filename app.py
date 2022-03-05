@@ -233,6 +233,13 @@ def nafta_trade_content():
     print("mybozo")
     return jsonify({'htmlresponse': render_template('pages/placeholder.nafta_trade.html')})
 
+@app.route("/china_trade_content",methods=["POST","GET"])
+def china_trade_content():
+    print("mybozo china_trade_content")
+    #placeholder.china_trade.html
+    return jsonify({'htmlresponse': render_template('pages/placeholder.nafta_trade.html')})
+    
+
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():

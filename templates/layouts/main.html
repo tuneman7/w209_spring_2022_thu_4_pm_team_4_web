@@ -184,6 +184,17 @@ function render_nafta_trade_content(){
           });
         };
 
+function render_china_trade_content(){
+        $.ajax({
+            url: '/china_trade_content',
+            type: 'post',
+            success: function(data){ 
+                $('#china_trade_content').html(data); 
+                $('#china_trade_content').append(data.htmlresponse);
+            }
+        });
+      };
+
 
 function page_loading()
 {
@@ -197,6 +208,7 @@ function page_not_loading()
 
   $(document).ready(function () {
 
+            render_nafta_trade_content();
             render_world_trade_region();
             render_covid_impact_content();
 
