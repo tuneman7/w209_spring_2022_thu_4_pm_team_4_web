@@ -207,6 +207,18 @@ function render_introduction_content(){
         });
       };
 
+      function render_eu_trade_content(){
+        $.ajax({
+            url: '/eu_trade_content',
+            type: 'post',
+            success: function(data){ 
+                $('#eu_trade_content').html(data); 
+                $('#eu_trade_content').append(data.htmlresponse);
+            }
+        });
+      };      
+
+      placeholder.eu_trade.html
 
 function page_loading()
 {
