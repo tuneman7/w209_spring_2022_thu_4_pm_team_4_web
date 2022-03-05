@@ -67,7 +67,7 @@
 </style>
 
 <body>
-  <div id="loader" class="loader" style="display:none;">
+  <div id="loader" class="loader">
   </div>
   <!-- Wrap all page content here -->
   <div id="wrap">
@@ -195,6 +195,18 @@ function render_china_trade_content(){
         });
       };
 
+      
+function render_introduction_content(){
+        $.ajax({
+            url: '/introduction_content',
+            type: 'post',
+            success: function(data){ 
+                $('#introduction_content').html(data); 
+                $('#introduction_content').append(data.htmlresponse);
+            }
+        });
+      };
+
 
 function page_loading()
 {
@@ -211,6 +223,8 @@ function page_not_loading()
             render_nafta_trade_content();
             render_world_trade_region();
             render_covid_impact_content();
+            render_china_trade_content();
+            render_introduction_content();
 
             page_not_loading();
 

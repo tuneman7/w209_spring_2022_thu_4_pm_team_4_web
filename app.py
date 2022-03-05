@@ -237,8 +237,13 @@ def nafta_trade_content():
 def china_trade_content():
     print("mybozo china_trade_content")
     #placeholder.china_trade.html
-    return jsonify({'htmlresponse': render_template('pages/placeholder.nafta_trade.html')})
-    
+    return jsonify({'htmlresponse': render_template('pages/placeholder.china_trade.html')})
+
+@app.route("/introduction_content",methods=["POST","GET"])
+def introduction_content():
+    print("mybozo introduction_content")
+    #placeholder.china_trade.html
+    return jsonify({'htmlresponse': render_template('pages/placeholder.introduction.html')})
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
