@@ -11,55 +11,69 @@
 <div class="container">
 
     <table class="table">
-        <tr>
-            <td>
+        <tr >
+            <td id="world_event_table" >
+                <span class="align-middle">
+                    <br/><br/><br/>
 
-                <table class="table table-responsive-md table-striped ">
-                    <thead class="thead-dark">
-                      <tr>
-                        <th scope="col">Event Name</th>
-                        <th scope="col">Year Begin</th>
-                        <th scope="col">Year End</th>
-                        <th scope="col">Event Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for index,event in world_events.iterrows() %}
-                        
-                        <tr onclick="show_event_modal('{{ event['event_name']|replace('-','')|replace(' ','') }}')">
-                            <td>{{ event["event_name"] }}</td>
-                            <td>{{ event["year_begin"] }}</td>
-                            <td>{% if event["year_end"] == "" %}
-                                    Present
-                                {% else %}
-                                    {{event["year_end"]}}
-                                {% endif %}</td>
-                            <td>{{ event["event_description"][:50] }}</td>
-                          </tr>
-                          <div class="modal fade" id="{{ event['event_name']|replace('-','')|replace(' ','') }}" >
-                            <div class="modal-dialog modal-sm" >
-                                <div class="modal-content modal-sm">
-                                    <div class="modal-header modal-sm">
-                                        <h4 class="modal-title">{{event['event_name']}} Details </h4>
-                                      <button type="button" class="close" data-dismiss="modal">×</button>
-                                    </div>
-                                    <div class="modal-body modal-sm">
-                                        {{event['event_description']}}
+                    <table class="table table-responsive-md table-striped ">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Year Begin</th>
+                            <th scope="col">Year End</th>
+                            <th scope="col">Event Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for index,event in world_events.iterrows() %}
+                            
+                            <tr onclick="show_event_modal('{{ event['event_name']|replace('-','')|replace(' ','') }}')">
+                                <td>{{ event["event_name"] }}</td>
+                                <td>{{ event["year_begin"] }}</td>
+                                <td>{% if event["year_end"] == "" %}
+                                        Present
+                                    {% else %}
+                                        {{event["year_end"]}}
+                                    {% endif %}</td>
+                                <td>{{ event["event_description"][:50] }}</td>
+                            </tr>
+                            <div class="modal fade" id="{{ event['event_name']|replace('-','')|replace(' ','') }}" >
+                                <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modal-sm">
+                                        <div class="modal-header modal-sm">
+                                            <button type="button" class="close" data-dismiss="modal">×</button>
+                                            <h4 class="modal-title">{{event['event_name']}} Details </h4>
+                                        
+                                        </div>
+                                        <div class="modal-body modal-sm">
+                                            {{event['event_description']}}
+                                            <br/><br/>
+                                            <button type="button" class="btn btn-success">Visualize</button>
+                                        </div>
+                                        
                                     </div>
                                 </div>
+                            </div>    
+                            
+                            <div id="{{ event['event_name']|replace('-','')|replace(' ','') }}_text" style="display:none;" >
+                                {{event['event_description']}}
                             </div>
-                          </div>    
-                        
-                        {% endfor %}        
-                        
-                    </tbody>
-                  </table>
+
+                            {% endfor %}        
+                            
+                        </tbody>
+                    </table>
+
+                </span>
         
 
             </td>
             <td>
 
-                Here
+                <div id="world_render_area">
+                    <img src="./static/images/world_event_images.jpeg" border="0" />
+                </div>
 
 
             </td>
