@@ -148,6 +148,7 @@ function show_event_details(event_name,event_text,year_begin,year_end,event_titl
     target_event_text_id="#event_detail_text";
     document.getElementById('event_detail_text').innerHTML = event_text;
     document.getElementById('event_title').innerHTML += ": " + title;
+    document.getElementById("event_render_container").innerHTML = "";
 
     render_world_event_graphs(event_name);
 
