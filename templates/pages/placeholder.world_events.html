@@ -3,9 +3,12 @@
     body.modal-open {
     overflow: visible;
 }
+.back-button {
+    margin-left: calc(5px + (-1 * (39px - 1.5em)) / 2);
+}
 </style>
 
-<h1>World Events</h1>
+<h1 id="event_title">World Events</h1>
 
 
 <div class="container">
@@ -49,16 +52,20 @@
                                         <div class="modal-body modal-sm">
                                             {{event['event_description']}}
                                             <br/><br/>
-                                            <button type="button" class="btn btn-success">Visualize</button>
+                                            <button type="button" class="btn btn-success"onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
+                                            '{{event['event_description']}}',
+                                             '{{ event["year_begin"] }}',
+                                             '{{event["year_end"]}}',
+                                             '{{event["event_name"]}}')">Visualize</button>
                                         </div>
                                         
                                     </div>
                                 </div>
                             </div>    
                             
-                            <div id="{{ event['event_name']|replace('-','')|replace(' ','') }}_text" style="display:none;" >
-                                {{event['event_description']}}
-                            </div>
+                            <input type="hidden" id="{{ event['event_name']|replace('-','')|replace(' ','') }}_text" style="display:none;" value="{{event['event_description']}}" >
+                                
+                        </input>
 
                             {% endfor %}        
                             
@@ -71,8 +78,30 @@
             </td>
             <td>
 
-                <div id="world_render_area">
-                    <img src="./static/images/world_event_images.jpeg" border="0" />
+                <div id="world_detail_render_area">
+                    <img src="./static/images/world_event_images.jpeg" border="0" id="world_placeholder_image"/>
+
+                    <div class="container-fluid" id="event_detail_rendering" style="display:none">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="back_to_list()" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"><br/></div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-4">
+                            <div id="event_detail_text"></div>
+                          </div>
+                          <div class="col-md-8">
+                            <div id="event_render_container"></div>
+                          </div>
+                        </div>
+                      </div>                    
+
+                    </div>
                 </div>
 
 
@@ -85,7 +114,6 @@
   </div>
 
 
-
 <script>
 
 function show_event_modal(event_name)
@@ -93,5 +121,59 @@ function show_event_modal(event_name)
     modal_id = "#"+event_name;
     $(modal_id).modal('show'); 
 }
+
+function show_event_details(event_name,event_text,year_begin,year_end,event_title)
+{
+
+
+    if(year_end=='')
+    {
+        year_end="Present"
+    }
+
+    title = event_title + " " + year_begin + " - " + year_end
+
+    page_loading();
+    modal_id = "#"+event_name;
+    $(modal_id).modal('hide');
+    modal_id = "#world_event_table";
+    $(modal_id).hide(); 
+    modal_id = "#world_placeholder_image";
+    $(modal_id).hide(); 
+    $("#event_detail_rendering").show();
+
+    target_event_text_id="#event_detail_text";
+    document.getElementById('event_detail_text').innerHTML = event_text;
+    document.getElementById('event_title').innerHTML += ": " + title;
+
+    render_world_event_graphs(event_name);
+
+}
+
+function back_to_list()
+{
+    $("#event_detail_rendering").hide();
+    modal_id = "#world_event_table";
+    $(modal_id).show(); 
+    modal_id = "#world_placeholder_image";
+    $(modal_id).show(); 
+    document.getElementById('event_title').innerHTML = "World Events";
+
+}
+
+function render_world_event_graphs(event_name){
+
+          $.ajax({
+              url: '/render_world_event_graphs',
+              type: 'post',
+              data: {event_name: event_name},
+              success: function(data){ 
+                  $('#event_render_container').html(data); 
+                  $('#event_render_container').append(data.htmlresponse);
+              }
+          });
+        };
+
+
 </script>
 

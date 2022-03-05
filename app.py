@@ -247,6 +247,16 @@ def introduction_content():
     #placeholder.china_trade.html
     return jsonify({'htmlresponse': render_template('pages/placeholder.introduction.html')})
 
+@app.route("/render_world_event_graphs",methods=["POST","GET"])
+def render_world_event_graphs():
+    print("render_world_event_graphs()")
+    event_name = "JCPOA"
+    chart_json=None
+    if request.method == 'POST':
+        event_name = request.form["event_name"]
+    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json)})
+
+
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():
