@@ -421,7 +421,6 @@ class AltairRenderings:
         country_source = country_source.drop(4)
 
         top20_2020 = my_data.get_top_20_gdp_data_for_map()
-        #top20_2020 = year2020.sort_values(['GDP'], ascending=False).head(20)[['Country','GDP']]
         country_gdp = pd.merge(country_source, top20_2020, on='Country', how = 'outer')
         country_gdp['GDP'] = country_gdp['GDP'].fillna(0)
 

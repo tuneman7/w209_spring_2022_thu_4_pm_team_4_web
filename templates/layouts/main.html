@@ -150,6 +150,41 @@
 
 <script>
 
+
+function render_world_trade_region(){
+          $.ajax({
+              url: '/world_trade_region',
+              type: 'post',
+              success: function(data){ 
+                  $('#world_events_content').html(data); 
+                  $('#world_events_content').append(data.htmlresponse);
+              }
+          });
+        };
+
+function render_covid_impact_content(){
+          $.ajax({
+              url: '/covid_impact_content',
+              type: 'post',
+              success: function(data){ 
+                  $('#covid_impact_content').html(data); 
+                  $('#covid_impact_content').append(data.htmlresponse);
+              }
+          });
+        };
+
+function render_nafta_trade_content(){
+          $.ajax({
+              url: '/nafta_trade_content',
+              type: 'post',
+              success: function(data){ 
+                  $('#nafta_trade_content').html(data); 
+                  $('#nafta_trade_content').append(data.htmlresponse);
+              }
+          });
+        };
+
+
 function page_loading()
 {
   $('.loader').show();
@@ -161,6 +196,9 @@ function page_not_loading()
 }
 
   $(document).ready(function () {
+
+            render_world_trade_region();
+            render_covid_impact_content();
 
             page_not_loading();
 

@@ -216,6 +216,24 @@ def my_new_map():
     return render_template('pages/placeholder.world.html',chart_json=my_map.to_json())
 
 
+
+@app.route("/world_trade_region",methods=["POST","GET"])
+def world_trade_region():
+    print("mybozo")
+    return jsonify({'htmlresponse': render_template('pages/placeholder.world_events.html')})
+
+@app.route("/covid_impact_content",methods=["POST","GET"])
+def covid_impact_content():
+    print("mybozo")
+    return jsonify({'htmlresponse': render_template('pages/placeholder.covid_impact.html')})
+
+
+@app.route("/nafta_trade_content",methods=["POST","GET"])
+def nafta_trade_content():
+    print("mybozo")
+    return jsonify({'htmlresponse': render_template('pages/placeholder.nafta_trade.html')})
+
+
 @app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():
 
