@@ -47,6 +47,20 @@ class import_export_data(Utility):
         for k,v in self.__dict__.items():
             print("{} is \"{}\"".format(k,v))
 
+
+    def get_world_event_data(self) :
+
+        data_directory = "data"
+        trade_balance_sub_dir = "world_events"
+        file_name = "world_events.txt"
+
+        return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,file_name)
+
+        return pd.read_csv(return_file_name,sep='\t').replace(np.nan,'',regex=True)
+
+    def get_world_event_data_json(self):
+        return self.get_world_event_data().to_json(orient='records')
+
     def get_top_20_full_file_name(self) :
 
         data_directory = "data"

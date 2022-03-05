@@ -220,7 +220,9 @@ def my_new_map():
 @app.route("/world_trade_region",methods=["POST","GET"])
 def world_trade_region():
     print("mybozo")
-    return jsonify({'htmlresponse': render_template('pages/placeholder.world_events.html')})
+    my_data = Import_Export_Data()
+    world_events = my_data.get_world_event_data();
+    return jsonify({'htmlresponse': render_template('pages/placeholder.world_events.html',world_events=world_events)})
 
 @app.route("/covid_impact_content",methods=["POST","GET"])
 def covid_impact_content():

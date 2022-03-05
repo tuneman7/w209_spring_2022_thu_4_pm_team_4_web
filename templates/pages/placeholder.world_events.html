@@ -1,3 +1,60 @@
 
+<style>
+    body.modal-open {
+    overflow: visible;
+}
+</style>
+
 <h1>World Events</h1>
+
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Event Name</th>
+        <th scope="col">Year Begin</th>
+        <th scope="col">Year End</th>
+        <th scope="col">Event Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for index,event in world_events.iterrows() %}
+        
+        <tr>
+            <td>{{ event["event_name"] }}</td>
+            <td>{{ event["year_begin"] }}</td>
+            <td>{% if event["year_end"] == "" %}
+                    Present
+                {% else %}
+                    {{event["year_end"]}}
+                {% endif %}</td>
+            <td onclick="show_event_modal('{{ event['event_name']|replace('-','')|replace(' ','') }}')">{{ event["event_description"][:100] }}</td>
+          </tr>
+          <div class="modal fade" id="{{ event['event_name']|replace('-','')|replace(' ','') }}" >
+            <div class="modal-dialog modal-sm" >
+                <div class="modal-content modal-sm">
+                    <div class="modal-header modal-sm">
+                        <h4 class="modal-title">{{event['event_name']}} Details </h4>
+                      <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <div class="modal-body modal-sm">
+                        {{event['event_description']}}
+                    </div>
+                </div>
+            </div>
+          </div>    
+        
+        {% endfor %}        
+        
+    </tbody>
+  </table>
+
+<script>
+
+function show_event_modal(event_name)
+{
+    modal_id = "#"+event_name;
+    $(modal_id).modal('show'); 
+}
+</script>
 
