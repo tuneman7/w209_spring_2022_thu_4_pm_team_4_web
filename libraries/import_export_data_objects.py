@@ -147,12 +147,12 @@ class import_export_data(Utility):
                 EXCHANGE_RATE_DATA_1.rate as country_exchange_rate,
                 EXCHANGE_RATE_DATA_2.rate as trading_partner_exchange_rate
             from my_data
-            join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
+            left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
                 on
                     EXCHANGE_RATE_DATA_1.year = my_data.year
                 and
                     EXCHANGE_RATE_DATA_1.Country = my_data.Country
-            join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
+            left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
                 on
                     EXCHANGE_RATE_DATA_2.year = my_data.year
                 and
@@ -477,7 +477,7 @@ class import_export_data(Utility):
 
         
 
-    def get_distinct_country_list(self,add_world=False):
+    def get_distinct_country_list(self,add_world=False,as_data_frame=False):
 
         global ALL_COUNTRIES_DATA_FRAME
 
@@ -486,6 +486,8 @@ class import_export_data(Utility):
         my_sql = "SELECT distinct country from my_data_frame"
 
         my_return_data = psql.sqldf(my_sql)
+        if as_data_frame==True:
+            return my_return_data
 
         return_data = [ str(value).strip("[]'") for value in my_return_data.values.tolist()]
         if add_world == True:
@@ -594,6 +596,30 @@ class import_export_data(Utility):
         my_return_data = psql.sqldf(my_sql)
         #print(my_return_data.head(10))
         return my_return_data
+
+    def get_top_20_gdp_data_for_map(self):
+        country_source = self.get_world_countries_by_iso_label()
+        country_source.loc[84,'Country'] = 'South Korea'
+        country_source = country_source.drop(4)
+
+        all_gdp=self.get_gdp_all_data()
+        year2020 = psql.sqldf("select * from all_gdp where Year = 2020") #all_gdp[all_gdp['Year'] == 2020]
+
+        #We are not dealing with top 20 GDP, we're dealing with top 20 nations.
+        top_20_trading_nations = self.get_distinct_country_list(as_data_frame=True)
+        sql = '''
+            select 
+                distinct
+                year2020.Country as Country,
+                year2020.GDP as GDP
+            from year2020
+            join top_20_trading_nations
+                on 
+                top_20_trading_nations.Country = year2020.Country
+
+        '''
+        return psql.sqldf(sql)
+
 
 
     #def get_gdp_data_by_country(self):
