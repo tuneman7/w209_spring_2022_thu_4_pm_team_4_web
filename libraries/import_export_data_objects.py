@@ -580,8 +580,8 @@ class import_export_data(Utility):
                         SUM([Net Exports ($M)]) as net_exports,
                         SUM([Imports ($M)]) as imports,
                         CASE
-                            WHEN [Trading Partner] = "China" THEN "China"
-                            ELSE "Others"
+                            WHEN [Trading Partner] = "China" THEN "Trades with China"
+                            ELSE "Trades with Others"
                         END as isChinaPartner
                     FROM trade_data
                     GROUP BY isChinaPartner, country, year) t

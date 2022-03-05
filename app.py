@@ -185,7 +185,7 @@ def China_pie_chart():
     my_altair = AltairRenderings()
 
     source_country = "China"
-    chart_json = my_altair.get_altaire_multi_pie_charts_for_China().to_json()
+    chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
     return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 
