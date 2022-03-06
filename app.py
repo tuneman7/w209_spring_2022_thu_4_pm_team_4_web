@@ -294,7 +294,7 @@ def render_world_event_graphs():
     if event_name == "USChinatradeWar":
         if slide_no == "1":
             print("mybozo")
-            chart_json = None
+            chart_json = my_altair.get_china_trade_with_us_pie_chart(width=150,height=150).to_json()
 
 
             

@@ -1286,3 +1286,59 @@ class AltairRenderings:
 
         return my_chart
 
+    def get_china_trade_with_us_pie_chart(self,height=200, width=200):
+        title = "Percentage of Total Trades Done with China"
+        my_data = self.my_data_object
+        df = my_data.get_Chinadata_by_country()
+        df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
+        # GDP growth correlation
+        china_gdp_df = df[df['Country'] == 'China'][['Country', 'GDP Growth Pct']].reset_index(drop = True)
+        other_gdp_df = df[df['Country'] != 'China'][['Country', 'GDP Growth Pct']]
+        other_gdp_df = other_gdp_df.drop_duplicates().reset_index(drop = True)
+        country_list = df[df['Country'] !='China']['Country'].unique()
+
+        country_list = df[df['Country'] =='United States']['Country'].unique()
+
+        num_country_per_line = math.ceil(len(country_list)/3.0)
+
+        gdp_correl = {}
+        for country in country_list:
+            gdp_correl[country] = china_gdp_df['GDP Growth Pct'].corr(
+                other_gdp_df[other_gdp_df['Country']==country]['GDP Growth Pct'].reset_index(drop = True))
+        gdp_correl_df = pd.DataFrame(gdp_correl.items(), columns=['Country', 'GDPcorrel_w_China'])
+
+        df = df.merge(gdp_correl_df, on = 'Country', how = 'left')
+        # Slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # Pie charts
+        base = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isChinaPartner", type="nominal",
+                            scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
+                                                        'Trades with Others', 'Trade/GDP ratio change'],
+                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                            legend = alt.Legend(title="Key")),
+
+            tooltip=alt.Tooltip('total_trade', format="$,.0f")
+        )
+        chart1 = alt.hconcat()
+        base_pie = base.transform_filter(
+            alt.FieldEqualPredicate(field='Country', equal='United States')
+        ).mark_arc(outerRadius=(width))
+
+        base_text = base.transform_calculate(
+            PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='Country', equal=country)
+        ).mark_text(radius=(width+15), size=12).encode(
+            text=alt.Text("PercentOfTotal:Q", format='.1%')
+        )
+        chart1 |= (base_pie+base_text).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=country,width=(width),height=(height))
+
+        return chart1
