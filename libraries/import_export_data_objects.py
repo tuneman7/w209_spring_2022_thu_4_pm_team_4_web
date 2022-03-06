@@ -432,6 +432,49 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    def imports_exports_by_sectors_source(self,source_country, direction):
+
+        global ALL_COUNTRIES_BY_TYPE_DF
+
+        my_data_frame = ALL_COUNTRIES_BY_TYPE_DF
+        if source_country.lower() != "world":
+            my_sql = '''
+            SELECT 
+                distinct
+                Year, Value,
+                [Product/Sector-reformatted],
+                [Type],
+                [Reporting Economy]
+            FROM my_data_frame
+            WHERE      
+                ([Reporting Economy] =  \'''' + source_country + '''\')
+            and
+                Direction = \'''' + direction + '''\'
+            and
+                [Product/Sector-reformatted] NOT LIKE '%Total%'
+            '''
+        else:
+            my_sql = '''
+            SELECT 
+                distinct
+                Year, Value,[Type],
+                [Product/Sector-reformatted],
+                [Reporting Economy]
+            FROM my_data_frame
+            WHERE      
+                [Reporting Economy] in (select distinct [Reporting Economy] from my_data_frame)
+                and [Reporting Economy] =  \'''' + source_country + '''\'
+            and
+                Direction = \'''' + direction + '''\'
+            and
+                [Product/Sector-reformatted] NOT LIKE '%Total%'
+            '''
+
+
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
     def get_top_trading_and_net_value(self,source_country):
 
         global ALL_COUNTRIES_DATA_FRAME
@@ -503,7 +546,8 @@ class import_export_data(Utility):
         eu_countries
 
         my_sql = '''
-            SELECT t.*
+            SELECT t.*,
+            t.Exports*-1 ExportsN
             FROM 
             (
             select
@@ -601,6 +645,120 @@ class import_export_data(Utility):
         my_return_data['EUvsWorld Exports %']=(my_return_data['EUvWorld_Exports_tradepct']*100).round(2)
         my_return_data['EUvsWorld Total Trade %']=(my_return_data['EUvWorld_TotalTrade_tradepct']*100).round(2)
         return my_return_data
+
+
+    def get_nafta_trade_data(self):
+        
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        nafta_countries=['United States','Mexico','Canada']
+        nafta_countries=pd.DataFrame(nafta_countries)
+        nafta_countries.columns=['Country']
+        nafta_countries
+
+        my_sql = '''
+            SELECT t.*,
+            t.Exports*-1 ExportsN
+            FROM 
+            (
+            select
+            [country],
+            [year],
+            case 
+            WHEN [Trading Partner] in (select distinct Country from nafta_countries) then 'NAFTA'
+            WHEN [Trading Partner] not in (select distinct Country from nafta_countries) then 'World'
+            ELSE 'World'
+            END  [Trade Group],
+            sum([Imports ($M)]) Imports,
+            sum([Exports ($M)]) Exports,
+            sum([Total Trade ($M)]) TotalTrade,
+            sum([Net Exports ($M)]) NetTrade,
+            sum(case WHEN [Total Trade ($M)] > 0 then 1 else 0 end) as [Trade Partners]
+            from my_data_frame
+            group by [country],[year],[Trade Group]
+            ) t
+        '''
+        
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+    def get_nafta_trade_data_pcts(self):
+        
+        global ALL_COUNTRIES_DATA_FRAME
+
+        nafta_countries=['United States','Mexico','Canada']
+        nafta_countries=pd.DataFrame(nafta_countries)
+        nafta_countries.columns=['Country']
+        nafta_countries
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+        
+        nafta_data_frame=self.get_nafta_trade_data()
+        
+        my_sql = '''
+                    SELECT 
+                    t.*,
+                    g.[Imports] TotalTop20Imports,
+                    g.[Exports] TotalTop20Exports,
+                    g.[TotalTrade] TotalTop20Trade,
+                    g.[NetTrade] TotalTop20NetTrade,
+                    t.[Imports]/g.[Imports] NAFTA_Imports_tradepct,
+                    t.[Exports]/g.[Exports] NAFTA_Exports_tradepct,
+                    t.[TotalTrade]/g.[TotalTrade] NAFTA_TotalTrade_tradepct
+                    FROM 
+                    (
+                    select
+                    case
+                    WHEN [country] in ('China') then [country]
+                    WHEN [country] in (select distinct Country from nafta_countries) then 'NAFTA'
+                    WHEN [country] not in (select distinct Country from nafta_countries) then 'RoW'
+                    ELSE 'RoW'
+                    END [Top20group],
+                    [year],
+                    [Trade Group],
+                    sum([Imports]) Imports,
+                    sum([Exports]) Exports,
+                    sum([TotalTrade]) TotalTrade,
+                    sum([NetTrade]) NetTrade
+                    from nafta_data_frame
+                    group by [Top20group],[year],[Trade Group]
+                    ) t
+                    left join
+                    (
+                    SELECT
+                    [year],
+                    case
+                    WHEN [country] in ('China') then [country]
+                    WHEN [country] in (select distinct Country from nafta_countries) then 'NAFTA'
+                    WHEN [country] not in (select distinct Country from nafta_countries) then 'RoW'
+                    ELSE 'RoW'
+                    END [Top20group],
+                    sum([Imports]) Imports,
+                    sum([Exports]) Exports,
+                    sum([TotalTrade]) TotalTrade,
+                    sum([NetTrade]) NetTrade
+                    from nafta_data_frame
+                    group by [year],[Top20group]
+                    ) g
+                    ON
+                    t.[Top20group]=g.[Top20group]
+                    and 
+                    t.[year]=g.[year]
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+
+        my_return_data['NAFTA Imports %']=(my_return_data['NAFTA_Imports_tradepct']*100).round(2)
+        my_return_data['NAFTA Exports %']=(my_return_data['NAFTA_Exports_tradepct']*100).round(2)
+        my_return_data['NAFTA Total Trade %']=(my_return_data['NAFTA_TotalTrade_tradepct']*100).round(2)
+        return my_return_data
+
+
+
+    
 
     def get_distinct_country_list(self,add_world=False,as_data_frame=False):
 

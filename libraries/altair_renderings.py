@@ -912,6 +912,49 @@ class AltairRenderings:
         return_chart = alt.layer(line,points)
         return return_chart
 
+    def get_net_trade_chart(self,source_country):
+
+        my_data = self.my_data_object
+        
+        title = "" + source_country + "Trade Imports, Exports, Net Trade"
+        #title="Trade Imports, Exports, Net Trade"
+
+        df_set=my_data.get_data_by_source_and_target_country(source_country,'China')
+        df_set['Exports']=df_set['Exports ($M)']
+        df_set['Imports']=df_set['Imports ($M)']*-1
+        df_set['Net Exports']=df_set['Net Exports ($M)']
+        df_set[df_set['country']==source_country]
+
+        #from altair.vegalite.v4.schema.core import Color
+        base = alt.Chart(df_set).transform_fold(['Imports','Exports'])
+        base2= alt.Chart(df_set)
+
+        bar = base.mark_bar(size=(35)).encode(
+            x=alt.X('year:N',axis=alt.Axis(title='Year')),
+            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),#,
+            #strokeWidth=alt.value(3)
+            color=alt.Color("key:N",scale=alt.Scale(scheme='blues'))
+        ).properties(
+            width=500,
+            height=250,
+            title=title
+            )
+
+        line = base2.mark_line(color='green').encode(
+            x=alt.X('year:N'),#,axis=alt.Axis(title='Year')),
+            y=alt.Y('Net Exports:Q'),#,axis=alt.Axis(title="Trade")),#,
+            strokeWidth=alt.value(3)
+            #color=alt.Color()
+            #strokeWidth=alt.value(3)
+            #color=alt.Color("key:N",scale=alt.Scale(scheme='blues'))
+        ).properties(
+            width=500,
+            height=250
+            )
+
+        return_chart=alt.layer(bar,line).configure_axis(grid=False)
+        return return_chart
+
     def get_altaire_multi_charts_for_China(self,width=1000,height=600):
 
         my_data = self.my_data_object
