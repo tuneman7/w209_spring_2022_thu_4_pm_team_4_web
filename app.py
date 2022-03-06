@@ -28,7 +28,10 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+from libraries.import_export_data_objects import import_export_data as Import_Export_Data
+from libraries.altair_renderings import AltairRenderings
+from libraries.utility import Utility
+import altair as alt
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -105,11 +108,6 @@ def get_carousel_width():
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-
-from libraries.import_export_data_objects import import_export_data as Import_Export_Data
-from libraries.altair_renderings import AltairRenderings
-from libraries.utility import Utility
-import altair as alt
 
 
 @app.route('/fourchartmatrix', methods=['POST', 'GET'])
