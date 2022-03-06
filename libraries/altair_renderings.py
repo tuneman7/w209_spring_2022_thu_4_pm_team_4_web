@@ -1251,5 +1251,5 @@ class AltairRenderings:
                     strokeWidth=0
                 )
 
-        my_chart
+        return my_chart
 
