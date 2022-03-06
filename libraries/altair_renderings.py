@@ -1253,7 +1253,7 @@ class AltairRenderings:
 
         return my_chart
 
-#am here
+    #am here
     def get_third_page_jcpoa_charts(self,width=340,height=200):
         top_five_partners = self.get_altaire_bar_top5_partners_for_matrix("Iran",width=width,height=height)
         gdp = self.get_time_series_gdp_trade_for_matrix("Iran",width=width,height=height)
