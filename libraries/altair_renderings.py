@@ -1270,4 +1270,38 @@ class AltairRenderings:
 
         return my_chart
 
+    def get_altaire_scatter_Covid(self,width=300,height=200):
+
+        my_data = self.my_data_object
+        title = "World economy growth in 2020"
+        
+        df = my_data.get_top20_2020_gdp()
+        
+        # scatter plot
+        base = alt.Chart(df).mark_point().encode(
+            x = "GDP Pct Growth:Q",
+            y = "Trade Total Change %:Q",
+            size = "Inflation, consumer prices",
+            color = alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='tableau20'), legend=None),
+            tooltip=[alt.Tooltip('GDP Pct Growth', format=".2f"),
+                     alt.Tooltip('Trade Total Change %', format=".2f"),
+                     alt.Tooltip('Inflation, consumer prices', format=".2f")]
+        )
+
+        text = alt.Chart(df).mark_text(align='center', dy=13).encode(
+            x = "GDP Pct Growth:Q",
+            y = "Trade Total Change %:Q",
+            text="Country:N",
+            color = alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='tableau20'), legend=None)
+        )
+        xrule = alt.Chart().mark_rule(
+            strokeWidth=1
+        ).encode(x=alt.datum(0))
+
+        yrule = alt.Chart().mark_rule(
+            strokeWidth=1
+        ).encode(y=alt.datum(0))
+        return (base + text + xrule + yrule)
+
+
 
