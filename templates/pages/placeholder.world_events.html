@@ -129,6 +129,7 @@
 
 var slide_no = 1;
 var current_event_name="";
+var total_slides = 0;
 
 function show_event_modal(event_name)
 {
@@ -138,6 +139,8 @@ function show_event_modal(event_name)
 
 function show_event_details(event_name,event_text,year_begin,year_end,event_title,information_url,number_of_slides)
 {
+
+    total_slides = number_of_slides;
 
     if(year_end=='')
     {
@@ -185,6 +188,11 @@ function move_forward()
     slide_no +=1;
     page_loading();
     render_world_event_graphs(current_event_name,slide_no);
+    if(!(slide_no<total_slides))
+    {
+        $("#move_forward").hide();
+    }
+
 }
 
 function back_to_list()
