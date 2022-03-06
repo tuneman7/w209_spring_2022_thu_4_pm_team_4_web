@@ -276,11 +276,12 @@ def render_world_event_graphs():
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
 
+    #am here
     if event_name == "JCPOA":
         if slide_no == "1":
             chart_json = my_altair.get_iran_trade_deal_line_charts().to_json()
         if slide_no == "2":
-            chart_json = my_altair.get_iran_trade_deal_line_charts().to_json()
+            chart_json = my_altair.get_second_page_jcpoa_charts().to_json()
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
