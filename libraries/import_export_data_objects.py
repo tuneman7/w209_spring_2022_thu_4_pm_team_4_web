@@ -489,7 +489,114 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    
+    def get_eu_trade_data(self):
         
+        global ALL_COUNTRIES_DATA_FRAME
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden']
+        eu_countries=pd.DataFrame(eu_countries)
+        eu_countries.columns=['Country']
+        eu_countries
+
+        my_sql = '''
+            SELECT t.*
+            FROM 
+            (
+            select
+            [country],
+            [year],
+            case 
+            WHEN [Trading Partner] in (select distinct Country from eu_countries) then 'EU'
+            WHEN [Trading Partner] not in (select distinct Country from eu_countries) then 'World'
+            ELSE 'World'
+            END  [Trade Group],
+            sum([Imports ($M)]) Imports,
+            sum([Exports ($M)]) Exports,
+            sum([Total Trade ($M)]) TotalTrade,
+            sum([Net Exports ($M)]) NetTrade,
+            sum(case WHEN [Total Trade ($M)] > 0 then 1 else 0 end) as [Trade Partners]
+            from my_data_frame
+            group by [country],[year],[Trade Group]
+            ) t
+        '''
+        
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+    def get_eu_trade_data_pcts(self):
+        
+        global ALL_COUNTRIES_DATA_FRAME
+
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden']
+        eu_countries=pd.DataFrame(eu_countries)
+        eu_countries.columns=['Country']
+        eu_countries
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+        
+        eu_data_frame=self.get_eu_trade_data()
+        
+        my_sql = '''
+                    SELECT 
+                    t.*,
+                    g.[Imports] TotalTop20Imports,
+                    g.[Exports] TotalTop20Exports,
+                    g.[TotalTrade] TotalTop20Trade,
+                    g.[NetTrade] TotalTop20NetTrade,
+                    t.[Imports]/g.[Imports] EUvWorld_Imports_tradepct,
+                    t.[Exports]/g.[Exports] EUvWorld_Exports_tradepct,
+                    t.[TotalTrade]/g.[TotalTrade] EUvWorld_TotalTrade_tradepct
+                    FROM 
+                    (
+                    select
+                    case 
+                    WHEN [country] in (select distinct Country from eu_countries) then 'EU'
+                    WHEN [country] not in (select distinct Country from eu_countries) then 'World'
+                    ELSE 'World'
+                    END [Top20group],
+                    [year],
+                    [Trade Group],
+                    sum([Imports]) Imports,
+                    sum([Exports]) Exports,
+                    sum([TotalTrade]) TotalTrade,
+                    sum([NetTrade]) NetTrade
+                    from eu_data_frame
+                    group by [Top20group],[year],[Trade Group]
+                    ) t
+                    left join
+                    (
+                    SELECT
+                    [year],
+                    case 
+                    WHEN [country] in (select distinct Country from eu_countries) then 'EU'
+                    WHEN [country] not in (select distinct Country from eu_countries) then 'World'
+                    ELSE 'World'
+                    end [Top20group],
+                    sum([Imports]) Imports,
+                    sum([Exports]) Exports,
+                    sum([TotalTrade]) TotalTrade,
+                    sum([NetTrade]) NetTrade
+                    from eu_data_frame
+                    group by [year],[Top20group]
+                    ) g
+                    ON
+                    t.[Top20group]=g.[Top20group]
+                    and 
+                    t.[year]=g.[year]
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+
+        my_return_data['EUvsWorld Imports %']=(my_return_data['EUvWorld_Imports_tradepct']*100).round(2)
+        my_return_data['EUvsWorld Exports %']=(my_return_data['EUvWorld_Exports_tradepct']*100).round(2)
+        my_return_data['EUvsWorld Total Trade %']=(my_return_data['EUvWorld_TotalTrade_tradepct']*100).round(2)
+        return my_return_data
 
     def get_distinct_country_list(self,add_world=False,as_data_frame=False):
 
@@ -536,6 +643,49 @@ class import_export_data(Utility):
         my_return = psql.sqldf(sql)
 
         return my_return
+
+    def get_gdp_data_growth_rate(self,source_country):
+
+        global ALL_COUNTRIES_GDP_DATA
+        
+        my_data_frame=ALL_COUNTRIES_GDP_DATA
+
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
+        eu_countries=pd.DataFrame(eu_countries)
+        eu_countries.columns=['Country']
+        eu_top_20=['France','Germany','Italy','Spain','United Kingdom','Netherlands']
+        eu_top_20=pd.DataFrame(eu_top_20)
+        eu_top_20.columns=['Country']
+
+
+        my_sql = '''
+                select
+                case 
+                WHEN Country in (select distinct Country from eu_top_20) then 'Top 20 EU'
+                WHEN Country in (select distinct Country from eu_countries) then 'Non Top 20 EU'
+                WHEN Country not in (select distinct Country from eu_countries) then [Country]
+                ELSE 'Other' END [Continental],
+                [Year],
+                avg([GDP Pct Growth]) [Avg GDP Pct Growth]
+                from my_data_frame
+                where Continental in ('China','Top 20 EU','Non Top 20 EU','United States')
+                group by [Continental],[Year]
+                
+                UNION
+                
+                select
+                Country as [Continental],
+                [Year],
+                avg([GDP Pct Growth]) [Avg GDP Pct Growth]
+                from my_data_frame
+                where Country='Denmark'
+                group by [Continental],[Year]
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+        
+        return my_return_data
 
     def get_gdp_all_data(self):
 
