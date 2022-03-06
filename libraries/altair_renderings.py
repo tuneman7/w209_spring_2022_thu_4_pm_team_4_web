@@ -1357,3 +1357,22 @@ class AltairRenderings:
                 )
 
         return my_chart
+
+    def china_trade_war_slide_four(self,width=250,height=180):
+        brazil  = self.get_altaire_line_chart_county_trade_for_matrix("China","Brazil")
+        brazil_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("China","Brazil", "exports")
+        australia  = self.get_altaire_line_chart_county_trade_for_matrix("China","Brazil")
+        australia_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("China","Brazil", "exports")
+        row_1  = (brazil | brazil_b ).resolve_scale(
+            color='independent')
+        row_3  = (australia | australia_b ).resolve_scale(
+            color='independent')
+        my_chart = (row_1 & row_3).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
+        
