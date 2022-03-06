@@ -1260,7 +1260,7 @@ class AltairRenderings:
         trade  = self.get_import_export_balance_top_five("Iran",for_matrix=True,width=width,height=height)
 
 
-        row_1 = (top_five_partners | trade ).resolve_scale(
+        row_1 = (trade | top_five_partners ).resolve_scale(
             color='independent')
         my_chart = (row_1).configure_axis(
                     grid=False
