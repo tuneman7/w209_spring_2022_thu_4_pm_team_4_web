@@ -1270,4 +1270,19 @@ class AltairRenderings:
 
         return my_chart
 
+    def get_fourt_page_of_jcpoa_chart(self,width=340,height=200):
+
+        gdp_impact = self.get_time_series_gdp_trade_for_matrix("Iran",width=width,height=height)
+        russia  = self.get_altaire_line_chart_county_trade_for_matrix("Iran","Russia",width=width,height=height)
+
+
+        row_1 = (gdp_impact & russia ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
 
