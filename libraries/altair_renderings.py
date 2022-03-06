@@ -1342,3 +1342,18 @@ class AltairRenderings:
         ).properties(title=country,width=(width),height=(height))
 
         return chart1
+
+
+    def china_trade_war_slide_three(self,width=250,height=180):
+        china_world = self.get_altaire_line_chart_county_trade_for_matrix("China","World",width=width,height=height)
+        united_states_world = self.get_altaire_line_chart_county_trade_for_matrix("United States","World",width=width,height=height)
+
+        row_1 = (china_world | united_states_world ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart

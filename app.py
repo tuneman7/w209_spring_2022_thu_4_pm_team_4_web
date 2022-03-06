@@ -304,6 +304,14 @@ def render_world_event_graphs():
                 ).to_json()
         if slide_no == "3":
             print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_three().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()                
+                
+        if slide_no == "4":
+            print("mybozo")
             chart_json = my_altair.get_altaire_dual_pie_chart_by_types_for_matrix("United States","China", "exports",width=500,height=300).configure_axis(
                     grid=False
                 ).configure_view(

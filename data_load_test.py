@@ -16,7 +16,7 @@ def main():
     #print(imp_object.get_top_20_gdp_data_for_map())
     
     my_altair = AltairRenderings()
-    my_altair.
+    my_altair.china_trade_war_slide_three()
     
 
 main()
