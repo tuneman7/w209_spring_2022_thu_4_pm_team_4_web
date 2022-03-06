@@ -249,7 +249,7 @@ def introduction_content():
     return jsonify({'htmlresponse': render_template('pages/placeholder.introduction.html')})
 
 @app.route("/eu_trade_content",methods=["POST","GET"])
-def introduction_content():
+def eu_trade_content():
     print("mybozo eu_trade_content")
     #placeholder.china_trade.html
     return jsonify({'htmlresponse': render_template('pages/placeholder.eu_trade.html')})
@@ -264,12 +264,17 @@ def render_world_event_graphs():
     event_name = "JCPOA"
     chart_json=None
     event_text=None
+    slide_no = None
     if request.method == 'POST':
         event_name = request.form["event_name"]
+        slide_no = request.form["slide_no"]
 
     if event_name == "RCEP":
-        chart_json = my_altair.get_asian_trading_partners().to_json()
-        file_name = event_name.lower() +".txt"
+        if slide_no == "1":
+            chart_json = my_altair.get_asian_trading_partners().to_json()
+        if slide_no == "2":
+            chart_json = my_altair.get_lines_for_top5_countries().to_json()
+        file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
 

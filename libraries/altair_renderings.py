@@ -181,7 +181,7 @@ class AltairRenderings:
 
         my_data = self.my_data_object
 
-        title = source_country + "'s Top 5 Trading Partners"
+        title = source_country + "'s Imports, Exports, and Net Trade"
         if source_country.lower() == "world":
             source_country = "world"
 
@@ -526,6 +526,25 @@ class AltairRenderings:
         
         return_chart = alt.layer(line,points).configure_axis(grid=False)
         return return_chart
+
+    def get_lines_for_top5_countries(self,width=300,height=200):
+        #time_s = self.get_altaire_line_chart_county_trade_for_matrix(source_country,"World",width=width,height=height)
+        #get_import_export_balance_top_five(source_country,for_matrix=True,width=width,height=height)
+        indo = self.get_import_export_balance_top_five("Indonesia",for_matrix=True,width=width,height=height)
+        aus = self.get_import_export_balance_top_five("Australia",for_matrix=True,width=width,height=height)
+        sk = self.get_import_export_balance_top_five("South Korea",for_matrix=True,width=width,height=height)
+        jap = self.get_import_export_balance_top_five("Japan",for_matrix=True,width=width,height=height)
+
+        row_1  = (sk | jap )
+        row_3  = (indo | aus )
+        my_chart = (row_1 & row_3).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
 
     def get_charts_for_click_from_world_map(self,source_country,width=300,height=200):
         top_5  = self.get_altaire_bar_top5_partners_for_matrix(source_country,width=width,height=height)

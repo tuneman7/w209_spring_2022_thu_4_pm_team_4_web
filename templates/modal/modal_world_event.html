@@ -32,8 +32,23 @@
   {% endif %}
 
 <script>
-  $(document).ready(function () {
 
+var slider_running = true;
+
+function animate_slider()
+{
+   
+    var val;
+
+    val = $('#slider').val();
+    
+    alert(document.querySelector("#world_event_rendering_chart > div > form > div > label > input[type=range]"));
+    
+
+}
+
+  $(document).ready(function () {
+    
     page_not_loading();
 
 });
