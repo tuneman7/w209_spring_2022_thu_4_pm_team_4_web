@@ -1,3 +1,3 @@
-<b>Net Trade Between RCEP members:</b><br/>
-The charts below show four RCEP members trade balances.  A positive net value means that that country brings cash <b>into</b> its economy while a nevative value means that country is in effect <b>exporting money</>.
-<br/><br/>
+<b>Net trade between RCEP members:</b>
+<br/>
+The graphs below show net trade between RCEP member nations.  A positive trade balance means a country has made money with that partner in net trade, a negative net trade balance means that a trading partner has in essence <b>exported dollars</b>.
