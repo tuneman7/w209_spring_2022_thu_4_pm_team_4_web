@@ -279,9 +279,25 @@ def render_world_event_graphs():
     #am here
     if event_name == "JCPOA":
         if slide_no == "1":
-            chart_json = my_altair.get_iran_trade_deal_line_charts().to_json()
+            chart_json = my_altair.get_altaire_line_chart_county_trade_for_matrix("Iran","World",width=600,height=300).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
         if slide_no == "2":
-            chart_json = my_altair.get_second_page_jcpoa_charts().to_json()
+            chart_json = my_altair.get_iran_trade_deal_line_charts().to_json()
+        if slide_no == "3":
+            chart_json = my_altair.get_third_page_jcpoa_charts().to_json()
+        if slide_no == "4":
+            chart_json = my_altair.get_fourt_page_of_jcpoa_chart().to_json()
+
+    if event_name == "USChinatradeWar":
+        if slide_no == "1":
+            print("mybozo")
+            chart_json = None
+
+
+            
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
