@@ -192,6 +192,9 @@ function move_forward()
     {
         $("#move_forward").hide();
     }
+    else{
+        $("#move_forward").show();
+    }
 
 }
 
@@ -211,6 +214,14 @@ function back_to_list()
         slide_no-=1;
         page_loading();
         render_world_event_graphs(current_event_name,slide_no);
+        
+        if(!(slide_no<total_slides))
+        {
+            $("#move_forward").hide();
+        }
+        else{
+            $("#move_forward").show();
+        }
     }
 
 }
