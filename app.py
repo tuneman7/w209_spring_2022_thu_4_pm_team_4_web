@@ -248,6 +248,14 @@ def introduction_content():
     #placeholder.china_trade.html
     return jsonify({'htmlresponse': render_template('pages/placeholder.introduction.html')})
 
+@app.route("/eu_trade_content",methods=["POST","GET"])
+def introduction_content():
+    print("mybozo eu_trade_content")
+    #placeholder.china_trade.html
+    return jsonify({'htmlresponse': render_template('pages/placeholder.eu_trade.html')})
+
+
+
 @app.route("/render_world_event_graphs",methods=["POST","GET"])
 def render_world_event_graphs():
     my_altair = AltairRenderings()
