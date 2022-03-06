@@ -1253,16 +1253,15 @@ class AltairRenderings:
 
         return my_chart
 
-    def get_second_page_jcpoa_charts(self,width=340,height=200):
+#am here
+    def get_third_page_jcpoa_charts(self,width=340,height=200):
+        top_five_partners = self.get_altaire_bar_top5_partners_for_matrix("Iran",width=width,height=height)
+        gdp = self.get_time_series_gdp_trade_for_matrix("Iran",width=width,height=height)
+        trade  = self.get_import_export_balance_top_five("Iran",for_matrix=True,width=width,height=height)
 
-        sk = self.get_altaire_line_chart_county_trade_for_matrix("Iran","South Korea",width=width,height=height)
-        spain = self.get_altaire_line_chart_county_trade_for_matrix("Iran","Spain",width=width,height=height)
-        usa = self.get_altaire_line_chart_county_trade_for_matrix("Iran","United States",width=width,height=height)
-        jap = self.get_altaire_line_chart_county_trade_for_matrix("Iran","United Kingdom",width=width,height=height)
 
-
-        row_1 = (sk | spain )
-        row_2  = (usa | jap )
+        row_1 = (top_five_partners | trade )
+        row_2  = (gdp)
         my_chart = (row_1 & row_2).configure_axis(
                     grid=False
                 ).configure_view(
