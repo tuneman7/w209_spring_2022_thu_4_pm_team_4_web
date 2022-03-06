@@ -1256,13 +1256,13 @@ class AltairRenderings:
     #am here
     def get_third_page_jcpoa_charts(self,width=340,height=200):
         top_five_partners = self.get_altaire_bar_top5_partners_for_matrix("Iran",width=width,height=height)
-        gdp = self.get_time_series_gdp_trade_for_matrix("Iran",width=width,height=height)
+
         trade  = self.get_import_export_balance_top_five("Iran",for_matrix=True,width=width,height=height)
 
 
-        row_1 = (top_five_partners | trade )
-        row_2  = (gdp)
-        my_chart = (row_1 & row_2).configure_axis(
+        row_1 = (top_five_partners | trade ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
                     grid=False
                 ).configure_view(
                     strokeWidth=0
