@@ -296,7 +296,14 @@ def render_world_event_graphs():
             print("mybozo")
             chart_json = my_altair.get_china_trade_with_us_pie_chart(width=150,height=150).to_json()
 
-
+    if event_name == "USChinatradeWar":
+        if slide_no == "2":
+            print("mybozo")
+            chart_json = my_altair.get_altaire_line_chart_county_trade_for_matrix("United States","China",width=600,height=300).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
             
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
