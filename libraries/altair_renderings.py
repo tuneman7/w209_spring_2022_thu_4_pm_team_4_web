@@ -1375,3 +1375,19 @@ class AltairRenderings:
 
         return my_chart
 
+    def china_trade_war_slide_five(self,width=250,height=180):
+        brazil  = self.get_altaire_line_chart_county_trade_for_matrix("United States","Vietnam",width=width,height=height)
+        brazil_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("United States","Vietnam", "exports",width=width,height=height)
+        australia  = self.get_altaire_line_chart_county_trade_for_matrix("United States","Malaysia",width=width,height=height)
+        australia_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("United States","Malaysia", "exports",width=width,height=height)
+        row_1  = (brazil | brazil_b ).resolve_scale(
+            color='independent')
+        row_3  = (australia | australia_b ).resolve_scale(
+            color='independent')
+        my_chart = (row_1 & row_3).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart

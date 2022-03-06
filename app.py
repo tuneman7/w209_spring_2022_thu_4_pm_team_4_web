@@ -317,6 +317,15 @@ def render_world_event_graphs():
                 ).configure_view(
                     strokeWidth=0
                 ).to_json()            
+
+        if slide_no == "5":
+            print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_five().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()            
+
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
