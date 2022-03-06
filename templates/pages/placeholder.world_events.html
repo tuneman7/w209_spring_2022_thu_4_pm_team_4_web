@@ -93,7 +93,7 @@
                             <div class="col-md-2">
                                 <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="back_to_list()" id="move_back"/>
                             </div>
-                            <div class="col-md-8"></div>
+                            <div class="col-md-8 text-center"><a onclick="back_to_events()">Back to Events</a></div>
                             <div class="col-md-2 float-right">
                                 <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward" onclick="move_forward()"/>
                             </div>
@@ -198,6 +198,12 @@ function move_forward()
 
 }
 
+function back_to_events()
+{
+    slide_no = 1;
+    back_to_list();
+}
+
 function back_to_list()
 {
     if(slide_no==1)
@@ -214,7 +220,7 @@ function back_to_list()
         slide_no-=1;
         page_loading();
         render_world_event_graphs(current_event_name,slide_no);
-        
+
         if(!(slide_no<total_slides))
         {
             $("#move_forward").hide();

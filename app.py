@@ -272,6 +272,12 @@ def render_world_event_graphs():
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
 
+    file_name = event_name.lower() +"_"+ slide_no+".txt"
+    load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+    print(load_file_name)
+    event_text = utility.get_data_from_file(load_file_name)
+
+
     if event_name == "RCEP":
         if slide_no == "1":
             chart_json = my_altair.get_asian_trading_partners().to_json()
@@ -331,11 +337,6 @@ def render_world_event_graphs():
                     strokeWidth=0
                 ).to_json()            
 
-        file_name = event_name.lower() +"_"+ slide_no+".txt"
-        load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
-        event_text = utility.get_data_from_file(load_file_name)
-
-    
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
 
