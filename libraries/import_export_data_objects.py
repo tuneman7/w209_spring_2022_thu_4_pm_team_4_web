@@ -556,9 +556,11 @@ class import_export_data(Utility):
                     (
                     select
                     case 
+                    WHEN [country] in ('United States') then 'US'
+                    WHEN [country] in ('China') then [country]
                     WHEN [country] in (select distinct Country from eu_countries) then 'EU'
-                    WHEN [country] not in (select distinct Country from eu_countries) then 'World'
-                    ELSE 'World'
+                    WHEN [country] not in (select distinct Country from eu_countries) then 'RoW'
+                    ELSE 'RoW'
                     END [Top20group],
                     [year],
                     [Trade Group],
@@ -574,10 +576,12 @@ class import_export_data(Utility):
                     SELECT
                     [year],
                     case 
+                    WHEN [country] in ('United States') then 'US'
+                    WHEN [country] in ('China') then [country]
                     WHEN [country] in (select distinct Country from eu_countries) then 'EU'
-                    WHEN [country] not in (select distinct Country from eu_countries) then 'World'
-                    ELSE 'World'
-                    end [Top20group],
+                    WHEN [country] not in (select distinct Country from eu_countries) then 'RoW'
+                    ELSE 'RoW'
+                    END [Top20group],
                     sum([Imports]) Imports,
                     sum([Exports]) Exports,
                     sum([TotalTrade]) TotalTrade,
