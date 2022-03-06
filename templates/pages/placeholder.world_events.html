@@ -35,7 +35,9 @@
                             '{{event['event_description']}}',
                              '{{ event["year_begin"] }}',
                              '{{event["year_end"]}}',
-                             '{{event["event_name"]}}')">
+                             '{{event["event_name"]}}',
+                             '{{event["information_url"]}}',
+                             '{{event["number_of_images"]}}')">
                                 <td>{{ event["event_name"] }}</td>
                                 <td>{{ event["year_begin"] }}</td>
                                 <td>{% if event["year_end"] == "" %}
@@ -60,7 +62,8 @@
                                             '{{event['event_description']}}',
                                              '{{ event["year_begin"] }}',
                                              '{{event["year_end"]}}',
-                                             '{{event["event_name"]}}')">Visualize</button>
+                                             '{{event["event_name"]}}',
+                                             '{{event["information_url"]}}')">Visualize</button>
                                         </div>
                                         
                                     </div>
@@ -88,11 +91,15 @@
                     <div class="container-fluid" id="event_detail_rendering" style="display:none">
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="back_to_list()" />
+                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="back_to_list()" id="move_back"/>
+                            </div>
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2 float-right">
+                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward" onclick="move_forward()"/>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-2"><br/></div>
+                            <div class="col-md-12"><br/></div>
                         </div>
 
                         <div class="row">
@@ -120,13 +127,16 @@
 
 <script>
 
+var slide_no = 1;
+var current_event_name="";
+
 function show_event_modal(event_name)
 {
     modal_id = "#"+event_name;
     $(modal_id).modal('show'); 
 }
 
-function show_event_details(event_name,event_text,year_begin,year_end,event_title)
+function show_event_details(event_name,event_text,year_begin,year_end,event_title,information_url,number_of_slides)
 {
 
     if(year_end=='')
@@ -134,7 +144,11 @@ function show_event_details(event_name,event_text,year_begin,year_end,event_titl
         year_end="Present"
     }
 
-    title = event_title + " " + year_begin + " - " + year_end
+    //alert(information_url)
+
+    hyperlink = "<a href='"+ information_url+"' target='"+information_url+"' window='"+information_url+"'><img src='./static/images/book-svgrepo-com.svg' /></a>"
+
+    title = event_title + " " + year_begin + " - " + year_end + " " + hyperlink
 
     page_loading();
     modal_id = "#"+event_name;
@@ -150,27 +164,55 @@ function show_event_details(event_name,event_text,year_begin,year_end,event_titl
     document.getElementById('event_title').innerHTML += ": " + title;
     document.getElementById("event_render_container").innerHTML = "";
 
-    render_world_event_graphs(event_name);
+    
+    if((number_of_slides>1))
+    {
+        $("#move_forward").show();
+    }
+    else
+    {
+        $("#move_forward").hide();
+    }
 
+    current_event_name = event_name;
+
+    render_world_event_graphs(event_name,slide_no);
+
+}
+
+function move_forward()
+{
+    slide_no +=1;
+    page_loading();
+    render_world_event_graphs(current_event_name,slide_no);
 }
 
 function back_to_list()
 {
+    if(slide_no==1)
+    {
     $("#event_detail_rendering").hide();
     modal_id = "#world_event_table";
     $(modal_id).show(); 
     modal_id = "#world_placeholder_image";
     $(modal_id).show(); 
     document.getElementById('event_title').innerHTML = "World Events";
+    }
+    else
+    {
+        slide_no-=1;
+        page_loading();
+        render_world_event_graphs(current_event_name,slide_no);
+    }
 
 }
 
-function render_world_event_graphs(event_name){
+function render_world_event_graphs(event_name,slide_no){
 
           $.ajax({
               url: '/render_world_event_graphs',
               type: 'post',
-              data: {event_name: event_name},
+              data: {event_name: event_name, slide_no: slide_no},
               success: function(data){ 
                   $('#event_render_container').html(data); 
                   $('#event_render_container').append(data.htmlresponse);
