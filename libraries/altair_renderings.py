@@ -958,6 +958,7 @@ class AltairRenderings:
     def get_nafta_net_trade_chart(self,source_country):
         #NOT SET-UP YET
         #CAN CHANGE TO NAFTA & EU
+
         my_data = self.my_data_object
         
         title = "" + source_country + "Trade Imports, Exports, Net Trade"

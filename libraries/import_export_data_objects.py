@@ -861,6 +861,56 @@ class import_export_data(Utility):
 
         return my_return
 
+    def get_trade_region_map_data(self):
+
+        top_20_trading_nations = self.get_distinct_country_list(as_data_frame=True)
+
+        nafta_countries=['United States','Mexico','Canada']
+        nafta_countries=pd.DataFrame(nafta_countries)
+        nafta_countries.columns=['Country']
+        nafta_countries
+        
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
+        eu_countries=pd.DataFrame(eu_countries)
+        eu_countries.columns=['Country']
+        eu_top_20=['France','Germany','Italy','Spain','United Kingdom','Netherlands']
+        eu_top_20=pd.DataFrame(eu_top_20)
+        eu_top_20.columns=['Country']
+
+        global ALL_COUNTRIES_GDP_DATA
+
+        my_data = ALL_COUNTRIES_GDP_DATA
+
+        sql = '''
+        SELECT 
+        Country,
+        Year,
+        [GDP per capita],
+        [Population],
+        [GDP],
+        [GDP $B],
+        case
+        WHEN Country in (select distinct Country from eu_countries) then 'European Union'
+        WHEN Country in (select distinct Country from nafta_countries) then 'NAFTA'
+        WHEN Country in ('China') then [Country]
+        ELSE 'Other'
+        END [Trade Group Map],
+        case
+        WHEN Country in (select distinct Country from top_20_trading_nations) then 'Top 20'
+        WHEN Country in (select distinct Country from top_20_trading_nations) then 'Non Top 20'
+        END [Top 20]
+        FROM my_data
+        where (Country in (select distinct Country from eu_countries)
+        or Country in (select distinct Country from nafta_countries)
+        or Country in ('China'))
+        and Year==2020
+        '''
+
+        my_return = psql.sqldf(sql)
+
+        return my_return
+
     def get_Chinadata_by_country(self):
 
         global ALL_COUNTRIES_DATA_FRAME
