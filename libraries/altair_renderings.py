@@ -1235,5 +1235,188 @@ class AltairRenderings:
 
         return my_chart
 
+    def get_iran_trade_deal_line_charts(self,width=340,height=200):
+
+        sk = self.get_altaire_line_chart_county_trade_for_matrix("Iran","South Korea",width=width,height=height)
+        spain = self.get_altaire_line_chart_county_trade_for_matrix("Iran","Spain",width=width,height=height)
+        usa = self.get_altaire_line_chart_county_trade_for_matrix("Iran","United States",width=width,height=height)
+        jap = self.get_altaire_line_chart_county_trade_for_matrix("Iran","United Kingdom",width=width,height=height)
 
 
+        row_1 = (sk | spain )
+        row_2  = (usa | jap )
+        my_chart = (row_1 & row_2).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
+    #am here
+    def get_third_page_jcpoa_charts(self,width=340,height=200):
+        top_five_partners = self.get_altaire_bar_top5_partners_for_matrix("Iran",width=width,height=height)
+
+        trade  = self.get_import_export_balance_top_five("Iran",for_matrix=True,width=width,height=height)
+
+
+        row_1 = (trade | top_five_partners ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
+    def get_china_trade_with_us_pie_chart(self,height=200, width=200):
+        title = "Percentage of Total Trades Done with China"
+        my_data = self.my_data_object
+        df = my_data.get_Chinadata_by_country()
+        df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
+        # GDP growth correlation
+        china_gdp_df = df[df['Country'] == 'China'][['Country', 'GDP Growth Pct']].reset_index(drop = True)
+        other_gdp_df = df[df['Country'] != 'China'][['Country', 'GDP Growth Pct']]
+        other_gdp_df = other_gdp_df.drop_duplicates().reset_index(drop = True)
+        country_list = df[df['Country'] !='China']['Country'].unique()
+
+        country_list = df[df['Country'] =='United States']['Country'].unique()
+
+        num_country_per_line = math.ceil(len(country_list)/3.0)
+
+        gdp_correl = {}
+        for country in country_list:
+            gdp_correl[country] = china_gdp_df['GDP Growth Pct'].corr(
+                other_gdp_df[other_gdp_df['Country']==country]['GDP Growth Pct'].reset_index(drop = True))
+        gdp_correl_df = pd.DataFrame(gdp_correl.items(), columns=['Country', 'GDPcorrel_w_China'])
+
+        df = df.merge(gdp_correl_df, on = 'Country', how = 'left')
+        # Slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # Pie charts
+        base = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isChinaPartner", type="nominal",
+                            scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
+                                                        'Trades with Others', 'Trade/GDP ratio change'],
+                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                            legend = alt.Legend(title="Key")),
+
+            tooltip=alt.Tooltip('total_trade', format="$,.0f")
+        )
+        chart1 = alt.hconcat()
+        base_pie = base.transform_filter(
+            alt.FieldEqualPredicate(field='Country', equal='United States')
+        ).mark_arc(outerRadius=(width))
+
+        base_text = base.transform_calculate(
+            PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='Country', equal=country)
+        ).mark_text(radius=(width+15), size=12).encode(
+            text=alt.Text("PercentOfTotal:Q", format='.1%')
+        )
+        chart1 |= (base_pie+base_text).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(title=country,width=(width),height=(height))
+
+        return chart1
+
+
+    def china_trade_war_slide_three(self,width=250,height=180):
+        china_world = self.get_altaire_line_chart_county_trade_for_matrix("China","World",width=width,height=height)
+        united_states_world = self.get_altaire_line_chart_county_trade_for_matrix("United States","World",width=width,height=height)
+
+        row_1 = (china_world | united_states_world ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
+    def china_trade_war_slide_four(self,width=250,height=180):
+        brazil  = self.get_altaire_line_chart_county_trade_for_matrix("China","Brazil",width=width,height=height)
+        brazil_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("China","Brazil", "exports",width=width,height=height)
+        australia  = self.get_altaire_line_chart_county_trade_for_matrix("China","Australia",width=width,height=height)
+        australia_b    = self.get_altaire_dual_pie_chart_by_types_for_matrix("China","Australia", "exports",width=width,height=height)
+        row_1  = (brazil | brazil_b ).resolve_scale(
+            color='independent')
+        row_3  = (australia | australia_b ).resolve_scale(
+            color='independent')
+        my_chart = (row_1 & row_3).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+
+    def china_trade_war_slide_five(self,width=250,height=180):
+        brazil  = self.get_altaire_line_chart_county_trade_for_matrix("United States","Vietnam",width=width,height=height)
+        australia  = self.get_altaire_line_chart_county_trade_for_matrix("United States","Malaysia",width=width,height=height)
+        row_1  = (brazil | australia ).resolve_scale(
+            color='independent')
+        my_chart = row_1.configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart
+        
+    def get_altaire_scatter_Covid(self,width=300,height=200):
+
+        my_data = self.my_data_object
+        title = "World economy growth in 2020"
+        
+        df = my_data.get_top20_2020_gdp()
+        
+        # scatter plot
+        base = alt.Chart(df).mark_point().encode(
+            x = "GDP Pct Growth:Q",
+            y = "Trade Total Change %:Q",
+            size = "Inflation, consumer prices",
+            color = alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='tableau20'), legend=None),
+            tooltip=[alt.Tooltip('GDP Pct Growth', format=".2f"),
+                     alt.Tooltip('Trade Total Change %', format=".2f"),
+                     alt.Tooltip('Inflation, consumer prices', format=".2f")]
+        )
+
+        text = alt.Chart(df).mark_text(align='center', dy=13).encode(
+            x = "GDP Pct Growth:Q",
+            y = "Trade Total Change %:Q",
+            text="Country:N",
+            color = alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='tableau20'), legend=None)
+        )
+        xrule = alt.Chart().mark_rule(
+            strokeWidth=1
+        ).encode(x=alt.datum(0))
+
+        yrule = alt.Chart().mark_rule(
+            strokeWidth=1
+        ).encode(y=alt.datum(0))
+        return (base + text + xrule + yrule)
+    
+    def get_fourt_page_of_jcpoa_chart(self,width=340,height=200):
+
+        gdp_impact = self.get_time_series_gdp_trade_for_matrix("Iran",width=width,height=height)
+        russia  = self.get_altaire_line_chart_county_trade_for_matrix("Iran","Russia",width=width,height=height)
+
+
+        row_1 = (gdp_impact & russia ).resolve_scale(
+            color='independent')
+        my_chart = (row_1).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                )
+
+        return my_chart

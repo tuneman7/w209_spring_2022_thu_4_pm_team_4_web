@@ -970,7 +970,7 @@ class import_export_data(Utility):
         WHERE gdp_data.Country in (''' +  str(country_set)[1:-1] + ''')
         '''
         my_return_data = psql.sqldf(my_sql)
-        #print(my_return_data.head(10))
+
         return my_return_data
 
     def get_top_20_gdp_data_for_map(self):
@@ -1031,7 +1031,29 @@ class import_export_data(Utility):
 
     #    return my_return
 
+    def get_top20_2020_gdp(self):
 
+        global ALL_COUNTRIES_DATA_FRAME
+        global ALL_COUNTRIES_GDP_DATA
+
+        trade_data = ALL_COUNTRIES_DATA_FRAME
+        gdp_df = ALL_COUNTRIES_GDP_DATA
+
+        country_sql = "SELECT DISTINCT country FROM trade_data"
+        
+        country_set = psql.sqldf(country_sql)['country'].values.tolist()
+
+        my_sql = '''
+        SELECT
+            Country,
+            [GDP Pct Growth],
+            [Inflation, consumer prices],
+            [Trade Total Change %]
+        FROM gdp_df
+        WHERE Year = 2020 and Country in (''' +  str(country_set)[1:-1] + ''')
+        '''
+        my_return_data = psql.sqldf(my_sql)
+        return my_return_data
 
 
         

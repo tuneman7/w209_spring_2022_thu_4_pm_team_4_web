@@ -28,7 +28,10 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+from libraries.import_export_data_objects import import_export_data as Import_Export_Data
+from libraries.altair_renderings import AltairRenderings
+from libraries.utility import Utility
+import altair as alt
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -106,11 +109,6 @@ def get_carousel_width():
 # Controllers.
 #----------------------------------------------------------------------------#
 
-from libraries.import_export_data_objects import import_export_data as Import_Export_Data
-from libraries.altair_renderings import AltairRenderings
-from libraries.utility import Utility
-import altair as alt
-
 
 @app.route('/fourchartmatrix', methods=['POST', 'GET'])
 def fourchartmatrix():
@@ -182,13 +180,18 @@ def top5products():
 #    chart_json = my_altair.get_altaire_dual_pie_chart_by_types(source_country, target_country, direction).to_json()
 #    form = CountryVisualizationFormWithDirection(request.form,current_target_country=target_country,current_source_country=source_country, direction = direction) 
 #    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,chart_json = chart_json,form=form,current_source_country=source_country,current_target_country=target_country, direction = direction)
-def China_pie_chart():
+#def China_pie_chart():
+#    my_altair = AltairRenderings()
+
+#    source_country = "China"
+#    chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
+#    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+
+def Covid_chart():
     my_altair = AltairRenderings()
 
-    source_country = "China"
-    chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
+    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
     return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
-
 
 @app.route('/world1')
 def world1():
@@ -269,6 +272,12 @@ def render_world_event_graphs():
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
 
+    file_name = event_name.lower() +"_"+ slide_no+".txt"
+    load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+    print(load_file_name)
+    event_text = utility.get_data_from_file(load_file_name)
+
+
     if event_name == "RCEP":
         if slide_no == "1":
             chart_json = my_altair.get_asian_trading_partners().to_json()
@@ -277,6 +286,56 @@ def render_world_event_graphs():
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
         event_text = utility.get_data_from_file(load_file_name)
+
+    #am here
+    if event_name == "JCPOA":
+        if slide_no == "1":
+            chart_json = my_altair.get_altaire_line_chart_county_trade_for_matrix("Iran","World",width=600,height=300).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
+        if slide_no == "2":
+            chart_json = my_altair.get_iran_trade_deal_line_charts().to_json()
+        if slide_no == "3":
+            chart_json = my_altair.get_third_page_jcpoa_charts().to_json()
+        if slide_no == "4":
+            chart_json = my_altair.get_fourt_page_of_jcpoa_chart().to_json()
+
+    if event_name == "USChinatradeWar":
+        if slide_no == "1":
+            print("mybozo")
+            chart_json = my_altair.get_china_trade_with_us_pie_chart(width=150,height=150).to_json()
+        if slide_no == "2":
+            print("mybozo")
+            chart_json = my_altair.get_altaire_line_chart_county_trade_for_matrix("United States","China",width=600,height=300).configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
+        if slide_no == "3":
+            print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_three().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()                
+                
+        if slide_no == "4":
+            print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_four().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()            
+
+        if slide_no == "5":
+            print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_five().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()            
 
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
