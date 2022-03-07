@@ -1054,7 +1054,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+30))
         
         chart2 = alt.hconcat()
         for country in country_list[num_country_per_line:num_country_per_line*2]:
@@ -1073,7 +1073,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+30))
 
         chart3 = alt.hconcat()
         for country in country_list[num_country_per_line*2:]:
@@ -1093,7 +1093,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+30))
         
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
@@ -1125,7 +1125,7 @@ class AltairRenderings:
             brush_selection
         ).properties(
             title="Click a country to see how its economy growth is associated to its trade growth",
-            width=(width*0.75),height=(height/10+50)
+            width=(width*0.75),height=(height/10)
         )
 
         # Correlation fact 
@@ -1137,7 +1137,7 @@ class AltairRenderings:
             alt.FieldEqualPredicate(field='Year', equal=2020)
         ).properties(
             title="GDP Growth Correlation with China",
-            width=(width*0.25),height=(height/10+50)
+            width=(width*0.25),height=(height/10)
         )
 
         # ruler selection
@@ -1204,7 +1204,7 @@ class AltairRenderings:
         gdp_combine = alt.layer(
             gdp_line#, text #points, selectors,rules,
         ).properties(
-            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-140)
         )
 
         return_chart = (chart1 & chart2 & chart3 & (dependency_chart | corr_text) & gdp_combine).configure_title(
