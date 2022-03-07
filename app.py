@@ -373,7 +373,7 @@ def render_china_graphs():
 
     try:
         file_name = event_name.lower() +"_"+ slide_no+".txt"
-        load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+        load_file_name = os.path.join(utility.get_this_dir(),"data","china_trade",file_name)
         print(load_file_name)
         event_text = utility.get_data_from_file(load_file_name)
     except:
@@ -397,7 +397,7 @@ def render_china_graphs():
             ).to_json()            
 
 
-    return jsonify({'htmlresponse': render_template('modal/china_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
+    return jsonify({'htmlresponse': render_template('modal/china_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,china_slide_no=slide_no)})
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])

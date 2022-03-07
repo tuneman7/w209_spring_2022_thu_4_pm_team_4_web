@@ -4,11 +4,11 @@
     <div class="container-fluid" id="china_event_detail_rendering" >
         <div class="row">
             <div class="col-md-2">
-                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="move_back_china()" id="move_back"/>
+                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="move_back_china()" id="move_back_china"/>
             </div>
             <div class="col-md-8 text-center">&nbsp;</div>
             <div class="col-md-2 float-right">
-                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward" onclick="move_forward_china()"/>
+                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward_china" onclick="move_forward_china()"/>
             </div>
         </div>
         <div class="row">
@@ -67,10 +67,47 @@
 
 <script>
 
+var china_slide_no = 1;
+var current_event_name = "";
+var china_total_slides = 2;
+
+function move_forward_china()
+{
+    china_slide_no +=1;
+    page_loading();
+    render_china_graphs("china_trade",china_slide_no);
+
+
+}
+
+function move_back_china()
+{
+    if(china_slide_no==1)
+    {
+        return;
+    }
+    china_slide_no -=1;
+    page_loading();
+    render_china_graphs("china_trade",china_slide_no);
+}
+
 
   $(document).ready(function () {
     
+    china_slide_no = {{china_slide_no}};
+
+    if(!(china_slide_no<china_total_slides))
+    {
+        $("#move_forward_china").hide();
+    }
+    else{
+        $("#move_forward_china").show();
+    }    
+
+
     page_not_loading();
+
+
 
 });
 </script>

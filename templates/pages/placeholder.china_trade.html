@@ -9,32 +9,9 @@
 
 <script>
 
-var china_slide_no = 1;
-var current_event_name = "";
-var china_total_slides = 2;
 
 
 
-function move_forward_china()
-{
-    china_slide_no +=1;
-    page_loading();
-    render_china_graphs("china_trade",china_slide_no);
-    if(!(china_slide_no<china_total_slides))
-    {
-        $("#move_forward").hide();
-    }
-    else{
-        $("#move_forward").show();
-    }
-
-}
-
-function move_back_china()
-{
-    china_slide_no = 1;
-    back_to_list();
-}
 
 function back_to_list()
 {
