@@ -1,7 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+  box-sizing: border-box;
+}
 
-<h1>About</h1>
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
- 
+.column {
+  float: left;
+  width: 25.0%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
 
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
 
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
 
+.container {
+  padding: 0 12px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+</style>
+</head>
+<body>
+
+<h2>Meet The Team</h2>
+<br>
+
+<div class="row">
+  <div class="column">
+    <div class="card">
+      <img src="./static/images/globe_1.svg" alt="Jane" style="width:100%" width="128" height="128">
+      <div class="container">
+        <h2>Amber Chen</h2>
+        <p class="title">CEO & Founder</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>sy7chen@ischool.berkeley.edu</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <img src="./static/images/people_2.svg" alt="Mike" style="width:100%" width="128" height="128">
+      <div class="container">
+        <h2>Don Irwin</h2>
+        <p class="title">Chief Infrastructure Officer</p>
+        <p>Some text that describes me.</p>
+        <p>don.irwin@ischool.berkeley.edu</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="column">
+    <div class="card">
+      <img src="./static/images/data_3.svg" alt="John" style="width:100%" width="128" height="128">
+      <div class="container">
+        <h2>Justin Peabody</h2>
+        <p class="title">Chief Data Offier</p>
+        <p>Some text that describes me.</p>
+        <p>justin.peabody@ischool.berkeley.edu</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="column">
+    <div class="card">
+      <img src="./static/images/story_4.svg" alt="John" style="width:100%" width="128" height="128">
+      <div class="container">
+        <h2>Fenjun Zhang</h2>
+        <p class="title">Art Director</p>
+        <p>Some text that describes me.</p>
+        <p>zhangs@ischool.berkeley.edu</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
