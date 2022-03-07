@@ -200,6 +200,13 @@ def china():
     chart_json = my_altair.get_china_section_1().to_json()
     return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
+@app.route('/china1')
+def china1():
+    my_altair = AltairRenderings()
+
+    chart_json = my_altair.get_china_section_2().to_json()
+    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+
 @app.route('/world1')
 def world1():
     my_altair = AltairRenderings()
@@ -279,10 +286,14 @@ def render_world_event_graphs():
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
 
-    file_name = event_name.lower() +"_"+ slide_no+".txt"
-    load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
-    print(load_file_name)
-    event_text = utility.get_data_from_file(load_file_name)
+
+    try:
+        file_name = event_name.lower() +"_"+ slide_no+".txt"
+        load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+        print(load_file_name)
+        event_text = utility.get_data_from_file(load_file_name)
+    except:
+        fido="dido"
 
 
     if event_name == "RCEP":
@@ -347,6 +358,46 @@ def render_world_event_graphs():
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
 
+@app.route("/render_china_graphs",methods=["POST","GET"])
+def render_china_graphs():
+    my_altair = AltairRenderings()
+    utility = Utility()
+    print("render_china_graphs()")
+    event_name = "JCPOA"
+    chart_json=None
+    event_text=None
+    slide_no = None
+    if request.method == 'POST':
+        event_name = request.form["event_name"]
+        slide_no = request.form["china_slide_no"]
+
+    try:
+        file_name = event_name.lower() +"_"+ slide_no+".txt"
+        load_file_name = os.path.join(utility.get_this_dir(),"data","world_events",file_name)
+        print(load_file_name)
+        event_text = utility.get_data_from_file(load_file_name)
+    except:
+        fido="dido"
+
+
+    if slide_no == "1":
+        print("mybozo")
+        chart_json = my_altair.get_china_section_1().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    if slide_no == "2":
+        print("mybozo")
+        chart_json = my_altair.get_china_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+
+    return jsonify({'htmlresponse': render_template('modal/china_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])

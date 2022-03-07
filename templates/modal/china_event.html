@@ -1,0 +1,77 @@
+
+<div class="container">
+
+    <div class="container-fluid" id="china_event_detail_rendering" >
+        <div class="row">
+            <div class="col-md-2">
+                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="move_back_china()" id="move_back"/>
+            </div>
+            <div class="col-md-8 text-center">&nbsp;</div>
+            <div class="col-md-2 float-right">
+                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward" onclick="move_forward_china()"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="event_detail_text_china">
+                    {% if event_text is not none %}
+                        {{event_text|safe}}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <br/>
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-md-12">
+                <div id="event_render_container_china">
+
+                    {% if chart_json is not none %}
+
+                        <div id="china_event_rendering_chart"></div>
+                        </div>
+                        <!-- Placeholder for the tooltip -->
+                        <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
+                        </div>
+                        <!-- Render Charts -->
+                        <script type="text/javascript">
+                
+                        function parse(url, div) {
+                        var opt = { mode: "vega-lite",
+                            renderer: "svg",
+                            actions: { export: true, source: false, editor: false }
+                            };
+                        vegaEmbed("#" + div, url, opt, function (error, result) {
+                        vegaTooltip.vegaLite(result.view, url);
+                        });
+                        }
+                        //Parse your Json variable here
+                        parse({{ chart_json | safe }} , "china_event_rendering_chart");
+                
+                        </script>
+
+                    {% endif %}
+              
+
+                </div>
+            </div>
+        </div>
+      </div>                    
+    </div>
+
+</div>
+
+
+<script>
+
+
+  $(document).ready(function () {
+    
+    page_not_loading();
+
+});
+</script>
+
