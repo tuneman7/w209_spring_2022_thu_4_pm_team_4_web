@@ -193,6 +193,13 @@ def Covid_chart():
     chart_json = my_altair.get_altaire_scatter_Covid().to_json()
     return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
+@app.route('/china')
+def china():
+    my_altair = AltairRenderings()
+
+    chart_json = my_altair.get_china_section_1().to_json()
+    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+
 @app.route('/world1')
 def world1():
     my_altair = AltairRenderings()

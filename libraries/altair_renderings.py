@@ -1420,3 +1420,224 @@ class AltairRenderings:
                 )
 
         return my_chart
+
+    def get_china_section_1(self,width=1000,height=600):
+
+        my_data = self.my_data_object
+
+        title = "Percentage of Total Trades Done with China"
+
+        df = my_data.get_Chinadata_by_country()
+        df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
+        # GDP growth correlation
+        china_gdp_df = df[df['Country'] == 'China'][['Country', 'GDP Growth Pct']].reset_index(drop = True)
+        other_gdp_df = df[df['Country'] != 'China'][['Country', 'GDP Growth Pct']]
+        other_gdp_df = other_gdp_df.drop_duplicates().reset_index(drop = True)
+        country_list = df[df['Country'] !='China']['Country'].unique()
+
+        #country_list = df[df['Country'] =='United States']['Country'].unique()
+
+        num_country_per_line = math.ceil(len(country_list)/3.0)
+
+        gdp_correl = {}
+        for country in country_list:
+            gdp_correl[country] = china_gdp_df['GDP Growth Pct'].corr(
+                other_gdp_df[other_gdp_df['Country']==country]['GDP Growth Pct'].reset_index(drop = True))
+        gdp_correl_df = pd.DataFrame(gdp_correl.items(), columns=['Country', 'GDPcorrel_w_China'])
+
+        df = df.merge(gdp_correl_df, on = 'Country', how = 'left')
+        # Slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # Pie charts
+        base = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isChinaPartner", type="nominal",
+                            scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
+                                                        'Trades with Others', 'Trade/GDP ratio change'],
+                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                            legend = alt.Legend(title="Key")),
+
+            tooltip=alt.Tooltip('total_trade', format="$,.0f")
+        )
+
+
+        chart1 = alt.hconcat()
+        for country in country_list[0:num_country_per_line]: 
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart1 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10))
+
+        chart2 = alt.hconcat()
+        for country in country_list[num_country_per_line:num_country_per_line*2]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart2 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10))
+
+        chart3 = alt.hconcat()
+        for country in country_list[num_country_per_line*2:]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+
+            chart3 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10))
+
+        # brush selection
+        brush_selection = alt.selection_single(fields=['Country'], empty='none')
+
+        # line charts
+        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#2f6684', size = 30).encode(
+            x = alt.Y('Country:N', sort='-y',
+                    axis=alt.Axis(labelAngle=-30, 
+                                    labelOverlap=False,
+                                    labelFontSize=12,
+                                    labelFontWeight = 'bold')),
+            y = 'PercentOfTotal:Q'
+        ).transform_calculate(
+            PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+        )
+        dependency_text = dependency_bars.mark_text(dy = -10).encode(
+            x = alt.Y('Country:N', sort='-y', axis = None),
+            y = 'PercentOfTotal:Q',
+            text=alt.Text("PercentOfTotal:Q", format='.1%')
+        )
+
+        dependency_chart = alt.layer(dependency_bars, dependency_text).transform_filter(
+            alt.FieldEqualPredicate(field='Year', equal=2020)
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='isChinaPartner', equal='Trades with China')
+        ).resolve_scale(
+            x = 'independent'
+        ).add_selection(
+            brush_selection
+        ).properties(
+            title="Click a country to see how its economy growth is associated to its trade growth",
+            width=(width*0.75),height=(height/10+50)
+        )
+
+        # Correlation fact 
+        corr_text = alt.Chart(df).mark_text(size = 40).encode(
+            text=alt.Text("GDPcorrel_w_China:Q", format='.1%')
+        ).transform_filter(
+            brush_selection
+        ).transform_filter(
+            alt.FieldEqualPredicate(field='Year', equal=2020)
+        ).properties(
+            title="GDP Growth Correlation with China",
+            width=(width*0.25),height=(height/10+50)
+        )
+
+        # ruler selection
+        nearest = alt.selection(type='single', nearest=True, on='mouseover',
+                        fields=['Year'], empty='none')
+
+        gdp_base = alt.Chart(df).transform_fold(
+            ['Trade/GDP ratio change', 'GDP Growth Pct']
+        )
+
+        gdp_line = gdp_base.mark_line().encode(
+            x = alt.X('Year:O',axis=alt.Axis(labelAngle=0)),
+            y = alt.Y('value:Q',axis=alt.Axis(title = 'YoY Growth %', format='.1f')),
+            color = 'key:N',
+            tooltip=[alt.Tooltip('Year'),
+                    alt.Tooltip('Trade/GDP ratio change', format=".2f"),
+                    alt.Tooltip('GDP Growth Pct', format=".2f")]
+        ).transform_filter(
+            brush_selection
+        )
+
+        selectors = gdp_base.mark_point().encode(
+            x=alt.X('Year:O',axis=alt.Axis(labelAngle=0)),
+            opacity=alt.value(0),
+        ).add_selection(
+            nearest
+        )
+
+        #points = gdp_line.mark_point().encode(
+        #    opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+        #)
+
+        points = gdp_line.mark_point(
+            opacity=0.0,
+            size=3000
+        ).encode(
+            x=alt.X('year:O',axis=None),
+            y=alt.Y('value:Q',axis=None),
+            tooltip=[alt.Tooltip('year'),
+                    alt.Tooltip('Trade/GDP ratio change', format=".2f"),
+                    alt.Tooltip('GDP Growth Pct', format=".2f")]
+        )
+
+        # Draw text labels near the points, and highlight based on selection
+        #text = gdp_line.mark_text(align='left', dx=5, dy=-5).encode(
+        #    text=alt.condition(nearest, 'value:Q', alt.value(' '))
+        #)
+        #text = gdp_base.mark_text(align='center', dx=5, dy=-5).encode(
+        #    x=alt.X('year:O',axis=None),
+        #    y=alt.Y('value:Q',axis=None),
+        #    text=alt.Text('value:Q', format='.1f'),
+        #    color = 'key:N'
+        #).transform_filter(
+        #    brush_selection
+        #)
+
+        # Draw a rule at the location of the selection
+        rules = gdp_base.mark_rule(color='gray').encode(
+            x='Year:Q',
+        ).transform_filter(
+            nearest
+        )
+
+        gdp_combine = alt.layer(
+            gdp_line#, text #points, selectors,rules,
+        ).properties(
+            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+        )
+
+        return_chart = (chart1 & chart2 & chart3 & (dependency_chart | corr_text) & gdp_combine).configure_title(
+            baseline="line-top",
+            dy = -5
+        )
+        ## https://stackoverflow.com/questions/67997825/python-altair-generate-a-table-on-selection
+        ## https://altair-viz.github.io/user_guide/transform/filter.html?highlight=filter
+        ## https://vega.github.io/vega/docs/schemes/        
+        return return_chart
