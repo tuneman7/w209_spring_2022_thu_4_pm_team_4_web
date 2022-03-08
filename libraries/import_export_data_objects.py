@@ -765,28 +765,30 @@ class import_export_data(Utility):
                 (
                 select
                     Country,
-                    'World' [Trading Partner],
+                    Year,
+                    'World' [Trading Group],
                     sum([Imports ($M)]*-1) Imports,
                     sum([Exports ($M)]) Exports,
                     sum([Net Exports ($M)]) Net_Exports
                     from my_data_frame
                     where Country in (select Country from nafta_countries)
-                    group by [Country], [Trading Partner]
+                    group by [Country], [Year], [Trading Group]
                 union
                 select
                     Country,
-                    'NAFTA' [Trading Partner],
+                    Year,
+                    'NAFTA' [Trading Group],
                     sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Imports ($M)]*-1 else 0 end) Imports,
                     sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Exports ($M)] else 0 end) Exports,
                     sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Net Exports ($M)] else 0 end) Net_Exports
                     from my_data_frame
                     where Country in (select Country from nafta_countries)
-                    group by [Country], [Trading Partner]
+                    group by [Country], [Year], [Trading Group]
                 ) t
                 '''
 
         my_return_data = psql.sqldf(my_sql)
-        
+
         return my_return_data
     
 

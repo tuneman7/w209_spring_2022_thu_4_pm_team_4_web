@@ -836,7 +836,6 @@ class AltairRenderings:
         return return_chart
 
 
-
     def get_time_series_gdp_compare_chart_form_matrix(self,source_country,target_country,width=300,height=200):
 
         my_data = self.my_data_object
@@ -956,7 +955,7 @@ class AltairRenderings:
         return_chart=alt.layer(bar,line).configure_axis(grid=False)
         return return_chart
     
-    def get_nafta_net_trade_chart(self,source_country):
+    def get_nafta_net_trade_chart(self,source_country,trade_group):
         #NOT SET-UP YET
         #CAN CHANGE TO NAFTA & EU
 
@@ -965,7 +964,10 @@ class AltairRenderings:
         title = "" + source_country + "Trade Imports, Exports, Net Trade"
         #title="Trade Imports, Exports, Net Trade"
 
-        df_set=my_data.get_data_by_source_and_target_country(source_country,'China')
+        source_country=source_country
+        trade_group=trade_group
+
+        df_set=my_data.get_data_by_source_and_target_country()
         df_set['Exports']=df_set['Exports ($M)']
         df_set['Imports']=df_set['Imports ($M)']*-1
         df_set['Net Exports']=df_set['Net Exports ($M)']
@@ -1062,6 +1064,67 @@ class AltairRenderings:
             direction_select).properties(height=200,width=300)
 
         return_chart=alt.hconcat(exp_chart,exp_top5).resolve_scale(color='independent')
+        return return_chart
+
+
+    def get_gdp_per_cap_lcu_chart(self,source_country,height=400,width=500):
+        #Function Ready to Go
+
+        my_data = self.my_data_object
+
+        source_country=source_country
+        df_gdp_nafta=my_data.get_gdp_data_by_country(source_country)
+
+        base = alt.Chart(df_gdp_nafta)
+
+        title='GDP per Capita Local Currency Unit'
+
+        bar = base.mark_bar().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+            #y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP Per Capita $"))#,
+            y=alt.Y('GDP per capita constant LCU',axis=alt.Axis(title="GDP Per Capita LCU $"))#,
+            #color="Country:N"
+
+        ).properties(
+            width=width,
+            height=height,
+            title=title
+            )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('GDP per capita constant LCU',axis=alt.Axis(title='')),
+            tooltip=['GDP per capita constant LCU']
+        ).properties(width=700)
+
+        return_chart = alt.layer(bar,points).configure_axis(grid=False)
+        return return_chart
+
+    def get_trade_group_gdp_growth_chart(self,trade_group,height=300,width=500):
+
+        my_data = self.my_data_object
+
+        trade_group=trade_group
+        if trade_group=='NAFTA':
+            nafta_gdp_growth=my_data.get_nafta_gdp_data_growth_rate()
+            base=alt.Chart(nafta_gdp_growth)
+
+        else:# trade_group='EU':
+            gdp_growth=my_data.get_eu_gdp_data_growth_rate('1')
+            base=alt.Chart(gdp_growth)
+
+        continent=base.mark_line().encode(
+            x=alt.X('Year:N'),
+            y=alt.Y('GDP Pct Growth:Q'),
+            color='Continental:N'
+            )
+
+        return_chart=continent.properties(height=height,width=width).configure_axis(grid=False)
         return return_chart
 
 
