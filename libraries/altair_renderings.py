@@ -1000,6 +1000,55 @@ class AltairRenderings:
         return_chart=alt.layer(bar,line).configure_axis(grid=False)
         return return_chart
 
+
+    def get_import_export_type_chart(self,source_country):
+        
+        my_data = self.my_data_object
+        direction_list=['imports','exports']
+        source_country=source_country
+
+        direction_dropdown = alt.binding_select(options= direction_list,name="Direction")
+        direction_select = alt.selection_single(fields=['Direction'], bind=direction_dropdown, init={'Direction': direction_list[0]})
+
+        #direction_input=direction
+
+        dataframe_ie=my_data.imports_exports_by_sectors_source(source_country)
+        dataframe_ie_grp=dataframe_ie.groupby(['Year','Direction','Reporting Economy','Type']).sum().reset_index()
+
+        dataframe_ie['Year Trade Rank']=dataframe_ie.groupby(['Year','Direction'])['Value'].rank(ascending=False)
+        dataframe_ie_top5=dataframe_ie[dataframe_ie['Year Trade Rank']<=5]
+        dataframe_ie_top5
+
+        baseexp=alt.Chart(dataframe_ie_grp)
+
+        #title='Import and Exports Type'
+
+        exp_chart=baseexp.mark_bar().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Value:Q'),
+            color='Type:N'
+        ).add_selection(
+            direction_select
+        ).transform_filter(
+            direction_select).properties(height=200,width=300)
+
+        title2='Import and Exports Product/Sector'
+
+        baseexp_t5=alt.Chart(dataframe_ie_top5)
+
+        exp_top5=baseexp_t5.mark_bar().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Value:Q'),
+            color='Product/Sector-reformatted:N'
+        ).add_selection(
+            direction_select
+        ).transform_filter(
+            direction_select).properties(height=200,width=300)
+
+        return_chart=alt.hconcat(exp_chart,exp_top5).resolve_scale(color='independent')
+        return return_chart
+
+
     def get_altaire_multi_charts_for_China(self,width=1000,height=600):
 
         my_data = self.my_data_object

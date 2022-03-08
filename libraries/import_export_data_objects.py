@@ -432,44 +432,22 @@ class import_export_data(Utility):
 
         return my_return_data
 
-    def imports_exports_by_sectors_source(self,source_country, direction):
+    def imports_exports_by_sectors_source(self,source_country):
 
         global ALL_COUNTRIES_BY_TYPE_DF
 
         my_data_frame = ALL_COUNTRIES_BY_TYPE_DF
-        if source_country.lower() != "world":
-            my_sql = '''
-            SELECT 
-                distinct
-                Year, Value,
-                [Product/Sector-reformatted],
-                [Type],
-                [Reporting Economy]
-            FROM my_data_frame
-            WHERE      
-                ([Reporting Economy] =  \'''' + source_country + '''\')
-            and
-                Direction = \'''' + direction + '''\'
-            and
-                [Product/Sector-reformatted] NOT LIKE '%Total%'
-            '''
-        else:
-            my_sql = '''
-            SELECT 
-                distinct
-                Year, Value,[Type],
-                [Product/Sector-reformatted],
-                [Reporting Economy]
-            FROM my_data_frame
-            WHERE      
-                [Reporting Economy] in (select distinct [Reporting Economy] from my_data_frame)
-                and [Reporting Economy] =  \'''' + source_country + '''\'
-            and
-                Direction = \'''' + direction + '''\'
-            and
-                [Product/Sector-reformatted] NOT LIKE '%Total%'
-            '''
-
+        my_sql = '''
+        SELECT 
+            distinct
+            Year, Value,
+            [Product/Sector-reformatted],
+            [Direction],
+            [Type],
+            [Reporting Economy]
+        FROM my_data_frame
+        WHERE [Product/Sector-reformatted] NOT LIKE '%Total%' and [Reporting Economy] =  \'''' + source_country + '''\'
+        '''
 
         my_return_data = psql.sqldf(my_sql)
 
@@ -806,8 +784,8 @@ class import_export_data(Utility):
 
         return my_return
 
-    def get_gdp_data_growth_rate(self,source_country):
-
+    def get_eu_gdp_data_growth_rate(self,source_country):
+        #eu or #nafta
         global ALL_COUNTRIES_GDP_DATA
         
         my_data_frame=ALL_COUNTRIES_GDP_DATA
@@ -842,11 +820,54 @@ class import_export_data(Utility):
                 avg([GDP Pct Growth]) [Avg GDP Pct Growth]
                 from my_data_frame
                 where Country='Denmark'
+                --Country ==source country
                 group by [Continental],[Year]
                 '''
 
         my_return_data = psql.sqldf(my_sql)
         
+        return my_return_data
+    
+    def get_nafta_gdp_data_growth_rate(self):
+        global ALL_COUNTRIES_GDP_DATA
+        
+        my_data_frame=ALL_COUNTRIES_GDP_DATA
+
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
+        eu_countries=pd.DataFrame(eu_countries)
+        eu_countries.columns=['Country']
+
+        nafta_countries=['United States','Mexico','Canada']
+        nafta_countries=pd.DataFrame(nafta_countries)
+        nafta_countries.columns=['Country']
+        nafta_countries
+
+        my_sql = '''
+                select
+                case 
+                WHEN Country in (select distinct Country from nafta_countries) then 'NAFTA'
+                WHEN Country in (select distinct Country from eu_countries) then 'European Union'
+                WHEN Country in ('China') then [Country]
+                ELSE 'Other' END [Continental],
+                [Year],
+                avg([GDP Pct Growth]) [GDP Pct Growth]
+                from my_data_frame
+                where Continental in ('China','European Union','NAFTA','Other')
+                group by [Continental],[Year]
+                
+                UNION
+                
+                select
+                Country as [Continental],
+                [Year],
+                [GDP Pct Growth] [GDP Pct Growth]
+                from my_data_frame
+                where Continental in ('United States','Mexico','Canada')
+                group by [Continental],[Year]
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
         return my_return_data
 
     def get_gdp_all_data(self):
