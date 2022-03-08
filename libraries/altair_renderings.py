@@ -1000,6 +1000,21 @@ class AltairRenderings:
         return_chart=alt.layer(bar,line).configure_axis(grid=False)
         return return_chart
 
+    def get_exchange_rate_chart(self,source_country,width=500,height=250):
+        
+        my_data = self.my_data_object
+        gdp=my_data.get_gdp_all_data()
+        gdp_c=gdp[gdp.Country==source_country]
+        base=alt.Chart(gdp_c)
+
+        exchange_rate=base.mark_line().encode(
+            x=alt.X('Year:N'),
+            y=alt.Y('exchange_rate:Q',axis=alt.Axis(title='Local Currency to $USD Exchange Rate',format='.2f')),
+            color='Country:N'
+            ).properties(height=height,width=width)
+        
+        return_chart=exchange_rate
+        return return_chart
 
     def get_import_export_type_chart(self,source_country):
         

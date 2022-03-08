@@ -807,7 +807,7 @@ class import_export_data(Utility):
                 WHEN Country not in (select distinct Country from eu_countries) then [Country]
                 ELSE 'Other' END [Continental],
                 [Year],
-                avg([GDP Pct Growth]) [Avg GDP Pct Growth]
+                avg([GDP Pct Growth]) [GDP Pct Growth]
                 from my_data_frame
                 where Continental in ('China','Top 20 EU','Non Top 20 EU','United States')
                 group by [Continental],[Year]
@@ -817,7 +817,7 @@ class import_export_data(Utility):
                 select
                 Country as [Continental],
                 [Year],
-                avg([GDP Pct Growth]) [Avg GDP Pct Growth]
+                avg([GDP Pct Growth]) [GDP Pct Growth]
                 from my_data_frame
                 where Country='Denmark'
                 --Country ==source country
