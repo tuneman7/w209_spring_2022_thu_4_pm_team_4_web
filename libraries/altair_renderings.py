@@ -780,7 +780,7 @@ class AltairRenderings:
     def get_altaire_dual_pie_chart_by_types_for_matrix(self,source_country,target_country, direction,width=300,height=200):
 
         my_data = self.my_data_object
-        title = source_country + " vs. "+ target_country + " Trade Type Distribution"
+        title =  source_country + " vs. "+ target_country + " " + direction + " breakdown"
         
         df = my_data.imports_exports_by_sectors(source_country, target_country, direction)
         country_data = df.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
@@ -830,7 +830,8 @@ class AltairRenderings:
             slider_selection
         ).properties(title=target_country,width=(width/2),height=height)
 
-        return_chart = alt.hconcat(source_pie_chart, target_pie_chart)
+        return_chart = alt.hconcat(source_pie_chart, target_pie_chart).properties(
+            title=alt.TitleParams(text=title,align="left"))
 
         return return_chart
 

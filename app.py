@@ -341,8 +341,13 @@ def render_world_event_graphs():
                 ).configure_view(
                     strokeWidth=0
                 ).to_json()                
-                
+
         if slide_no == "4":
+            print("mybozo")
+            chart_json = my_altair.get_altaire_dual_pie_chart_by_types_for_matrix("United States","China","exports",width=600,height=300).to_json()
+
+
+        if slide_no == "5":
             print("mybozo")
             chart_json = my_altair.china_trade_war_slide_four().configure_axis(
                     grid=False
@@ -350,7 +355,7 @@ def render_world_event_graphs():
                     strokeWidth=0
                 ).to_json()            
 
-        if slide_no == "5":
+        if slide_no == "6":
             print("mybozo")
             chart_json = my_altair.china_trade_war_slide_five().configure_axis(
                     grid=False
@@ -358,7 +363,7 @@ def render_world_event_graphs():
                     strokeWidth=0
                 ).to_json()            
 
-        if slide_no == "6":
+        if slide_no == "7":
             print("event no=",slide_no)
             is_json_graph = False
             chart_json = None
