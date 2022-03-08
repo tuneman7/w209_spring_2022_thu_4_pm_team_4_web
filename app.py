@@ -283,6 +283,8 @@ def render_world_event_graphs():
     chart_json=None
     event_text=None
     slide_no = None
+    image_path = None
+    event_hyperlink = None
     if request.method == 'POST':
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
@@ -357,16 +359,18 @@ def render_world_event_graphs():
                 ).to_json()            
 
         if slide_no == "6":
-            print("mybozo")
-            chart_json = my_altair.china_trade_war_slide_five().configure_axis(
-                    grid=False
-                ).configure_view(
-                    strokeWidth=0
-                ).to_json()            
+            print("event no=",slide_no)
+            is_json_graph = False
+            chart_json = None
+            event_hyperlink = "https://www.bloomberg.com/graphics/2022-china-nationalistic-online-shoppers/?srnd=bigtake&utm_medium=cpc_social&utm_source=facebook&utm_campaign=BLOM_ENG_EDITORL_COUSA_FB_SO_WENG_FOCUSPROSX_INTST_00XXXXCPM_2PFB_XXXX_GENERALINTSTX_XXXXX_COUSA_XXXXX_ALLFOA_CHID_C5_EN_PG_NFLINKS&dclid=CLv9icPXtfYCFYyJZAodquwDZQ"
+            image_path = "./static/images/lede.gif"
+            print(event_hyperlink)
 
 
 
-    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
+    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,
+    event_hyperlink=event_hyperlink,
+    image_path=image_path)})
 
 @app.route("/render_china_graphs",methods=["POST","GET"])
 def render_china_graphs():

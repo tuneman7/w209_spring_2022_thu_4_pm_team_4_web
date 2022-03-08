@@ -5,6 +5,14 @@
         {%endif%}
     </div>
 
+    {% if event_hyperlink is not none %}
+    <div id="event_hyperlink">
+      <a href="{{event_hyperlink}}" target="{{event_hyperlink}}" window="{{event_hyperlink}}">
+        <img src="{{image_path}}">
+      </a>
+    </div>
+  {%endif%}
+
     {% if chart_json is not none %}
   
       <div id="world_event_rendering_chart"></div>
