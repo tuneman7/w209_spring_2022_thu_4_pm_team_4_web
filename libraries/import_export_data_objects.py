@@ -747,7 +747,47 @@ class import_export_data(Utility):
         return my_return_data
 
 
+    def get_nafta_world_trade_data(self):
+ 
+        global ALL_COUNTRIES_DATA_FRAME
 
+        nafta_countries=['United States','Mexico','Canada']
+        nafta_countries=pd.DataFrame(nafta_countries)
+        nafta_countries.columns=['Country']
+        nafta_countries
+
+        my_data_frame = ALL_COUNTRIES_DATA_FRAME
+
+        my_sql = '''
+                select
+                t.*
+                from
+                (
+                select
+                    Country,
+                    'World' [Trading Partner],
+                    sum([Imports ($M)]*-1) Imports,
+                    sum([Exports ($M)]) Exports,
+                    sum([Net Exports ($M)]) Net_Exports
+                    from my_data_frame
+                    where Country in (select Country from nafta_countries)
+                    group by [Country], [Trading Partner]
+                union
+                select
+                    Country,
+                    'NAFTA' [Trading Partner],
+                    sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Imports ($M)]*-1 else 0 end) Imports,
+                    sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Exports ($M)] else 0 end) Exports,
+                    sum(case WHEN [Trading Partner] in (select Country from nafta_countries) then [Net Exports ($M)] else 0 end) Net_Exports
+                    from my_data_frame
+                    where Country in (select Country from nafta_countries)
+                    group by [Country], [Trading Partner]
+                ) t
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+        
+        return my_return_data
     
 
     def get_distinct_country_list(self,add_world=False,as_data_frame=False):
@@ -865,7 +905,7 @@ class import_export_data(Utility):
                 [Year],
                 avg([GDP Pct Growth]) [GDP Pct Growth]
                 from my_data_frame
-                where Continental in ('China','European Union','NAFTA','Other')
+                where Continental in ('NAFTA')
                 group by [Continental],[Year]
                 
                 UNION
