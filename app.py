@@ -279,6 +279,7 @@ def render_world_event_graphs():
     utility = Utility()
     print("render_world_event_graphs()")
     event_name = "JCPOA"
+    is_json_graph = True
     chart_json=None
     event_text=None
     slide_no = None
@@ -355,6 +356,15 @@ def render_world_event_graphs():
                     strokeWidth=0
                 ).to_json()            
 
+        if slide_no == "6":
+            print("mybozo")
+            chart_json = my_altair.china_trade_war_slide_five().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()            
+
+
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text)})
 
@@ -396,8 +406,17 @@ def render_china_graphs():
                 strokeWidth=0
             ).to_json()            
 
+    if slide_no == "3":
+        print("mybozo")
+        chart_json = my_altair.get_charts_for_country_dill_down("China","United States",width=350,height=200).to_json()            
 
-    return jsonify({'htmlresponse': render_template('modal/china_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,china_slide_no=slide_no)})
+    china_slides_total = 2
+
+    return jsonify({'htmlresponse': render_template('modal/china_event.html',event_name=event_name,
+    chart_json=chart_json,
+    event_text=event_text,
+    china_slide_no=slide_no,
+    china_slides_total=china_slides_total,)})
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
