@@ -210,18 +210,30 @@ class import_export_data(Utility):
 
         global EXCHANGE_RATE_DATA
 
+        # sql = '''
+        #     select 
+        #         my_data.*,
+        #         EXCHANGE_RATE_DATA_1.rate as reporting_economy_exchange_rate,
+        #         EXCHANGE_RATE_DATA_2.rate as partner_economy_exchange_rate
+        #     from my_data
+        #     left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
+        #         on
+        #         EXCHANGE_RATE_DATA_1.Country = my_data.[Reporting Economy]
+        #     left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
+        #         on
+        #         EXCHANGE_RATE_DATA_2.Country = my_data.[Partner Economy]
+
+        # '''
+
         sql = '''
             select 
                 my_data.*,
-                EXCHANGE_RATE_DATA_1.rate as reporting_economy_exchange_rate,
-                EXCHANGE_RATE_DATA_2.rate as partner_economy_exchange_rate
+                EXCHANGE_RATE_DATA_1.rate as reporting_economy_exchange_rate
             from my_data
             left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_1
                 on
                 EXCHANGE_RATE_DATA_1.Country = my_data.[Reporting Economy]
-            left join EXCHANGE_RATE_DATA as EXCHANGE_RATE_DATA_2
-                on
-                EXCHANGE_RATE_DATA_2.Country = my_data.[Partner Economy]
+                and EXCHANGE_RATE_DATA_1.year = my_data.Year
 
         '''
         
