@@ -1102,7 +1102,7 @@ class AltairRenderings:
             tooltip=['GDP per capita constant LCU']
         ).properties(width=700)
 
-        return_chart = alt.layer(bar,points).configure_axis(grid=False)
+        return_chart = alt.layer(bar,points)
         return return_chart
 
     def get_nafta_trade_data_pcts(self):
@@ -1145,7 +1145,7 @@ class AltairRenderings:
             color='Continental:N'
             )
 
-        return_chart=continent.properties(height=height,width=width).configure_axis(grid=False)
+        return_chart=continent.properties(height=height,width=width)
         return return_chart
 
 
@@ -1204,7 +1204,7 @@ class AltairRenderings:
         #,line
         #,line
         #line
-        return_chart=alt.layer(bar).configure_axis(grid=False)
+        return_chart=alt.layer(bar)
         return return_chart
 
 
@@ -2076,3 +2076,30 @@ class AltairRenderings:
         ## https://altair-viz.github.io/user_guide/transform/filter.html?highlight=filter
         ## https://vega.github.io/vega/docs/schemes/        
         return return_chart        
+
+    def get_nafta_section_1(self):
+        chart1 = self.get_nafta_trade_data_pcts()
+        chart2 = self.get_nafta_world_trade_chart('NAFTA')
+        #US will Start NAFTA Charts tomorrow morning
+        us=     self.get_altaire_bar_top5_partners_for_matrix('United States')
+        mexico= self.get_altaire_bar_top5_partners_for_matrix('Mexico')
+        canada= self.get_altaire_bar_top5_partners_for_matrix('Canada')
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        row_2 = (us | mexico ).resolve_scale(
+            color='independent')
+        row_3 = (canada).resolve_scale(
+            color='independent')
+        return_chart = (row_1 & row_2 & row_3)
+        return return_chart
+
+    def get_nafta_section_2(self):
+        nafta = self.get_trade_group_gdp_growth_chart('NAFTA')
+        canada = self.get_import_export_type_chart('Canada')
+        imports = self.get_gdp_per_cap_lcu_chart('Mexico')
+        row_1 = (nafta | imports)
+        row_2 = canada
+        return_chart = (row_1 & row_2)
+        return return_chart
+        

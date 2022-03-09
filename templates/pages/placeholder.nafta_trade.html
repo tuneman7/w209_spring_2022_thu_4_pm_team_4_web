@@ -1,7 +1,36 @@
 
-<h1>NAFTA Trade</h1>
 
+<h1 id="nafta_trade_title">NAFTA Trade</h1>
  
 
 
+<div id="nafta_render_section"></div>
+
+
+<script>
+
+
+
+function render_nafta_graphs(event_name,nafta_slide_no){
+
+          $.ajax({
+              url: '/render_nafta_graphs',
+              type: 'post',
+              data: {event_name: event_name, nafta_slide_no: nafta_slide_no},
+              success: function(data){ 
+                  $('#nafta_render_section').html(data); 
+                  $('#nafta_render_section').append(data.htmlresponse);
+              }
+          });
+        };
+
+
+$(document).ready(function () {
+    
+    page_loading();
+    render_nafta_graphs("nafta_trade","1");
+
+});
+
+</script>
 

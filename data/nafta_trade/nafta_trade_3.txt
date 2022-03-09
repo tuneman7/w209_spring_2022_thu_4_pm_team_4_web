@@ -1,0 +1,3 @@
+<b>This is the explanation I have for China Text 3</b>
+<br/>
+This is the explanation that I want to have on China Trade 3.

@@ -1,0 +1,3 @@
+<b>Explanation about graph 2</b>
+<br/>
+This is the explanation that I want to have on China Trade 3.
