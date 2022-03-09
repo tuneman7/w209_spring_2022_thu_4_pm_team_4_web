@@ -444,7 +444,7 @@ class import_export_data(Utility):
 
         return my_return_data
 
-    def imports_exports_by_sectors_source(self,source_country):
+    def imports_exports_by_sectors_source(self):
 
         global ALL_COUNTRIES_BY_TYPE_DF
 
@@ -458,8 +458,9 @@ class import_export_data(Utility):
             [Type],
             [Reporting Economy]
         FROM my_data_frame
-        WHERE [Product/Sector-reformatted] NOT LIKE '%Total%' and [Reporting Economy] =  \'''' + source_country + '''\'
+        WHERE [Product/Sector-reformatted] NOT LIKE '%Total%'
         '''
+        ## and [Reporting Economy] =  \'''' + source_country + '''\'
 
         my_return_data = psql.sqldf(my_sql)
 
