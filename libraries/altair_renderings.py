@@ -2098,7 +2098,8 @@ class AltairRenderings:
         nafta = self.get_trade_group_gdp_growth_chart('NAFTA')
         canada = self.get_import_export_type_chart('Canada')
         imports = self.get_gdp_per_cap_lcu_chart('Mexico')
-        row_1 = (nafta | imports)
+        row_1 = (nafta | imports).resolve_scale(
+            color='independent')
         row_2 = canada
         return_chart = (row_1 & row_2)
         return return_chart
