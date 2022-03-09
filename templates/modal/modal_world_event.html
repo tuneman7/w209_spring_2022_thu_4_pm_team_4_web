@@ -11,15 +11,17 @@
         <img src="{{image_path}}" id="img1">
       </a>
 
+      {% if flip_animation == true %}
       <script>
 
         const img = document.getElementById('img1')
 
         setTimeout(() => {
           img.src ="./static/images/lede_still.jpg?fido=dido"
-        }, 15000);
+        }, 6000);
 
       </script>
+      {%endif%}
 
     </div>
   {%endif%}

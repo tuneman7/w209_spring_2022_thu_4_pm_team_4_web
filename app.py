@@ -285,6 +285,7 @@ def render_world_event_graphs():
     slide_no = None
     image_path = None
     event_hyperlink = None
+    flip_animation = False
     if request.method == 'POST':
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
@@ -367,15 +368,26 @@ def render_world_event_graphs():
             print("event no=",slide_no)
             is_json_graph = False
             chart_json = None
+            event_hyperlink = "https://www.wired.com/story/biden-china-policy-looks-like-trumps/"
+            image_path = "./static/images/nothing_has_changed.jpg"
+            print(event_hyperlink)
+
+
+        if slide_no == "8":
+            print("event no=",slide_no)
+            is_json_graph = False
+            chart_json = None
             event_hyperlink = "https://www.bloomberg.com/graphics/2022-china-nationalistic-online-shoppers/?srnd=bigtake&utm_medium=cpc_social&utm_source=facebook&utm_campaign=BLOM_ENG_EDITORL_COUSA_FB_SO_WENG_FOCUSPROSX_INTST_00XXXXCPM_2PFB_XXXX_GENERALINTSTX_XXXXX_COUSA_XXXXX_ALLFOA_CHID_C5_EN_PG_NFLINKS&dclid=CLv9icPXtfYCFYyJZAodquwDZQ"
             image_path = "./static/images/lede.gif"
+            flip_animation = True
             print(event_hyperlink)
 
 
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,
     event_hyperlink=event_hyperlink,
-    image_path=image_path)})
+    image_path=image_path,
+    flip_animation=flip_animation)})
 
 @app.route("/render_china_graphs",methods=["POST","GET"])
 def render_china_graphs():
@@ -466,9 +478,6 @@ def render_nafta_graphs():
                 strokeWidth=0
             ).to_json()            
 
-    if slide_no == "3":
-        print("mybozo")
-        chart_json = my_altair.get_charts_for_country_dill_down("nafta","United States",width=350,height=200).to_json()            
 
     nafta_slides_total = 2
 
