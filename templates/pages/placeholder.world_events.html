@@ -37,7 +37,7 @@ World events inpact trade.  Below are stories of of four major world events whic
                             <tr onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
                             '{{event['event_description']}}',
                              '{{ event["year_begin"] }}',
-                             '{{event["year_end"]}}',
+                             '{{event["year_end"] | replace('.0','')}}',
                              '{{event["event_name"]}}',
                              '{{event["information_url"]}}',
                              '{{event["number_of_images"]}}')">
@@ -46,7 +46,7 @@ World events inpact trade.  Below are stories of of four major world events whic
                                 <td>{% if event["year_end"] == "" %}
                                         Present
                                     {% else %}
-                                        {{event["year_end"]}}
+                                        {{ event["year_end"] | replace(".0","") }} 
                                     {% endif %}</td>
                                 <td>{{ event["event_description"][:50] }}</td>
                             </tr>

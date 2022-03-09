@@ -183,15 +183,15 @@ def top5products():
 def China_pie_chart():
     my_altair = AltairRenderings()
 
-    source_country = "China"
-    chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
-    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+    # source_country = "China"
+    # chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
+    # return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 #def Covid_chart():
 #    my_altair = AltairRenderings()
 
-#    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
-#    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
+    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 @app.route('/china')
 def china():
@@ -285,6 +285,7 @@ def render_world_event_graphs():
     slide_no = None
     image_path = None
     event_hyperlink = None
+    flip_animation = False
     if request.method == 'POST':
         event_name = request.form["event_name"]
         slide_no = request.form["slide_no"]
@@ -367,15 +368,40 @@ def render_world_event_graphs():
             print("event no=",slide_no)
             is_json_graph = False
             chart_json = None
+            event_hyperlink = "https://www.wired.com/story/biden-china-policy-looks-like-trumps/"
+            image_path = "./static/images/nothing_has_changed.jpg"
+            print(event_hyperlink)
+
+
+        if slide_no == "8":
+            print("event no=",slide_no)
+            is_json_graph = False
+            chart_json = None
             event_hyperlink = "https://www.bloomberg.com/graphics/2022-china-nationalistic-online-shoppers/?srnd=bigtake&utm_medium=cpc_social&utm_source=facebook&utm_campaign=BLOM_ENG_EDITORL_COUSA_FB_SO_WENG_FOCUSPROSX_INTST_00XXXXCPM_2PFB_XXXX_GENERALINTSTX_XXXXX_COUSA_XXXXX_ALLFOA_CHID_C5_EN_PG_NFLINKS&dclid=CLv9icPXtfYCFYyJZAodquwDZQ"
             image_path = "./static/images/lede.gif"
+            flip_animation = True
             print(event_hyperlink)
+
+
+    if event_name.lower() == "covid19":
+        print("mybozo=",event_name.lower())
+        if slide_no == "1":
+            chart_json = my_altair.get_altaire_scatter_Covid().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
 
 
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,
     event_hyperlink=event_hyperlink,
-    image_path=image_path)})
+    image_path=image_path,
+    flip_animation=flip_animation)})
+
+
+
+
 
 @app.route("/render_china_graphs",methods=["POST","GET"])
 def render_china_graphs():
@@ -426,6 +452,62 @@ def render_china_graphs():
     event_text=event_text,
     china_slide_no=slide_no,
     china_slides_total=china_slides_total,)})
+
+
+@app.route("/render_nafta_graphs",methods=["POST","GET"])
+def render_nafta_graphs():
+    my_altair = AltairRenderings()
+    utility = Utility()
+    print("render_nafta_graphs()")
+    event_name = "JCPOA"
+    chart_json=None
+    event_text=None
+    slide_no = None
+    if request.method == 'POST':
+        event_name = request.form["event_name"]
+        slide_no = request.form["nafta_slide_no"]
+
+    try:
+        file_name = event_name.lower() +"_"+ slide_no+".txt"
+        load_file_name = os.path.join(utility.get_this_dir(),"data","nafta_trade",file_name)
+        print(load_file_name)
+        event_text = utility.get_data_from_file(load_file_name)
+    except:
+        fido="dido"
+
+
+    if slide_no == "1":
+        print("mybozo")
+        chart_json = my_altair.get_nafta_section_1().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    if slide_no == "2":
+        print("mybozo")
+        chart_json = my_altair.get_nafta_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    if slide_no == "3":
+        print("mybozo")
+        chart_json = my_altair.get_nafta_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    nafta_slides_total = 2
+
+    return jsonify({'htmlresponse': render_template('modal/nafta_event.html',event_name=event_name,
+    chart_json=chart_json,
+    event_text=event_text,
+    nafta_slide_no=slide_no,
+    nafta_slides_total=nafta_slides_total,)})
+
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])

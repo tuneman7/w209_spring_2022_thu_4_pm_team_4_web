@@ -1102,7 +1102,7 @@ class AltairRenderings:
             tooltip=['GDP per capita constant LCU']
         ).properties(width=700)
 
-        return_chart = alt.layer(bar,points).configure_axis(grid=False)
+        return_chart = alt.layer(bar,points)
         return return_chart
 
     def get_nafta_trade_data_pcts(self):
@@ -1145,7 +1145,7 @@ class AltairRenderings:
             color='Continental:N'
             )
 
-        return_chart=continent.properties(height=height,width=width).configure_axis(grid=False)
+        return_chart=continent.properties(height=height,width=width)
         return return_chart
 
 
@@ -1204,7 +1204,7 @@ class AltairRenderings:
         #,line
         #,line
         #line
-        return_chart=alt.layer(bar).configure_axis(grid=False)
+        return_chart=alt.layer(bar)
         return return_chart
 
 
@@ -1681,14 +1681,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart2 = alt.hconcat()
         for country in country_list[num_country_per_line:num_country_per_line*2]:
@@ -1700,14 +1700,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart2 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart3 = alt.hconcat()
         for country in country_list[num_country_per_line*2:]:
@@ -1719,7 +1719,7 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
 
@@ -1727,7 +1727,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
@@ -1838,7 +1838,7 @@ class AltairRenderings:
         gdp_combine = alt.layer(
             gdp_line#, text #points, selectors,rules,
         ).properties(
-            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+            title="GDP Growth and Trade/GDP Ratio Change YoY" ,width=width,height=(height*3/5-50)
         )
 
         return_chart = (chart1 & chart2 & chart3 ).configure_title(
@@ -1907,14 +1907,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart2 = alt.hconcat()
         for country in country_list[num_country_per_line:num_country_per_line*2]:
@@ -1926,14 +1926,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart2 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart3 = alt.hconcat()
         for country in country_list[num_country_per_line*2:]:
@@ -1945,7 +1945,7 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
 
@@ -1953,7 +1953,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
@@ -2064,7 +2064,7 @@ class AltairRenderings:
         gdp_combine = alt.layer(
             gdp_line#, text #points, selectors,rules,
         ).properties(
-            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+            title="GDP Growth and Trade/GDP Ratio Change YoY" ,width=width,height=(height*3/5-50)
         )
 
         return_chart = ((dependency_chart | corr_text) & gdp_combine).configure_title(
@@ -2076,3 +2076,31 @@ class AltairRenderings:
         ## https://altair-viz.github.io/user_guide/transform/filter.html?highlight=filter
         ## https://vega.github.io/vega/docs/schemes/        
         return return_chart        
+
+    def get_nafta_section_1(self):
+        chart1 = self.get_nafta_trade_data_pcts()
+        chart2 = self.get_nafta_world_trade_chart('NAFTA')
+        #US will Start NAFTA Charts tomorrow morning
+        us=     self.get_altaire_bar_top5_partners_for_matrix('United States')
+        mexico= self.get_altaire_bar_top5_partners_for_matrix('Mexico')
+        canada= self.get_altaire_bar_top5_partners_for_matrix('Canada')
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        row_2 = (us | mexico ).resolve_scale(
+            color='independent')
+        row_3 = (canada).resolve_scale(
+            color='independent')
+        return_chart = (row_1 & row_2 & row_3)
+        return return_chart
+
+    def get_nafta_section_2(self):
+        nafta = self.get_trade_group_gdp_growth_chart('NAFTA')
+        canada = self.get_import_export_type_chart('Canada')
+        imports = self.get_gdp_per_cap_lcu_chart('Mexico')
+        row_1 = (nafta | imports).resolve_scale(
+            color='independent')
+        row_2 = canada
+        return_chart = (row_1 & row_2)
+        return return_chart
+        
