@@ -492,6 +492,13 @@ def render_nafta_graphs():
                 strokeWidth=0
             ).to_json()            
 
+    if slide_no == "3":
+        print("mybozo")
+        chart_json = my_altair.get_nafta_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
 
     nafta_slides_total = 2
 
