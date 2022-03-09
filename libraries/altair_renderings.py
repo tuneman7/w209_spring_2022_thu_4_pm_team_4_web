@@ -1019,7 +1019,7 @@ class AltairRenderings:
         return_chart=exchange_rate
         return return_chart
 
-    def get_import_export_type_chart(self,source_country):
+    def get_import_export_type_chart(self,source_country,height=250,width=350):
         
         my_data = self.my_data_object
         direction_list=['imports','exports']
@@ -1048,7 +1048,7 @@ class AltairRenderings:
         ).add_selection(
             direction_select
         ).transform_filter(
-            direction_select).properties(height=200,width=300)
+            direction_select).properties(height=height,width=width)
 
         title2='Import and Exports Product/Sector'
 
@@ -1061,13 +1061,13 @@ class AltairRenderings:
         ).add_selection(
             direction_select
         ).transform_filter(
-            direction_select).properties(height=200,width=300)
+            direction_select).properties(height=height,width=width)
 
         return_chart=alt.hconcat(exp_chart,exp_top5).resolve_scale(color='independent')
         return return_chart
 
 
-    def get_gdp_per_cap_lcu_chart(self,source_country,height=400,width=500):
+    def get_gdp_per_cap_lcu_chart(self,source_country,height=250,width=350):
         #Function Ready to Go
 
         my_data = self.my_data_object
@@ -1105,7 +1105,28 @@ class AltairRenderings:
         return_chart = alt.layer(bar,points).configure_axis(grid=False)
         return return_chart
 
-    def get_trade_group_gdp_growth_chart(self,trade_group,height=300,width=500):
+    def get_nafta_trade_data_pcts(self):
+        
+        my_data = self.my_data_object
+
+        df_nafta=my_data.get_nafta_trade_data_pcts()
+        df_nafta_n=df_nafta[df_nafta['Top20group']=='NAFTA']
+
+        title="Inter NAFTA vs World Trade"
+
+        base=alt.Chart(df_nafta_n)
+
+        gnafta1=base.mark_bar().encode(
+            alt.Column('year'),
+            x=alt.X('Trade Group:N',axis=alt.Axis(title='')),
+            y=alt.Y('TotalTrade:Q'),
+            color='Trade Group:N'
+        ).properties(title=title,height=250,width=40)
+
+        return_chart=gnafta1
+        return return_chart
+
+    def get_trade_group_gdp_growth_chart(self,trade_group,height=250,width=350):
 
         my_data = self.my_data_object
 
@@ -1125,6 +1146,65 @@ class AltairRenderings:
             )
 
         return_chart=continent.properties(height=height,width=width).configure_axis(grid=False)
+        return return_chart
+
+
+    def get_nafta_world_trade_chart(self,trade_group,height=250,width=350):
+
+        trade_group=trade_group
+
+        my_data = self.my_data_object
+
+        #NAFTA COUNTRY DROPDOWN LIST
+        nafta_list=['Mexico','United States','Canada']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
+
+        #TRADE GROUP DROPDOWN LIST
+        tg_list=['NAFTA','World']
+        tg_dropdown = alt.binding_select(options= tg_list,name="Trading Group")
+        tg_select = alt.selection_single(fields=['Trading Group'], bind=tg_dropdown, init={'Trading Group': tg_list[0]})
+
+        #df_set=my_data.get_nafta_world_trade_data()
+        #df_set_input=df_set[(df_set['Country']==source_country) & (df_set['Trading Group']==trade_group)]
+        #source_country='Mexico'
+
+        df_set=my_data.get_nafta_world_trade_data()
+        df_set_input=df_set[(df_set['Trading Group']==trade_group)]
+
+        #df_set=my_data.get_nafta_world_trade_data()
+        #df_set_input=df_set[(df_set['Country']==source_country)]
+
+        #from altair.vegalite.v4.schema.core import Color
+        base = alt.Chart(df_set_input).transform_fold(['Imports','Exports'])
+        base2= alt.Chart(df_set_input)
+
+        bar = base.mark_bar(size=(35)).encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),#,
+            #strokeWidth=alt.value(3)
+            color=alt.Color("key:N",scale=alt.Scale(scheme='blues'))
+        ).add_selection(
+                    nafta_select
+                ).transform_filter(
+                    nafta_select).properties(
+            width=width,
+            height=height
+            )
+
+        #base2= alt.Chart(df_set_input).transform_fold(['Net Exports'])
+        #line = base2.mark_line(color='green').encode(
+        #   x=alt.X('Year:N'),#,axis=alt.Axis(title='Year')),
+        #   y=alt.Y('value:Q'),#,axis=alt.Axis(title="Trade")),#,
+        #  strokeWidth=alt.value(1)
+        #).add_selection(
+        #          nafta_select
+        #      ).transform_filter(
+        #         nafta_select).properties(width=500,height=250)
+        #,line
+        #,line
+        #line
+        return_chart=alt.layer(bar).configure_axis(grid=False)
         return return_chart
 
 
