@@ -183,15 +183,15 @@ def top5products():
 def China_pie_chart():
     my_altair = AltairRenderings()
 
-    source_country = "China"
-    chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
-    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+    # source_country = "China"
+    # chart_json = my_altair.get_altaire_multi_charts_for_China().to_json()
+    # return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 #def Covid_chart():
 #    my_altair = AltairRenderings()
 
-#    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
-#    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
+    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
+    return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 @app.route('/china')
 def china():
@@ -383,11 +383,25 @@ def render_world_event_graphs():
             print(event_hyperlink)
 
 
+    if event_name.lower() == "covid19":
+        print("mybozo=",event_name.lower())
+        if slide_no == "1":
+            chart_json = my_altair.get_altaire_scatter_Covid().configure_axis(
+                    grid=False
+                ).configure_view(
+                    strokeWidth=0
+                ).to_json()
+
+
 
     return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,
     event_hyperlink=event_hyperlink,
     image_path=image_path,
     flip_animation=flip_animation)})
+
+
+
+
 
 @app.route("/render_china_graphs",methods=["POST","GET"])
 def render_china_graphs():
