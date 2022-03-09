@@ -1601,14 +1601,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart2 = alt.hconcat()
         for country in country_list[num_country_per_line:num_country_per_line*2]:
@@ -1620,14 +1620,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart2 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart3 = alt.hconcat()
         for country in country_list[num_country_per_line*2:]:
@@ -1639,7 +1639,7 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
 
@@ -1647,7 +1647,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
@@ -1758,7 +1758,7 @@ class AltairRenderings:
         gdp_combine = alt.layer(
             gdp_line#, text #points, selectors,rules,
         ).properties(
-            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+            title="GDP Growth and Trade/GDP Ratio Change YoY" ,width=width,height=(height*3/5-50)
         )
 
         return_chart = (chart1 & chart2 & chart3 ).configure_title(
@@ -1827,14 +1827,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart2 = alt.hconcat()
         for country in country_list[num_country_per_line:num_country_per_line*2]:
@@ -1846,14 +1846,14 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
             chart2 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         chart3 = alt.hconcat()
         for country in country_list[num_country_per_line*2:]:
@@ -1865,7 +1865,7 @@ class AltairRenderings:
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
-            ).mark_text(radius=(width/30+10), size=12).encode(
+            ).mark_text(radius=(width/30+15), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
 
@@ -1873,7 +1873,7 @@ class AltairRenderings:
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10))
+            ).properties(title=country,width=(width/8),height=(height/10+40))
 
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
@@ -1984,7 +1984,7 @@ class AltairRenderings:
         gdp_combine = alt.layer(
             gdp_line#, text #points, selectors,rules,
         ).properties(
-            title="GDP and Trade/GDP ratio YoY Growth Percentage" ,width=width,height=(height*3/5-50)
+            title="GDP Growth and Trade/GDP Ratio Change YoY" ,width=width,height=(height*3/5-50)
         )
 
         return_chart = ((dependency_chart | corr_text) & gdp_combine).configure_title(
