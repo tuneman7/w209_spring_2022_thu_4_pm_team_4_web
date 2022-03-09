@@ -1157,12 +1157,12 @@ class AltairRenderings:
         return return_chart
 
 
-    def get_nafta_world_trade_chart(self,height=250,width=350):
+    def get_nafta_world_trade_chart(self,trade_group,height=250,width=350):
 
         my_data = self.my_data_object
 
         #source_country='Mexico'
-        #trade_group='NAFTA'
+        trade_group='NAFTA'
 
         #NAFTA COUNTRY DROPDOWN LIST
         nafta_list=['Mexico','United States','Canada']
