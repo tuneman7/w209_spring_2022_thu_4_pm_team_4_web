@@ -2,16 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\data",
-    "\\data\\china_trade",
+    "\\data\\world_events",
     "\\design_docs",
     "\\libraries",
     "\\myproj",
     "\\screenshots",
     "\\static",
     "\\static\\data",
-    "\\templates",
-    "\\templates\\modal"
+    "\\templates"
   ],
-  "SelectedNode": "\\libraries\\altair_renderings.py",
+  "SelectedNode": "\\data\\world_events\\covid19_1.txt",
   "PreviewInSolutionExplorer": false
 }

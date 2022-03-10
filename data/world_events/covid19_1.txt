@@ -1,5 +1,8 @@
-<b>Covid-19 impact on trade.</b>
+<b>COVID-19 impact on trade</b>
 <br/>
-Place text here.
+In 2020, most of the countries fell to the third quadrant where both trade and GDP have negative growth. There were only 2 exceptions. 
+China remained in the first quadrant and maintained positive GDP growth and international trade growth. 
+Iran maintained positive GDP growth despite its exports have been hard hit by the twin crises of COVID-19 and the crash in oil prices.
+The size of the circle indicates the inflation rate in 2020. Stagflation began in several countries such as India, Mexico and Russia.
 <br/>
 <br/>
