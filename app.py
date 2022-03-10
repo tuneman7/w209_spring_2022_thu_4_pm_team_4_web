@@ -345,7 +345,9 @@ def render_world_event_graphs():
 
         if slide_no == "4":
             print("mybozo")
-            chart_json = my_altair.get_altaire_dual_pie_chart_by_types_for_matrix("United States","China","exports",width=600,height=300).to_json()
+            chart_json = my_altair.get_altaire_dual_pie_chart_by_types_for_matrix("United States",
+            "China",
+            "exports",width=600,height=300).to_json()
 
 
         if slide_no == "5":
@@ -394,7 +396,10 @@ def render_world_event_graphs():
 
 
 
-    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',event_name=event_name,chart_json=chart_json,event_text=event_text,
+    return jsonify({'htmlresponse': render_template('modal/modal_world_event.html',
+    event_name=event_name,
+    chart_json=chart_json,
+    event_text=event_text,
     event_hyperlink=event_hyperlink,
     image_path=image_path,
     flip_animation=flip_animation)})
