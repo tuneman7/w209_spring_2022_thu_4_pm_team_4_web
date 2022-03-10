@@ -1,3 +1,7 @@
-<b>Explanation about graph 2</b>
+<b>NAFTA Impact</b>
 <br/>
-This is the explanation that I want to have on China Trade 3.
+The impact of NAFTA is widely debated across issues such as trade and industry growth, positive and negative impact on employment and employment practices, stimulation of innovation, and impact of trade and international relations among the countries and with other international trade groups.
+
+The charts below show consistent GDP growth for each of the NAFTA countries which can also be seen by looking at each countrys annual GDP in their local currency. GDP is helpful to measure economic growth however we note that trade is one of many variables that impact GDP.
+
+We are also investigating trade patterns to understand the types of merchandise and services which have developed as a result of the open trade agreements.

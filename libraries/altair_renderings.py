@@ -1109,7 +1109,7 @@ class AltairRenderings:
         return_chart = alt.layer(bar,points).add_selection(
                 nafta_select
                 ).transform_filter(
-                nafta_select).configure_axis(grid=False)
+                nafta_select)
 
         return return_chart
 
@@ -1204,7 +1204,7 @@ class AltairRenderings:
                 nafta_select).add_selection(
                 tg_select
                 ).transform_filter(
-                tg_select).configure_axis(grid=False)
+                tg_select)
         
         return return_chart
 

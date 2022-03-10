@@ -1,3 +1,5 @@
-<b>Explanation about graph 1</b>
+<b>NAFTA Overview</b>
 <br/>
-This is the dealio.
+The North American Free Trade Agreement was enacted in 1994 to stimulate trade amongst Mexico, Canada, and the United States. We are investigating the impact of NAFTA by exploring their trade patterns amongst each other and amongst the other top trade countries of the world.
+
+Since its inception in 1994, total trade amongst the countries has increased substantially. In the charts below, we see United States, Mexico, and Canada are consistently amongst each other’s top trade partners. When looking at Net Trade, we see that Mexico and Canada have a trade surplus with its NAFTA partners.
