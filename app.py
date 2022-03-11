@@ -437,7 +437,7 @@ def render_china_graphs():
             ).configure_view(
                 strokeWidth=0
             ).to_json()            
-
+        #chart_json = my_altair.get_altaire_line_chart_county_trade_for_matrix("China","United States").to_json()
     if slide_no == "2":
         print("mybozo")
         chart_json = my_altair.get_china_section_2().configure_axis(
