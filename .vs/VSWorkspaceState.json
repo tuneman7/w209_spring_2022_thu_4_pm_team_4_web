@@ -8,9 +8,9 @@
     "\\myproj",
     "\\screenshots",
     "\\static",
-    "\\static\\data",
+    "\\static\\css",
     "\\templates"
   ],
-  "SelectedNode": "\\data\\world_events\\covid19_1.txt",
+  "SelectedNode": "\\libraries\\altair_renderings.py",
   "PreviewInSolutionExplorer": false
 }
