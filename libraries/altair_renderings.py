@@ -1069,6 +1069,59 @@ class AltairRenderings:
         return return_chart
 
 
+    def get_eu_trade_overall_chart(self):
+        
+        my_data = self.my_data_object
+        #Net Trade with EU for China, EU Top 20, US, Rest of World Top 20
+        df=my_data.get_eu_trade_data_pcts()
+        base1=alt.Chart(df[df["Top20group"]=='EU'])
+        title1='Top 20 EU Net Trade'
+        pct12=base1.mark_line().encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('NetTrade',axis=alt.Axis(title='T20 EU',labelExpr='"$" + datum.value / 1E6 + "U"'),scale=alt.Scale(domain=[-1000000, 1000000])),
+            color='Trade Group:N'
+        ).properties(title=title1,height=150,width=300)
+
+        df=my_data.get_eu_trade_data_pcts()
+        base2=alt.Chart(df[df["Top20group"]=='US'])
+        title2='US & EU Net Trade'
+        pct22=base2.mark_line().encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('NetTrade',axis=alt.Axis(title='US',labelExpr='"$" + datum.value / 1E6 + "U"'),scale=alt.Scale(domain=[-1000000, 1000000])),
+            color='Trade Group:N'
+        ).properties(title=title2,height=150,width=300)
+
+        df=my_data.get_eu_trade_data_pcts()
+        base3=alt.Chart(df[df["Top20group"]=='China'])
+        title3='China Net Trade'
+        pct32=base3.mark_line().encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('NetTrade',axis=alt.Axis(title='China',labelExpr='"$" + datum.value / 1E6 + "U"'),scale=alt.Scale(domain=[-1000000, 1000000])),
+            color='Trade Group:N'
+        ).properties(title=title3,height=150,width=300)
+
+        df=my_data.get_eu_trade_data_pcts()
+        base4=alt.Chart(df[df["Top20group"]=='RoW'])
+        title4='Rest of World Net Trade'
+        pct42=base4.mark_line().encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('NetTrade',axis=alt.Axis(title='RoW',labelExpr='"$" + datum.value / 1E6 + "U"'),scale=alt.Scale(domain=[-1000000, 1000000])),
+            color='Trade Group:N'
+        ).properties(title=title4,height=150,width=300)
+
+
+        pct12.configure_axis(grid=False)
+        pct22.configure_axis(grid=False)
+        pct32.configure_axis(grid=False)
+        pct42.configure_axis(grid=False)
+
+        ntrade1=alt.vconcat(pct12,pct22)
+        ntrade2=alt.vconcat(pct32,pct42)
+
+        nettrade=alt.hconcat(ntrade1,ntrade2).configure_axis(grid=False)
+        return nettrade
+
+
     def get_gdp_per_cap_lcu_chart(self,source_country,height=250,width=350):
         
         #Function Ready to Go
@@ -1185,7 +1238,8 @@ class AltairRenderings:
 
         bar = base.mark_bar(size=(35)).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),
+            #y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),
+            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"'),scale=alt.Scale(domain=[-3000000, 2000000])),
             #,#strokeWidth=alt.value(3)
             color=alt.Color("key:N",scale=alt.Scale(scheme='blues'))
         ).properties(
@@ -1193,13 +1247,12 @@ class AltairRenderings:
             width=width,
             height=height
             )
-
-            
+  
 
         base2= alt.Chart(df_set_input)
         line = base2.mark_line(color='green').encode(
             x=alt.X('Year:N'),#,axis=alt.Axis(title='Year')),
-            y=alt.Y('Net_Exports:Q'),#,axis=alt.Axis(title="Trade")),#,
+            y=alt.Y('Net_Exports:Q',scale=alt.Scale(domain=[-3000000, 2000000])),#,axis=alt.Axis(title="Trade")),#,
             strokeWidth=alt.value(1)
         ).properties(width=width,height=height)
 
