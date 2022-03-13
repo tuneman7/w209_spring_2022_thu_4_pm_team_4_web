@@ -1248,7 +1248,6 @@ class AltairRenderings:
             height=height
             )
   
-
         base2= alt.Chart(df_set_input)
         line = base2.mark_line(color='green').encode(
             x=alt.X('Year:N'),#,axis=alt.Axis(title='Year')),
@@ -1265,7 +1264,6 @@ class AltairRenderings:
                 tg_select)
         
         return return_chart
-
 
     def get_altaire_multi_charts_for_China(self,width=1000,height=600):
 
