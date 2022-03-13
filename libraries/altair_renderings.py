@@ -1174,7 +1174,9 @@ class AltairRenderings:
         my_data = self.my_data_object
 
         #source_country='Mexico'
-        trade_group='NAFTA'
+        #trade_group='NAFTA'
+
+        title="Total NAFTA Trade vs Total World Trade"
 
         #NAFTA COUNTRY DROPDOWN LIST
         nafta_list=['Mexico','United States','Canada']
@@ -1195,13 +1197,16 @@ class AltairRenderings:
 
         bar = base.mark_bar(size=(35)).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),#,
-            #strokeWidth=alt.value(3)
+            y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),
+            #,#strokeWidth=alt.value(3)
             color=alt.Color("key:N",scale=alt.Scale(scheme='blues'))
         ).properties(
+            title=title,
             width=width,
             height=height
             )
+
+            
 
         base2= alt.Chart(df_set_input)
         line = base2.mark_line(color='green').encode(
