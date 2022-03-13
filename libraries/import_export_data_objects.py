@@ -58,6 +58,7 @@ class import_export_data(Utility):
 
         return pd.read_csv(return_file_name,sep='\t').replace(np.nan,'',regex=True)
 
+
     def get_world_event_data_json(self):
         return self.get_world_event_data().to_json(orient='records')
 
@@ -77,6 +78,19 @@ class import_export_data(Utility):
         return_file_name = os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,GDP_file_name)
 
         return return_file_name
+
+    def get_WTO_individual_file_name(self) :
+        
+        file_names = ['WtoData_services_imports.csv','WtoData_services_imports.csv','WtoData_merchandise_imports.csv','WtoData_merchandise_exports.csv']
+
+        data_directory = "data"
+        trade_balance_sub_dir = "trade_balance_datasets"
+        return_file_path_list = []
+
+        for file_name in file_names:
+            return_file_path_list.append(os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,file_name))
+
+        return return_file_path_list
 
 
     def get_WTO_full_file_name(self) :
@@ -200,6 +214,14 @@ class import_export_data(Utility):
         '''
         
         return psql.sqldf(sql)
+
+    def load_and_clean_up_individual_WTO_files(self):
+
+        file_to_load = self.get_WTO_individual_file_name()
+
+        
+        
+        return None 
 
 
     def load_and_clean_up_WTO_file(self):

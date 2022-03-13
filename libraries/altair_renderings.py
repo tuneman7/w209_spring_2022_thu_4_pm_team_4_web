@@ -48,7 +48,9 @@ class AltairRenderings:
         ).encode(
             x=alt.X('year:O',axis=alt.Axis(title='')),
             y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['Total Trade ($M)','Exports ($M)','Imports ($M)']
+            tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),
+                     alt.Tooltip("Exports ($M)",format="$,.0f" ),
+                     alt.Tooltip("Imports ($M)",format="$,.0f")]
         ).properties(width=700)
 
         
@@ -84,7 +86,9 @@ class AltairRenderings:
         ).encode(
             x=alt.X('year:O',axis=alt.Axis(title='')),
             y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['Total Trade ($M)','Exports ($M)','Imports ($M)']
+            tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),
+                     alt.Tooltip("Exports ($M)",format="$,.0f" ),
+                     alt.Tooltip("Imports ($M)",format="$,.0f")]
         ).properties(width=width)
 
         
@@ -520,7 +524,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
-            tooltip=['Country','GDP $B']
+            tooltip=['Country',
+                     alt.Tooltip('GDP $B', format="$,.0f")]
         ).properties(width=width)
 
         
@@ -598,7 +603,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
-            tooltip=['Country','GDP $B']
+            tooltip=['Country',
+                     alt.Tooltip('GDP $B', format="$,.0f")]
         ).properties(width=700)
 
         
@@ -637,7 +643,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('GDP Pct Growth:Q',scale=alt.Scale(domain=(-10, 10)),axis=alt.Axis(title='')),
-            tooltip=['Country','GDP Pct Growth %']
+            tooltip=['Country',
+                     alt.Tooltip('GDP Pct Growth', format=".2f")]
         ).properties(width=700)
 
         
@@ -675,7 +682,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year',axis=alt.Axis(title='')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
-            tooltip=['Country','GDP $B']
+            tooltip=['Country',
+                     alt.Tooltip('GDP $B', format="$,.0f")]
         ).properties(width=width)
 
         
@@ -712,7 +720,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['GDP Growth Pct','Trade Total Change %']
+            tooltip=[alt.Tooltip('GDP Growth Pct', format=".2f"),
+                     alt.Tooltip('Trade Total Change %', format=".2f")]
         ).properties(width=700)
 
         return_chart = alt.layer(line,points).configure_axis(grid=False)
@@ -748,7 +757,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('value:Q',axis=alt.Axis(title='')),
-            tooltip=['GDP Growth Pct','Trade Total Change %']
+            tooltip=[alt.Tooltip('GDP Growth Pct', format=".2f"),
+                     alt.Tooltip('Trade Total Change %', format=".2f")]
         ).properties(
             width=width)
 
@@ -867,7 +877,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('GDP Pct Growth:Q',scale=alt.Scale(domain=(-10, 10)),axis=alt.Axis(title='')),
-            tooltip=['Country','GDP Pct Growth %']
+            tooltip=['Country',
+                     alt.Tooltip('GDP Pct Growth', format=".2f")]
         ).properties(width=width)
 
         
@@ -906,7 +917,8 @@ class AltairRenderings:
         ).encode(
             x=alt.X('Year',axis=alt.Axis(title='')),
             y=alt.Y('GDP:Q',axis=alt.Axis(title='')),
-            tooltip=['Country','GDP $B']
+            tooltip=['Country',
+                     alt.Tooltip('GDP $B', format="$,.0f")]
         ).properties(width=width)
 
         return_chart = alt.layer(line,points)
@@ -1699,8 +1711,10 @@ class AltairRenderings:
         other_gdp_df = df[df['Country'] != 'China'][['Country', 'GDP Growth Pct']]
         other_gdp_df = other_gdp_df.drop_duplicates().reset_index(drop = True)
         country_list = df[df['Country'] !='China']['Country'].unique()
-
-        #country_list = df[df['Country'] =='United States']['Country'].unique()
+        #country_list = df[df['Country'] !='China']['Country'].unique()
+        country_list = ['Australia', 'Iran', 'Brazil', 'South Korea', 'Japan', 'Indonesia', 'Saudi Arabia',
+                        'Russia', 'United States', 'India', 'Mexico', 'Canada', 'Netherlands', 'United Kingdom',
+                        'Germany', 'Italy', 'France', 'Switzerland', 'Spain']
 
         num_country_per_line = math.ceil(len(country_list)/3.0)
 
@@ -1924,9 +1938,10 @@ class AltairRenderings:
         china_gdp_df = df[df['Country'] == 'China'][['Country', 'GDP Growth Pct']].reset_index(drop = True)
         other_gdp_df = df[df['Country'] != 'China'][['Country', 'GDP Growth Pct']]
         other_gdp_df = other_gdp_df.drop_duplicates().reset_index(drop = True)
-        country_list = df[df['Country'] !='China']['Country'].unique()
-
-        #country_list = df[df['Country'] =='United States']['Country'].unique()
+        #country_list = df[df['Country'] !='China']['Country'].unique()
+        country_list = ['Australia', 'Iran', 'Brazil', 'South Korea', 'Japan', 'Indonesia', 'Saudi Arabia',
+                        'Russia', 'United States', 'India', 'Mexico', 'Canada', 'Netherlands', 'United Kingdom',
+                        'Germany', 'Italy', 'France', 'Switzerland', 'Spain']
 
         num_country_per_line = math.ceil(len(country_list)/3.0)
 

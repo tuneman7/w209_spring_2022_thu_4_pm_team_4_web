@@ -27,36 +27,44 @@
         </div>        
         <div class="row">
             <div class="col-md-12">
+                <h3>Slider</h3>
+                <div id="slider">
+                    <div id="year_slider"></div>
+                </div>
                 <div id="event_render_container_china">
 
                     {% if chart_json is not none %}
 
-                        <div id="china_event_rendering_chart"></div>
-                        </div>
-                        <!-- Placeholder for the tooltip -->
-                        <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
-                        </div>
-                        <!-- Render Charts -->
-                        <script type="text/javascript">
-                
+                    <div id="china_event_rendering_chart"></div>
+                </div>
+                <!-- Placeholder for the tooltip -->
+                <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
+            </div>
+            <!-- Render Charts -->
+            <script type="text/javascript">
+
                         function parse(url, div) {
                         var opt = { mode: "vega-lite",
                             renderer: "svg",
                             actions: { export: true, source: false, editor: false }
                             };
                         vegaEmbed("#" + div, url, opt, function (error, result) {
-                        vegaTooltip.vegaLite(result.view, url);
+                            vegaTooltip.vegaLite(result.view, url);
+                            const sliders = document.getElementsByClassName('vega-bindings');
+                            const newparent = document.getElementById('slider');
+                            const oldchild = document.getElementById("year_slider");
+                            newparent.replaceChild(sliders[0], oldchild);
                         });
                         }
                         //Parse your Json variable here
                         parse({{ chart_json | safe }} , "china_event_rendering_chart");
-                
-                        </script>
 
-                    {% endif %}
-              
+            </script>
 
-                </div>
+            {% endif %}
+
+
+        </div>
             </div>
         </div>
       </div>                    
