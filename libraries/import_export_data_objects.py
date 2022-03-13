@@ -88,7 +88,7 @@ class import_export_data(Utility):
         return_file_path_list = []
 
         for file_name in file_names:
-            return_file_path_list.append(os.path.join(my_data.get_this_dir(),data_directory,trade_balance_sub_dir,file_name))
+            return_file_path_list.append(os.path.join(self.get_this_dir(),data_directory,trade_balance_sub_dir,file_name))
 
         return return_file_path_list
 
