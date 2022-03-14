@@ -1096,17 +1096,17 @@ class AltairRenderings:
         df['ordered-cols'] = df.apply(lambda x: '-'.join(sorted([x['Reporting Economy'],x['Partner Economy']])), axis=1)
         df = df.drop_duplicates(['ordered-cols'])
 
-        alt.Chart(df).mark_rect().encode(
+        return_chart = alt.Chart(df).mark_rect().encode(
             x="Reporting Economy:N",
             y="Partner Economy:N",
-            color='sum_2020:Q'
+            color='2020:Q'
             ).resolve_scale(color="independent",).properties(
                 title='EU Domestic Service Trading Gross Volume',
                 height=height,
                 width=width
                 )
 
-        return None
+        return return_chart
 
 
 
