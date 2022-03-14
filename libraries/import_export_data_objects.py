@@ -219,9 +219,33 @@ class import_export_data(Utility):
 
         file_to_load = self.get_WTO_individual_file_name()
 
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+            'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
+            
+        wto_ser_imports = pd.read_csv(file_to_load[0], skiprows = 2, header = 0)
+        wto_ser_exports = pd.read_csv(file_to_load[1], skiprows = 2, header = 0)
         
+        wto_ser_imports = wto_ser_imports.loc[(wto_ser_imports['Reporting Economy'].isin(eu_countries)) & (wto_ser_imports['Partner Economy'].isin(eu_countries))]
+        wto_ser_imports = wto_ser_imports.drop(columns=['Product/Sector','Unnamed: 9'])
+        wto_ser_imports = wto_ser_imports.groupby(['Reporting Economy', 'Partner Economy']).agg(ser_imports_2015=('2015','sum'),
+                                                                                ser_imports_2016=('2016','sum'),
+                                                                                ser_imports_2017=('2017','sum'),
+                                                                                ser_imports_2018=('2018','sum'),
+                                                                                ser_imports_2019=('2019','sum'),
+                                                                                ser_imports_2020=('2020','sum'))
+
+        wto_ser_exports = wto_ser_exports.loc[(wto_ser_exports['Reporting Economy'].isin(eu_countries)) & (wto_ser_exports['Partner Economy'].isin(eu_countries))]
+        wto_ser_exports = wto_ser_exports.drop(columns=['Product/Sector','Unnamed: 9'])
+        wto_ser_exports = wto_ser_exports.groupby(['Reporting Economy', 'Partner Economy']).agg(ser_exports_2015=('2015','sum'),
+                                                                                ser_exports_2016=('2016','sum'),
+                                                                                ser_exports_2017=('2017','sum'),
+                                                                                ser_exports_2018=('2018','sum'),
+                                                                                ser_exports_2019=('2019','sum'),
+                                                                                ser_exports_2020=('2020','sum'))
         
-        return None 
+        df_concat = wto_ser_imports.merge(wto_ser_exports, how = 'outer', left_index = True, right_index = True)
+        df_concat = df_concat.reset_index()
+        return df_concat
 
 
     def load_and_clean_up_WTO_file(self):
