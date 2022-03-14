@@ -1081,6 +1081,35 @@ class AltairRenderings:
         return return_chart
 
 
+
+    def get_eu_domestic_trading_chart(self, height=250, width=350):
+        my_data = self.my_data_object
+        df=my_data.load_and_clean_up_individual_WTO_files().copy()
+
+        df['2015'] = df.loc[:,'ser_imports_2015'] + df.loc[:,'ser_exports_2015']
+        df['2016'] = df.loc[:,'ser_imports_2016'] + df.loc[:,'ser_exports_2016']
+        df['2017'] = df.loc[:,'ser_imports_2017'] + df.loc[:,'ser_exports_2017']
+        df['2018'] = df.loc[:,'ser_imports_2018'] + df.loc[:,'ser_exports_2018']
+        df['2019'] = df.loc[:,'ser_imports_2019'] + df.loc[:,'ser_exports_2019']
+        df['2020'] = df.loc[:,'ser_imports_2020'] + df.loc[:,'ser_exports_2020']
+
+        df['ordered-cols'] = df.apply(lambda x: '-'.join(sorted([x['Reporting Economy'],x['Partner Economy']])), axis=1)
+        df = df.drop_duplicates(['ordered-cols'])
+
+        alt.Chart(df).mark_rect().encode(
+            x="Reporting Economy:N",
+            y="Partner Economy:N",
+            color='sum_2020:Q'
+            ).resolve_scale(color="independent",).properties(
+                title='EU Domestic Service Trading Gross Volume'
+                height=height,
+                width=width
+                )
+
+        return None
+
+
+
     def get_eu_trade_overall_chart(self):
         
         my_data = self.my_data_object
