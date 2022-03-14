@@ -1101,7 +1101,7 @@ class AltairRenderings:
             y="Partner Economy:N",
             color='sum_2020:Q'
             ).resolve_scale(color="independent",).properties(
-                title='EU Domestic Service Trading Gross Volume'
+                title='EU Domestic Service Trading Gross Volume',
                 height=height,
                 width=width
                 )
