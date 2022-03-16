@@ -217,11 +217,18 @@ class import_export_data(Utility):
 
     def load_and_clean_up_individual_WTO_files(self):
 
-        file_to_load = self.get_WTO_individual_file_name()
+        #file_to_load = self.get_WTO_individual_file_name()
+        file_to_load = self.my_data.load_and_clean_up_WTO_file()
 
         eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
             'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
-            
+
+        eu_df = file_to_load.loc[(file_to_load['Trading Partner'].isin(eu_countries)) & (file_to_load['country'].isin(eu_countries))]
+        eu_df_filtered = eu_df[['Trading Partner','country','Total Trade ($M)','year']]
+        df_concat = eu_df_filtered.pivot_table('Total Trade ($M)', ['Trading Partner','country'], 'year').reset_index()
+
+
+        '''    
         wto_ser_imports = pd.read_csv(file_to_load[0], skiprows = 2, header = 0)
         wto_ser_exports = pd.read_csv(file_to_load[1], skiprows = 2, header = 0)
         
@@ -245,6 +252,9 @@ class import_export_data(Utility):
         
         df_concat = wto_ser_imports.merge(wto_ser_exports, how = 'outer', left_index = True, right_index = True)
         df_concat = df_concat.reset_index()
+        '''
+
+
         return df_concat
 
 
