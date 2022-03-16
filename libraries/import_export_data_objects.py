@@ -215,7 +215,7 @@ class import_export_data(Utility):
         
         return psql.sqldf(sql)
 
-    def load_and_clean_up_individual_WTO_files(self):
+    def load_and_clean_up_EU_files(self):
 
         #file_to_load = self.get_WTO_individual_file_name()
         file_to_load = self.my_data.load_and_clean_up_WTO_file()
