@@ -775,6 +775,71 @@ class import_export_data(Utility):
         my_return_data['NAFTA Total Trade %']=(my_return_data['NAFTA_TotalTrade_tradepct']*100).round(2)
         return my_return_data
 
+        
+    def get_top20_trade_continental_data(self):
+        
+        country_mapping=pd.read_csv('data/trade_balance_datasets/country_mapping_2.csv')
+        country_mapping
+
+        top20_dataframe=self.load_and_clean_up_top_20_file()
+
+        my_sql = '''
+                    
+                    SELECT 
+                    'Country' as [Level],
+                    t.[country],
+                    g2.[TradeGroup] as [TradeGroup country],
+                    g2.[Top20] as [Top20 country],
+                    t.[Trading Partner],
+                    g.[Continent] as [Continent TP],
+                    t.[year],
+                    t.[Total Trade ($M)],
+                    t.[Exports ($M)],
+                    t.[Imports ($M)],
+                    t.[Net Exports ($M)]
+                    FROM top20_dataframe t
+                    left join
+                    country_mapping g
+                    ON
+                    t.[Trading Partner]=g.[Country]
+                    left join
+                    country_mapping g2
+                    ON
+                    t.[country]=g2.[Country]
+                    where t.[country] in ('United States','Mexico','Canada')
+                    
+                    UNION
+                    
+                    SELECT 
+                    'Trade Group' as [Level],
+                    g2.[TradeGroup] as [TradeGroup country],
+                    g2.[TradeGroup] as [TradeGroup country],
+                    g2.[Top20] as [Top20 country],
+                    t.[Trading Partner],
+                    g.[Continent] as [Continent TP],
+                    t.[year],
+                    sum(t.[Total Trade ($M)]) [Total Trade ($M)],
+                    sum(t.[Exports ($M)]) [Exports ($M)],
+                    sum(t.[Imports ($M)]) [Imports ($M)],
+                    sum(t.[Net Exports ($M)]) [Net Exports ($M)]
+                    FROM top20_dataframe t
+                    left join
+                    country_mapping g
+                    ON
+                    t.[Trading Partner]=g.[Country]
+                    left join
+                    country_mapping g2
+                    ON
+                    t.[country]=g2.[Country]
+                    where g2.[TradeGroup] in ('NAFTA')
+                    group by g2.[TradeGroup],g2.[TradeGroup],g2.[Top20],t.[Trading Partner],g.[Continent],t.[year]
+                    
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+        my_return_data['Continent Trade Rank']=my_return_data.groupby(['Level','country','Continent TP','year'])['Total Trade ($M)'].rank(ascending=False)
+        return my_return_data
+
 
     def get_nafta_world_trade_data(self):
  
