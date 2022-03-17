@@ -1032,8 +1032,12 @@ class AltairRenderings:
         
         my_data = self.my_data_object
         gdp=my_data.get_gdp_all_data()
-        gdp_c=gdp[gdp.Country==source_country]
+        #gdp_c=gdp[gdp.Country==source_country]
         base=alt.Chart(gdp_c)
+
+        nafta_list=['Mexico','United States','Canada']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
 
         exchange_rate=base.mark_line().encode(
             x=alt.X('Year:N'),
@@ -1093,6 +1097,45 @@ class AltairRenderings:
         return_chart=alt.hconcat(exp_chart,exp_top5).resolve_scale(color='independent')
         return return_chart
 
+
+    def get_import_export_prod_type_chart(self,height=250,width=350):
+
+        my_data = self.my_data_object
+
+        direction_list=['imports','exports']
+        direction_dropdown = alt.binding_select(options= direction_list,name="Direction")
+        direction_select = alt.selection_single(fields=['Direction'], bind=direction_dropdown, init={'Direction': direction_list[0]})
+
+        nafta_list=['Mexico','United States','Canada']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
+
+        dataframe_ie=my_data.imports_exports_by_sectors_source()
+        dataframe_ie=dataframe_ie[dataframe_ie['Reporting Economy'].isin(['Canada','United States','Mexico'])]
+        dataframe_ie['Country']=dataframe_ie['Reporting Economy']
+        dataframe_ie_grp=dataframe_ie.groupby(['Year','Direction','Reporting Economy','Type']).sum().reset_index()
+        dataframe_ie_grp['Country']=dataframe_ie_grp['Reporting Economy']
+
+        dataframe_ie['Year Trade Rank']=dataframe_ie.groupby(['Country','Year','Direction'])['Value'].rank(ascending=False)
+        dataframe_ie_top5=dataframe_ie[dataframe_ie['Year Trade Rank']<=5]
+
+        title2='Import and Exports Product/Sector'
+
+        baseexp_t5=alt.Chart(dataframe_ie_top5)
+
+        exp_top5=baseexp_t5.mark_bar().encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Value:Q'),
+            color='Product/Sector-reformatted:N'
+        ).properties(title=title2,height=height,width=width).add_selection(
+            nafta_select).transform_filter(
+            nafta_select).add_selection(
+            direction_select).transform_filter(
+            direction_select)
+
+        return_chart=exp_top5
+
+        return return_chart
 
 
     def get_eu_domestic_trading_chart(self, height=250, width=350):
@@ -1172,8 +1215,9 @@ class AltairRenderings:
 
     def get_gdp_per_cap_lcu_chart(self,source_country,height=250,width=350):
         
-        #Function Ready to Go
         my_data = self.my_data_object
+
+        #Function Ready to Go        
         nafta_list=['Mexico','United States','Canada']
         nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
         nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
@@ -1183,7 +1227,7 @@ class AltairRenderings:
 
         base = alt.Chart(df_gdp_nafta)
 
-        title='GDP per Capita Local Currency Unit'
+        title='GDP per Capita Local Currency & USD Exchange Rate'
 
         bar = base.mark_bar().encode(
         x=alt.X('Year:N',axis=alt.Axis(title='Year')),
@@ -1207,12 +1251,23 @@ class AltairRenderings:
         tooltip=['GDP per capita constant LCU']
         ).properties(width=700)
 
-        return_chart = alt.layer(bar,points).add_selection(
+        base2= alt.Chart(df_gdp_nafta)
+        line = base2.mark_line(color='green').encode(
+            x=alt.X('Year:N'),#,axis=alt.Axis(title='Year')),
+            y=alt.Y('exchange_rate:Q'),#,axis=alt.Axis(title="Trade")),#,
+            #,scale=alt.Scale(domain=[-3000000, 2000000])
+            strokeWidth=alt.value(3)
+        ).properties(width=width,height=height)
+
+        return_chart = alt.layer(bar,points)
+
+        return_chart_2 = alt.layer(return_chart,line).add_selection(
                 nafta_select
                 ).transform_filter(
-                nafta_select)
+                nafta_select).resolve_scale(
+                y='independent')
 
-        return return_chart
+        return return_chart_2
 
     def get_nafta_trade_data_pcts(self):
         
@@ -1273,7 +1328,7 @@ class AltairRenderings:
         return_chart=gnafta1
         return return_chart
 
-    def get_trade_group_gdp_growth_chart(self,trade_group,height=250,width=350):
+    def get_trade_group_gdp_growth_chart(self,trade_group,height=300,width=750):
 
         my_data = self.my_data_object
 
@@ -1281,6 +1336,7 @@ class AltairRenderings:
         if trade_group=='NAFTA':
             nafta_gdp_growth=my_data.get_nafta_gdp_data_growth_rate()
             base=alt.Chart(nafta_gdp_growth)
+            title='NAFTA GDP Growth'
 
         else:# trade_group='EU':
             gdp_growth=my_data.get_eu_gdp_data_growth_rate('1')
@@ -1289,10 +1345,19 @@ class AltairRenderings:
         continent=base.mark_line().encode(
             x=alt.X('Year:N'),
             y=alt.Y('GDP Pct Growth:Q'),
-            color='Continental:N'
-            )
+            #color='Continental:N'
+            color=alt.Color(
+                            'Continental:N',
+                            legend=alt.Legend(
+                            title=None,
+                            orient='none',
+                            legendX=500, legendY=-20,
+                            direction='horizontal',
+                            titleAnchor='end')
+                            )
+            ).properties(title=title,height=height,width=width)
 
-        return_chart=continent.properties(height=height,width=width)
+        return_chart=continent
         return return_chart
 
 
@@ -2391,6 +2456,18 @@ class AltairRenderings:
         row_1 = (nafta1|nafta2).resolve_scale(
             color='independent')
         row_2 = (continent ).resolve_scale(
+            color='independent')
+        return_chart = (row_1 & row_2)
+        return return_chart
+
+    def get_nafta_section_3_1(self):
+        #CHARTS
+        gdp_change=self.get_trade_group_gdp_growth_chart('NAFTA')
+        impexp=self. get_import_export_prod_type_chart()
+        gdp=self.get_gdp_per_cap_lcu_chart('Canada')
+
+        row_1 = (gdp_change)
+        row_2 = (gdp | impexp ).resolve_scale(
             color='independent')
         return_chart = (row_1 & row_2)
         return return_chart
