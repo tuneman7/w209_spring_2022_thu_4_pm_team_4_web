@@ -70,7 +70,10 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('year:O',axis=alt.Axis(title='Year')),
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
-            color="key:N"
+            color=alt.Color(field="key", type="nominal",
+                            scale = alt.Scale(range = ['#265499', '#A8DDA4', '#EEBC59']),
+                            legend = alt.Legend(title="Key"))
+
             
         ).properties(
             width=width,
@@ -110,7 +113,7 @@ class AltairRenderings:
 
         base = alt.Chart(source_data)
 
-        bars = base.mark_bar(color = '#aec7e8').encode(
+        bars = base.mark_bar(color = '#9CBAD5').encode(
             x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
             y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
@@ -214,17 +217,19 @@ class AltairRenderings:
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($M)')),
             x=alt.X('Trading Partner', sort='-y'),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
-            color='column:N'
+            color=alt.Color(field="column", type="nominal",
+                            scale = alt.Scale(range = ['#265499', '#A8DDA4']),
+                            legend = alt.Legend(title="column"))
 
         )
-
-        line = bars.mark_line(color='Lime').encode(
+        
+        line = bars.mark_line(color='#EEBC59').encode(
             x=alt.X('Trading Partner'),
             y=alt.Y('net_trade:Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
-            color=alt.value("Lime"),                 
+            color=alt.Color(scale = alt.Scale(range = ['#EEBC59']))               
         )
-
+ 
 
         invisible_dots = base.mark_circle(
             color='red',
@@ -237,7 +242,7 @@ class AltairRenderings:
         )
 
         visible_dots = base.mark_circle(
-            color='Lime',
+            color='#EEBC59',
             opacity=1.0,
             size=60
         ).encode(
@@ -434,7 +439,8 @@ class AltairRenderings:
             .mark_geoshape(stroke="black", strokeWidth=1)
             .encode(
                 color = alt.condition('datum.GDP > 0', 
-                                    alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM")),
+                                    alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM"),
+                                              scale = alt.Scale(scheme="yellowgreenblue")),
                                     alt.value('lightgrey')),
                 tooltip=[alt.Tooltip("Country:N", title="Country")]
             )
@@ -482,6 +488,7 @@ class AltairRenderings:
         world_gdp['GDP'] = world_gdp['GDP'].fillna(0)
 
         my_map = alt.Chart(world_gdp[world_gdp.continent!='Antarctica']).mark_geoshape(
+                color = "#purpleblue"
             ).project(
             ).encode(
                 color='GDP',
@@ -627,7 +634,9 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title="GDP Growth %",labelExpr='datum.value + "%"')),
-            color="Country:N"
+            color=alt.Color(field="Country", type="nominal",
+                            scale = alt.Scale(range = ['#3E7B7B', '#CBD9BF']),
+                            legend = alt.Legend(title="Country"))
             
         ).properties(
             width=700,
@@ -742,7 +751,9 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('value:Q',axis=alt.Axis(title="GDP and Trade % Change",labelExpr='datum.value + "%"')),
-            color="key:N"
+            color=alt.Color(field="key", type="nominal",
+                            scale = alt.Scale(range = ['#799D5E', '#E4AB65']),
+                            legend = alt.Legend(title="key"))
         ).properties(
             width=width,
             height=height,
@@ -861,7 +872,9 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title="GDP Growth %",labelExpr='datum.value + "%"')),
-            color="Country:N"
+            color=alt.Color(field="Country", type="nominal",
+                            scale = alt.Scale(range = ['#3E7B7B', '#CBD9BF']),
+                            legend = alt.Legend(title="Country"))
             
         ).properties(
             width=width,
@@ -1331,7 +1344,7 @@ class AltairRenderings:
             color=alt.Color(field="isChinaPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
                                                         'Trades with Others', 'Trade/GDP ratio change'],
-                                              range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                                              range = ['#265499', '#AFD097', '#2899CC', '#EEBC59']), #'#2f6684', '#ff7c43', '#acc8df', '#665191'
                             legend = alt.Legend(title="Key")),
             
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
@@ -1399,7 +1412,7 @@ class AltairRenderings:
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
 
         # line charts
-        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#2f6684', size = 30).encode(
+        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#265499', size = 30).encode(
             x = alt.Y('Country:N', sort='-y',
                       axis=alt.Axis(labelAngle=-30, 
                                     labelOverlap=False,
@@ -1602,7 +1615,7 @@ class AltairRenderings:
             color=alt.Color(field="isChinaPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
                                                         'Trades with Others', 'Trade/GDP ratio change'],
-                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                                            range = ['#265499', '#AFD097', '#2899CC', '#EEBC59']),
                             legend = alt.Legend(title="Key")),
 
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
@@ -1721,7 +1734,7 @@ class AltairRenderings:
 
         return my_chart
 
-    def get_china_section_1(self,width=1000,height=600):
+    def get_china_section_1(self,width=950,height=600):
 
         my_data = self.my_data_object
 
@@ -1758,7 +1771,7 @@ class AltairRenderings:
             color=alt.Color(field="isChinaPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
                                                         'Trades with Others', 'Trade/GDP ratio change'],
-                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                                            range = ['#156296', '#799D5E', '#B9CDDB', '#E4AB65']),
                             legend = alt.Legend(title="Key")),
 
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
@@ -1827,7 +1840,7 @@ class AltairRenderings:
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
 
         # line charts
-        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#2f6684', size = 30).encode(
+        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#156296', size = 30).encode(
             x = alt.Y('Country:N', sort='-y',
                     axis=alt.Axis(labelAngle=-30, 
                                     labelOverlap=False,
@@ -1875,11 +1888,14 @@ class AltairRenderings:
         gdp_base = alt.Chart(df).transform_fold(
             ['Trade/GDP ratio change', 'GDP Growth Pct']
         )
-
+        
         gdp_line = gdp_base.mark_line().encode(
             x = alt.X('Year:O',axis=alt.Axis(labelAngle=0)),
             y = alt.Y('value:Q',axis=alt.Axis(title = 'YoY Growth %', format='.1f')),
-            color = 'key:N',
+            color=alt.Color(field="key", type="nominal",
+                            scale = alt.Scale(domain = ['GDP Growth Pct', 'Trade/GDP ratio change'],
+                                            range = ['#799D5E', '#E4AB65']),
+                            legend = alt.Legend(title="Key")),
             tooltip=[alt.Tooltip('Year'),
                     alt.Tooltip('Trade/GDP ratio change', format=".2f"),
                     alt.Tooltip('GDP Growth Pct', format=".2f")]
@@ -1949,7 +1965,7 @@ class AltairRenderings:
         ## https://vega.github.io/vega/docs/schemes/        
         return return_chart
 
-    def get_china_section_2(self,width=1000,height=600):
+    def get_china_section_2(self,width=950,height=600):
 
         my_data = self.my_data_object
 
@@ -1985,7 +2001,7 @@ class AltairRenderings:
             color=alt.Color(field="isChinaPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
                                                         'Trades with Others', 'Trade/GDP ratio change'],
-                                            range = ['#2f6684', '#ff7c43', '#acc8df', '#665191']),
+                                            range = ['#156296', '#799D5E', '#B9CDDB', '#E4AB65']),
                             legend = alt.Legend(title="Key")),
 
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
@@ -2054,7 +2070,7 @@ class AltairRenderings:
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
 
         # line charts
-        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#2f6684', size = 30).encode(
+        dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#156296', size = 30).encode(
             x = alt.Y('Country:N', sort='-y',
                     axis=alt.Axis(labelAngle=-30, 
                                     labelOverlap=False,
@@ -2106,7 +2122,10 @@ class AltairRenderings:
         gdp_line = gdp_base.mark_line().encode(
             x = alt.X('Year:O',axis=alt.Axis(labelAngle=0)),
             y = alt.Y('value:Q',axis=alt.Axis(title = 'YoY Growth %', format='.1f')),
-            color = 'key:N',
+            color=alt.Color(field="key", type="nominal",
+                            scale = alt.Scale(domain = ['GDP Growth Pct', 'Trade/GDP ratio change'],
+                                            range = ['#799D5E', '#E4AB65']),
+                            legend = alt.Legend(title="Key")),
             tooltip=[alt.Tooltip('Year'),
                     alt.Tooltip('Trade/GDP ratio change', format=".2f"),
                     alt.Tooltip('GDP Growth Pct', format=".2f")]
