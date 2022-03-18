@@ -440,8 +440,8 @@ class AltairRenderings:
             .encode(
                 color = alt.condition('datum.GDP > 0', 
                                     alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM"),
-                                              scale = alt.Scale(scheme="yellowgreenblue")),
-                                    alt.value('lightgrey')),
+                                              scale = alt.Scale(scheme="blues")),
+                                    alt.value('#f3f3f3')),
                 tooltip=[alt.Tooltip("Country:N", title="Country")]
             )
             .transform_lookup(
