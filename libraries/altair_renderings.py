@@ -440,8 +440,8 @@ class AltairRenderings:
             .encode(
                 color = alt.condition('datum.GDP > 0', 
                                     alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM"),
-                                              scale = alt.Scale(scheme="yellowgreenblue")),
-                                    alt.value('lightgrey')),
+                                              scale = alt.Scale(scheme="blues")),
+                                    alt.value('#f3f3f3')),
                 tooltip=[alt.Tooltip("Country:N", title="Country")]
             )
             .transform_lookup(
@@ -2652,4 +2652,26 @@ class AltairRenderings:
         row_2 = (gdp | impexp ).resolve_scale(
             color='independent')
         return_chart = (row_1 & row_2)
+        return return_chart
+
+    def get_eu_section_1(self):
+
+        chart1 = self.get_eu_domestic_trading_chart()
+        chart2 = self.get_eu_domestic_trading_chart()
+        #US will Start NAFTA Charts tomorrow morning
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        return_chart = (row_1)
+        return return_chart
+
+    def get_eu_section_2(self):
+
+        chart1 = self.get_eu_domestic_trading_chart()
+        chart2 = self.get_eu_domestic_trading_chart()
+        #US will Start NAFTA Charts tomorrow morning
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        return_chart = (row_1)
         return return_chart
