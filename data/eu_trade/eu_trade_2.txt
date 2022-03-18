@@ -1,9 +1,4 @@
-<b>The Rise of a Trade Titan: how are the top 19 economies associated with China?</b>
+<b>EU Trade 2</b>
 <br/>
-(1) The time series comparison chart of GDP growth and trade value trend as proportion of GDP is a way to view how an economy depends on trades.
-For most of the countries, their GDP growth trends are highly correlated with their international trade trends. 
-Indonesia, India and Netherlands are the exceptions. Their trade values as proportion of GDP are less correlated with the GDP growth rates.
-Australia and Iran trade trends lag a year or two behind their GDP growth rates.
+Text
 <br/>
-(2) Clicking a country on the bar chart, a correlation coefficient displays on the right side to show the correlation of GDP growth between the country and China.
-Brazil's and Canada's GDP growth rates have the highest correlation of over 70% with China, while Iran and U.S. have the lowest correlation of less than 40%. 

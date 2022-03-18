@@ -8,29 +8,87 @@
 <a id="introduction"></a>
 
 <br/>
-<div id="introduction_content"></div>
+<div id="introduction_content" class="my_content_section" data-href="introduction"></div>
   <a id="world_map"></a>
   <br/></br>
+  <div id="world_map_content" class="my_content_section" data-href="world_map">
   {% include 'pages/placeholder.world_modal_include.html' %}
+  </div>
   <br/><br/>
   <a id="china_trade"></a>
   <br/></br>
-  <div id="china_trade_content"></div>
+  <div id="china_trade_content" class="my_content_section" data-href="china_trade"></div>
   <br/><br/>
   <a id="nafta_trade"></a>
   <br/></br>
-  <div id="nafta_trade_content"></div>
+  <div id="nafta_trade_content" class="my_content_section" data-href="nafta_trade"></div>
   <a id="euro_trade"></a>
   <br/></br>
-  <div id="eu_trade_content"></div>
+  <div id="eu_trade_content"  class="my_content_section" data-href="euro_trade"></div>
 
   <a id="world_events"></a>
   <br/><br/>
-  <div id="world_events_content"></div>
+  <div id="world_events_content" class="my_content_section" data-href="world_events"></div>
 
   <a id="about"></a>
   <br/><br/>
+  <div id="about_content" class="my_content_section" data-href="about">
   {% include 'pages/placeholder.about.html' %}    
+</div>
+
+
+  <script>
+
+function change_top_nav(element)
+    {
+        my_href = "#" + $(element).data("href");
+
+        console.log(my_href);
+
+        var btns = $(".navbar-nav .nav-link");
+
+        for (var i = 0; i < btns.length; i++) {
+
+            dealio = $(btns[i]).children()[0];
+
+            last_element = dealio.href.split("/").pop();
+
+            if(my_href==last_element)
+            {
+              var current = document
+                    .getElementsByClassName("active");
+
+                current[0].className = current[0]
+                    .className.replace(" active", "");
+
+                btns[i].className += " active";
+            }
+      }
+    }
+
+    $(document).ready(function () {
+     
+      n=1;
+    
+      $('.my_content_section' ).mouseenter(function() {
+
+        change_top_nav(this);
+ 
+      });  
+
+      $('.my_content_section' ).scroll(function() {
+
+        change_top_nav(this);
+
+        });  
+
+    
+    });
+    
+    </script>  
+
+
 
 {% endblock %}
+
 

@@ -1,8 +1,4 @@
-<b>The Rise of a Trade Titan: how are the top 19 economies associated with China?</b>
+<b>EU Trade 1</b>
 <br/>
-By 2018, China has become the world's most dominant trading partner, surpassing United States. 
-Below shows the percentage of each of the top 19 economies are trading annually with China vs. with the rest of the world.
-Australia is China's largest trading partner with more than 1/3 of its annual trades linked to China. 
-Following Australia, Iran and Brazil are the next largest trading partners to China. Though the United States is the largest country trading with China
-the most in terms of dollar value, only 13.4% of U.S. trades in 2020 are with China. Spain, Switzerland, France and Italy are least dependent on trade with China.
-
+Text
+<br/>
