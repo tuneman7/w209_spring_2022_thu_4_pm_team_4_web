@@ -1,5 +1,36 @@
 
-<h1>EU Trade</h1>
+<h1 id="eu_trade_title">EU Trade</h1>
+
+
+<div id="eu_render_section"></div>
+
+
+<script>
+
+
+
+function render_eu_graphs(event_name,eu_slide_no){
+
+          $.ajax({
+              url: '/render_eu_graphs',
+              type: 'post',
+              data: {event_name: event_name, eu_slide_no: eu_slide_no},
+              success: function(data){ 
+                  $('#eu_render_section').html(data); 
+                  $('#eu_render_section').append(data.htmlresponse);
+              }
+          });
+        };
+
+
+$(document).ready(function () {
+    
+    page_loading();
+    render_eu_graphs("eu_trade","1");
+
+});
+
+</script>
 
  
 

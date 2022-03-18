@@ -2557,3 +2557,25 @@ class AltairRenderings:
             color='independent')
         return_chart = (row_1 & row_2)
         return return_chart
+
+    def get_eu_section_1(self):
+
+        chart1 = self.get_eu_domestic_trading_chart()
+        chart2 = self.get_eu_domestic_trading_chart()
+        #US will Start NAFTA Charts tomorrow morning
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        return_chart = (row_1)
+        return return_chart
+
+    def get_eu_section_2(self):
+
+        chart1 = self.get_eu_domestic_trading_chart()
+        chart2 = self.get_eu_domestic_trading_chart()
+        #US will Start NAFTA Charts tomorrow morning
+        
+        row_1 = (chart1|chart2).resolve_scale(
+            color='independent')
+        return_chart = (row_1)
+        return return_chart

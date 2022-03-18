@@ -513,6 +513,60 @@ def render_nafta_graphs():
     nafta_slide_no=slide_no,
     nafta_slides_total=nafta_slides_total,)})
 
+@app.route("/render_eu_graphs",methods=["POST","GET"])
+def render_eu_graphs():
+    my_altair = AltairRenderings()
+    utility = Utility()
+    print("render_eu_graphs()")
+    event_name = "JCPOA"
+    chart_json=None
+    event_text=None
+    slide_no = None
+    if request.method == 'POST':
+        event_name = request.form["event_name"]
+        slide_no = request.form["eu_slide_no"]
+
+    try:
+        file_name = event_name.lower() +"_"+ slide_no+".txt"
+        load_file_name = os.path.join(utility.get_this_dir(),"data","eu_trade",file_name)
+        print(load_file_name)
+        event_text = utility.get_data_from_file(load_file_name)
+    except:
+        fido="dido"
+
+
+    if slide_no == "1":
+        print("mybozo")
+        chart_json = my_altair.get_eu_section_1().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    if slide_no == "2":
+        print("mybozo")
+        chart_json = my_altair.get_eu_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    if slide_no == "3":
+        print("mybozo")
+        chart_json = my_altair.get_eu_section_2().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()            
+
+    eu_slides_total = 2
+
+    return jsonify({'htmlresponse': render_template('modal/eu_event.html',event_name=event_name,
+    chart_json=chart_json,
+    event_text=event_text,
+    eu_slide_no=slide_no,
+    eu_slides_total=eu_slides_total,)})
+
 
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
