@@ -1,0 +1,10 @@
+HTML:
+
+    MAIN TEMPLATE:  -- contains all links etc.
+    
+    HOME TEMPLATE:
+    
+    SECTION PLACEHOLDER:
+    
+    CONTENT MODALS:
+    

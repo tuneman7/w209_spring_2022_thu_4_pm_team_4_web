@@ -1,0 +1,57 @@
+total 61496
+    0 -rw-r--r--   1 adonisirwin  staff         0 Mar 19 01:59 tester.txt
+   16 -rw-r--r--@  1 adonisirwin  staff      4367 Mar 19 01:57 tester.tt
+    0 -rw-r--r--   1 adonisirwin  staff         0 Mar 19 01:54 get_my_post_card.db
+    0 drwxr-xr-x   5 adonisirwin  staff       160 Mar 19 01:54 __pycache__
+    0 drwxr-xr-x   8 adonisirwin  staff       256 Mar 19 01:54 myproj
+    0 drwxr-xr-x  11 adonisirwin  staff       352 Mar 17 21:17 libraries
+51920 -rw-r--r--   1 adonisirwin  staff  26580341 Mar 17 21:17 eda_using_libraries_jp.ipynb
+    0 drwxr-xr-x  12 adonisirwin  staff       384 Mar 17 20:01 data
+   56 -rw-r--r--   1 adonisirwin  staff     25086 Mar 17 19:47 app.py
+  760 -rw-r--r--   1 adonisirwin  staff    386270 Mar 17 17:57 eu_analysis_fz.ipynb
+  296 -rw-r--r--   1 adonisirwin  staff    148536 Mar 15 18:34 w209_final_project_eda_don_irwin.ipynb
+    0 drwxr-xr-x   5 adonisirwin  staff       160 Mar 15 18:34 folium_test
+ 1536 -rw-r--r--   1 adonisirwin  staff    783716 Mar 15 18:34 eda_using_libraries_jp-Copy1.ipynb
+ 1768 -rw-r--r--   1 adonisirwin  staff    904091 Mar 15 18:34 eda_using_libraries_20220206_1.ipynb
+  392 -rw-r--r--   1 adonisirwin  staff    198545 Mar 15 18:34 eda_using_libraries.ipynb
+  744 -rw-r--r--   1 adonisirwin  staff    377828 Mar 15 18:34 NAFTA Charts.ipynb
+  744 -rw-r--r--   1 adonisirwin  staff    379242 Mar  9 17:22 NAFTA_Charts_modification.ipynb
+    0 drwxr-xr-x  10 adonisirwin  staff       320 Mar  6 23:06 static
+   32 -rw-r--r--   1 adonisirwin  staff     15134 Mar  6 23:06 app.pyc
+    8 -rw-r--r--@  1 adonisirwin  staff        52 Mar  6 23:04 purgepull.sh
+    8 -rw-r--r--   1 adonisirwin  staff       961 Mar  6 11:51 data_load_test.py
+  656 -rw-r--r--   1 adonisirwin  staff    334712 Mar  6 10:42 eda_using_libraries_20220206.ipynb
+ 1344 -rw-r--r--   1 adonisirwin  staff    687170 Mar  6 08:11 w209_final_project_eda_don_irwin.html
+    8 -rw-r--r--   1 adonisirwin  staff        77 Mar  6 08:11 to_pdf.sh
+    8 -rw-r--r--   1 adonisirwin  staff        78 Mar  6 08:11 to_html.sh
+    0 drwxr-xr-x  11 adonisirwin  staff       352 Mar  6 08:11 templates
+    8 -rw-r--r--   1 adonisirwin  staff        72 Mar  6 08:11 t-25447ba9-c0b9-40ab-b56a-2de67966fa98.ipynb
+    8 -rw-r--r--@  1 adonisirwin  staff       545 Mar  6 08:11 setup_venv.sh
+    8 -rw-r--r--   1 adonisirwin  staff        31 Mar  6 08:11 setup_scripts.txt
+    8 -rw-r--r--   1 adonisirwin  staff      1429 Mar  6 08:11 setup_notes_exhaustive
+    8 -rw-r--r--@  1 adonisirwin  staff       406 Mar  6 08:11 setup_notes.txt
+    8 -rw-r--r--   1 adonisirwin  staff       470 Mar  6 08:11 setup_env.sh
+    0 drwxr-xr-x   4 adonisirwin  staff       128 Mar  6 08:11 screenshots
+    8 -rw-r--r--   1 adonisirwin  staff       215 Mar  6 08:11 requirements_20211219.txt
+    8 -rw-r--r--@  1 adonisirwin  staff       860 Mar  6 08:11 requirements.txt
+    8 -rw-r--r--   1 adonisirwin  staff        43 Mar  6 08:11 rd.sh
+    8 -rwxr-xr-x   1 adonisirwin  staff       313 Mar  6 08:11 pyvenv.cfg
+    8 -rw-r--r--   1 adonisirwin  staff      1648 Mar  6 08:11 output.csv
+    8 -rw-r--r--   1 adonisirwin  staff       955 Mar  6 08:11 models.py
+    8 -rw-r--r--   1 adonisirwin  staff        32 Mar  6 08:11 ir.sh
+    0 drwxr-xr-x   5 adonisirwin  staff       160 Mar  6 08:11 images
+    8 -rw-r--r--   1 adonisirwin  staff        28 Mar  6 08:11 heroku_notes.txt
+    8 -rw-r--r--   1 adonisirwin  staff      3936 Mar  6 08:11 forms.py
+    8 -rw-r--r--   1 adonisirwin  staff      1004 Mar  6 08:11 fabfile.py
+    8 -rw-r--r--   1 adonisirwin  staff         1 Mar  6 08:11 error.log
+    0 drwxr-xr-x   3 adonisirwin  staff        96 Mar  6 08:11 design_docs
+    8 -rw-r--r--   1 adonisirwin  staff        36 Mar  6 08:11 create_db.py
+    8 -rw-r--r--   1 adonisirwin  staff       377 Mar  6 08:11 config.py
+    8 -rw-r--r--   1 adonisirwin  staff      2097 Mar  6 08:11 book-svgrepo-com.svg
+  960 -rw-r--r--   1 adonisirwin  staff    487602 Mar  6 08:11 altair_map.ipynb
+    8 -rw-r--r--   1 adonisirwin  staff        38 Mar  6 08:11 README.md
+   24 -rw-r--r--   1 adonisirwin  staff      9541 Mar  6 08:11 README 3.md
+    8 -rw-r--r--   1 adonisirwin  staff       654 Mar  6 08:11 README 2.md
+    8 -rw-r--r--   1 adonisirwin  staff        85 Mar  6 08:11 Procfile.dev
+    8 -rw-r--r--   1 adonisirwin  staff        22 Mar  6 08:11 Procfile
+   24 -rw-r--r--   1 adonisirwin  staff     11341 Mar  6 08:11 LICENSE
