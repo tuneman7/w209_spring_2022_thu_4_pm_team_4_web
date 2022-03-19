@@ -1169,6 +1169,72 @@ class AltairRenderings:
         return return_chart
 
 
+    def get_eu_versus_noneu_trading_chart(self, height=250, width=350):
+        my_data = self.my_data_object
+        df = my_data.load_and_clean_up_top_20_file().copy()
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary',
+        'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom','European Union']
+
+        title = 'EU Internal vs. Non-EU Countries Trade Volume'
+
+        #EU Country as source contries
+        eu_df = df.loc[df['country'].isin(eu_countries)][['Trading Partner','Total Trade ($M)','Exports ($M)','Imports ($M)','country','year']]
+        
+        #Non EU as trading stats
+        non_eu = eu_df.loc[~eu_df['Trading Partner'].isin(eu_countries)]
+        non_eu = eu_df.loc[~eu_df['Trading Partner'].isin(eu_countries)]
+        non_eu = non_eu.groupby(by=['country','year'])['Total Trade ($M)','Exports ($M)','Imports ($M)'].sum()
+        non_eu = non_eu.reset_index()
+        non_eu['Trading Partner'] = 'Non-EU'
+        #non_eu[non_eu['year']==2020]
+
+        eu_filtered_df = eu_df.loc[eu_df['Trading Partner']== 'European Union']
+        complete_df = pd.concat([non_eu, eu_filtered_df], axis = 0).reset_index()
+
+        #complete_df['Imports ($M)'] = 0 - complete_df['Imports ($M)']
+        complete_df = complete_df.sort_values(by=['Trading Partner'], ascending=False)
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        return_chart_1 = alt.Chart(complete_df).mark_area(opacity=1).encode(
+            x='country',
+            y='Exports ($M)',
+            color = 'Trading Partner',
+            tooltip = alt.Tooltip('Exports ($M)', format="$,.0f"),
+            order=alt.Order(
+            # Sort the segments of the bars by this field
+            'Trading Partner',
+            sort='ascending'
+            )
+        ).properties(width=width,height=height,title='EU Internal vs. Non-EU Countries Exports Trading Volume').add_selection(
+                slider_selection
+                ).transform_filter(
+                slider_selection).resolve_scale(
+                y='independent')
+
+        return_chart_2 = alt.Chart(complete_df).mark_area(opacity=0.75).encode(
+            x='country',
+            y='Imports ($M)',
+            color = 'Trading Partner',
+            tooltip = alt.Tooltip('Imports ($M)', format="$,.0f"),
+            order=alt.Order(
+            # Sort the segments of the bars by this field
+            'Trading Partner',
+            sort='ascending'
+            )
+        ).properties(width=width,height=height, title ='EU Internal vs. Non-EU Countries Imports Trading Volume').add_selection(
+                slider_selection
+                ).transform_filter(
+                slider_selection).resolve_scale(
+                y='independent')
+
+        return_chart=return_chart_1 | return_chart_2
+        
+        return return_chart
+
+
     def get_eu_trade_overall_chart(self):
         
         my_data = self.my_data_object
