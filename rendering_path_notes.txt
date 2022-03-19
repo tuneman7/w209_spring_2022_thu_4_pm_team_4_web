@@ -1,10 +1,39 @@
 HTML:
 
     MAIN TEMPLATE:  -- contains all links etc.
+
+    templates/layouts/main.html
     
+        NOTES:  
+        
+            
+            -- ajax calls that call a specific method in app.py and push the contents to div tags.
+            
+          render_ajax_section('/world_trade_region','#world_events_content','#world_events_content');
+          render_ajax_section('/nafta_trade_content','#nafta_trade_content','#nafta_trade_content');
+          render_ajax_section('/china_trade_content','#china_trade_content','#china_trade_content');
+          render_ajax_section('/introduction_content','#introduction_content','#introduction_content');
+          render_ajax_section('/eu_trade_content','#eu_trade_content','#eu_trade_content');            
+
     HOME TEMPLATE:
     
-    SECTION PLACEHOLDER:
+    templates/pages/placeholder.home.html
+    
+        NOTES:
+        
+            Holds placeholders for the individual sections.
+    
+    SECTION PLACEHOLDERS:
+    
+        /templates/pages/section_content/placeholder.about.html
+        /templates/pages/section_content/placeholder.china_trade.html
+        /templates/pages/section_content/placeholder.covid_impact.html
+        /templates/pages/section_content/placeholder.eu_trade.html
+        /templates/pages/section_content/placeholder.introduction.html
+        /templates/pages/section_content/placeholder.nafta_trade.html
+        /templates/pages/section_content/placeholder.world_events.html
+        /templates/pages/section_content/placeholder.world_modal_include.html
+
     
     CONTENT MODALS:
     

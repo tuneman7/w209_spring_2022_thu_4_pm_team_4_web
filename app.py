@@ -240,36 +240,36 @@ def world_trade_region():
     print("mybozo")
     my_data = Import_Export_Data()
     world_events = my_data.get_world_event_data();
-    return jsonify({'htmlresponse': render_template('pages/placeholder.world_events.html',world_events=world_events)})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.world_events.html',world_events=world_events)})
 
 @app.route("/covid_impact_content",methods=["POST","GET"])
 def covid_impact_content():
     print("mybozo")
-    return jsonify({'htmlresponse': render_template('pages/placeholder.covid_impact.html')})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.covid_impact.html')})
 
 
 @app.route("/nafta_trade_content",methods=["POST","GET"])
 def nafta_trade_content():
     print("mybozo")
-    return jsonify({'htmlresponse': render_template('pages/placeholder.nafta_trade.html')})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.nafta_trade.html')})
 
 @app.route("/china_trade_content",methods=["POST","GET"])
 def china_trade_content():
     print("mybozo china_trade_content")
     #placeholder.china_trade.html
-    return jsonify({'htmlresponse': render_template('pages/placeholder.china_trade.html')})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.china_trade.html')})
 
 @app.route("/introduction_content",methods=["POST","GET"])
 def introduction_content():
     print("mybozo introduction_content")
     #placeholder.china_trade.html
-    return jsonify({'htmlresponse': render_template('pages/placeholder.introduction.html')})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.introduction.html')})
 
 @app.route("/eu_trade_content",methods=["POST","GET"])
 def eu_trade_content():
     print("mybozo eu_trade_content")
     #placeholder.china_trade.html
-    return jsonify({'htmlresponse': render_template('pages/placeholder.eu_trade.html')})
+    return jsonify({'htmlresponse': render_template('pages/section_content/placeholder.eu_trade.html')})
 
 
 
