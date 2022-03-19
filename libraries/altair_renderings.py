@@ -2050,10 +2050,15 @@ class AltairRenderings:
 
         trade  = self.get_import_export_balance_top_five("Iran",for_matrix=True,width=width,height=height)
 
+        t_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                            'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
 
+        m_dealio = alt.Chart(t_data).mark_point(opacity=0.0)
+        
+        #am here
         row_1 = (trade | top_five_partners ).resolve_scale(
             color='independent')
-        my_chart = (row_1).configure_axis(
+        my_chart = (m_dealio & row_1).configure_axis(
                     grid=False
                 ).configure_view(
                     strokeWidth=0

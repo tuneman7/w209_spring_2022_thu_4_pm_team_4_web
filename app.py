@@ -464,7 +464,6 @@ def render_nafta_graphs():
     my_altair = AltairRenderings()
     utility = Utility()
     print("render_nafta_graphs()")
-    event_name = "JCPOA"
     chart_json=None
     event_text=None
     slide_no = None
