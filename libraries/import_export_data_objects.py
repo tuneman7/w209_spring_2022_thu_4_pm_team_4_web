@@ -224,10 +224,10 @@ class import_export_data(Utility):
             'Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom']
 
         eu_df = file_to_load.loc[(file_to_load['Trading Partner'].isin(eu_countries)) & (file_to_load['country'].isin(eu_countries))]
-        eu_df_filtered = eu_df[['Trading Partner','country','Total Trade ($M)','year']]
-        df_concat = eu_df_filtered.pivot_table('Total Trade ($M)', ['Trading Partner','country'], 'year').reset_index()
+        eu_df_filtered = eu_df[['Trading Partner','country','Total Trade ($M)','year']].reset_index()
+        #df_concat = eu_df_filtered.pivot_table('Total Trade ($M)', ['Trading Partner','country'], 'year').reset_index()
         
-        return df_concat
+        return eu_df_filtered
 
 
     def load_and_clean_up_WTO_file(self):

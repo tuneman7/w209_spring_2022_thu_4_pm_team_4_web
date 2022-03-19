@@ -1143,22 +1143,30 @@ class AltairRenderings:
         my_data = self.my_data_object
         df=my_data.load_and_clean_up_EU_files().copy()
 
-        df['ordered-cols'] = df.apply(lambda x: '-'.join(sorted([x['Trading Partner'],x['country']])), axis=1)
+        df['year'] = df.year.astype(str)
+        df['ordered-cols'] = df.apply(lambda x: '-'.join(sorted([x['Trading Partner'],x['country'],x['year']])), axis=1)
         df = df.drop_duplicates(['ordered-cols'])
-        df.columns = df.columns.astype(str)
+        df['year'] = df.year.astype(int)
 
-        return_chart = alt.Chart(df).mark_rect().encode(
-            x="Trading Partner:N",
-            y="country:N",
-            color='2020:Q'
-            ).resolve_scale(color="independent",).properties(
-                title='EU Domestic Service Trading Gross Volume',
-                height=height,
-                width=width
-                )
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+
+        base= alt.Chart(df)
+        block = base.mark_rect(color='green').encode(
+            x=alt.X("Trading Partner:N"),
+            y=alt.Y("country:N"),
+            color='Total Trade ($M):Q',
+            tooltip = alt.Tooltip('Total Trade ($M):Q', format="$,.0f")
+        ).properties(title='EU Domestic Service Trading Gross Volume',width=width,height=height)
+
+        return_chart = block.add_selection(
+                slider_selection
+                ).transform_filter(
+                slider_selection).resolve_scale(
+                y='independent')
 
         return return_chart
-
 
 
     def get_eu_trade_overall_chart(self):
