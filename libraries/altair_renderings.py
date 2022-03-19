@@ -32,8 +32,8 @@ class AltairRenderings:
         line = base.mark_line().encode(
             x=alt.X('year:O',axis=alt.Axis(title='Year')),
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
-            color="key:N"
-            
+            color="key:N",
+            strokeWidth = alt.value(2)
         ).properties(
             width=700,
             height=350,
@@ -72,7 +72,8 @@ class AltairRenderings:
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade In Millions of USD:')),
             color=alt.Color(field="key", type="nominal",
                             scale = alt.Scale(range = ['#265499', '#A8DDA4', '#EEBC59']),
-                            legend = alt.Legend(title="Key"))
+                            legend = alt.Legend(title="Key")),
+            strokeWidth = alt.value(3)
 
             
         ).properties(
@@ -223,11 +224,11 @@ class AltairRenderings:
 
         )
         
-        line = bars.mark_line(color='#EEBC59').encode(
+        line = bars.mark_line(color='#5E5EFF').encode(
             x=alt.X('Trading Partner'),
             y=alt.Y('net_trade:Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
-            color=alt.Color(scale = alt.Scale(range = ['#EEBC59']))               
+            color=alt.Color(scale = alt.Scale(range = ['#5E5EFF']))               
         )
  
 
@@ -242,7 +243,7 @@ class AltairRenderings:
         )
 
         visible_dots = base.mark_circle(
-            color='#EEBC59',
+            color='#5E5EFF',#'#EEBC59'
             opacity=1.0,
             size=60
         ).encode(
