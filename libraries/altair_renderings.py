@@ -1234,6 +1234,107 @@ class AltairRenderings:
         
         return return_chart
 
+    def get_altaire_multi_charts_for_EU(self,width=1000,height=600):
+        my_data = self.my_data_object
+        title = "Percentage of Total Trades Done with EU"
+        
+        df = my_data.get_EUdata_by_country()
+        df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
+
+        df = df[df['isEuPartner'].isin(['Trades with EU','Trades with Others'])]
+
+        df_new_total = df.groupby(by=['country','year'])['total_trade'].sum()
+        df_new_total = df_new_total.reset_index()
+        new_df = pd.merge(df, df_new_total,  how='left', left_on=['country','year'], right_on=['country','year'])
+
+        new_df = new_df.drop(columns=['total_toWorld_trade'])
+        df = new_df.rename(columns={'total_trade_x': 'total_trade', 'total_trade_y': 'total_toWorld_trade'})
+
+        country_list = df['Country'].unique().tolist()
+
+        test = df[(df['year']==2020)&(df['country']=='Australia')]
+        print(df['isEuPartner'].unique())
+        print(test)
+
+        # Slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        # Pie charts
+        base = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isEuPartner", type="nominal",
+                            scale = alt.Scale(domain = ['Trades with EU', 'Trades with Others'],
+                                              range = ['#265499', '#AFD097']), #'#2f6684', '#ff7c43', '#acc8df', '#665191', #2899CC', '#EEBC59'
+                            legend = alt.Legend(title="Key")),
+            
+            tooltip=alt.Tooltip('total_trade', format="$,.0f")
+        )
+
+        chart1 = alt.hconcat()
+        for country in country_list[0:7]: 
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart1 |= (base_pie).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10+30))
+        
+        chart2 = alt.hconcat()
+        for country in country_list[7:7*2]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+            chart2 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10+30))
+
+        chart3 = alt.hconcat()
+        for country in country_list[14:]:
+            base_pie = base.transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_arc(outerRadius=(width/35))
+
+            base_text = base.transform_calculate(
+                PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
+            ).transform_filter(
+                alt.FieldEqualPredicate(field='Country', equal=country)
+            ).mark_text(radius=(width/30+10), size=12).encode(
+                text=alt.Text("PercentOfTotal:Q", format='.1%')
+            )
+
+            chart3 |= (base_pie+base_text).add_selection(
+                slider_selection
+            ).transform_filter(
+                slider_selection
+            ).properties(title=country,width=(width/8),height=(height/10+30))
+
+        return_chart = (chart1 & chart2 & chart3).configure_title(
+            baseline="line-top",
+            dy = -5
+        )
+        return return_chart
+
 
     def get_eu_trade_overall_chart(self):
         
