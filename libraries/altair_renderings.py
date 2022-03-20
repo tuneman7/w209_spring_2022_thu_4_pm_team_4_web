@@ -1273,7 +1273,7 @@ class AltairRenderings:
         )
 
         chart1 = alt.hconcat()
-        for country in country_list[1:2]: 
+        for country in country_list[0:7]: 
             base_pie = base.transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
             ).mark_arc(outerRadius=(width/35))
@@ -1330,7 +1330,7 @@ class AltairRenderings:
                 slider_selection
             ).properties(title=country,width=(width/8),height=(height/10+30))
 
-        return_chart = (chart1 ).configure_title(
+        return_chart = (chart1 & chart2 & chart3 ).configure_title(
             baseline="line-top",
             dy = -5
         )
@@ -2839,21 +2839,29 @@ class AltairRenderings:
     def get_eu_section_1(self):
 
         chart1 = self.get_eu_domestic_trading_chart()
-        chart2 = self.get_eu_domestic_trading_chart()
+        chart2 = self.get_eu_versus_noneu_trading_chart()
         #US will Start NAFTA Charts tomorrow morning
         
-        row_1 = (chart1|chart2).resolve_scale(
+        row_1 = (chart1).resolve_scale(
             color='independent')
-        return_chart = (row_1)
-        return return_chart
+
+        row_2 = (chart2).resolve_scale(
+            color='independent')
+
+
+        my_chart = (row_1 & row_2 ).configure_axis(
+        grid=False
+        ).configure_view(
+        strokeWidth=0
+        )
+
+        return my_chart
 
     def get_eu_section_2(self):
 
-        chart1 = self.get_eu_domestic_trading_chart()
-        chart2 = self.get_eu_domestic_trading_chart()
-        #US will Start NAFTA Charts tomorrow morning
+        chart1 = self.get_altaire_multi_charts_for_EU()
         
-        row_1 = (chart1|chart2).resolve_scale(
+        row_1 = (chart1).resolve_scale(
             color='independent')
         return_chart = (row_1)
         return return_chart
