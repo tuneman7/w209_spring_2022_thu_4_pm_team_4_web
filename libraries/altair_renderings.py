@@ -1243,9 +1243,9 @@ class AltairRenderings:
 
         df = df[df['isEuPartner'].isin(['Trades with EU','Trades with Others'])]
 
-        df_new_total = df.groupby(by=['country','year'])['total_trade'].sum()
+        df_new_total = df.groupby(by=['Country','year'])['total_trade'].sum()
         df_new_total = df_new_total.reset_index()
-        new_df = pd.merge(df, df_new_total,  how='left', left_on=['country','year'], right_on=['country','year'])
+        new_df = pd.merge(df, df_new_total,  how='left', left_on=['Country','year'], right_on=['Country','year'])
 
         new_df = new_df.drop(columns=['total_toWorld_trade'])
         df = new_df.rename(columns={'total_trade_x': 'total_trade', 'total_trade_y': 'total_toWorld_trade'})
@@ -1254,7 +1254,7 @@ class AltairRenderings:
 
         test = df[(df['year']==2020)&(df['country']=='Australia')]
         print(df['isEuPartner'].unique())
-        print(test)
+        print(country_list)
 
         # Slider filter
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
@@ -1272,7 +1272,7 @@ class AltairRenderings:
         )
 
         chart1 = alt.hconcat()
-        for country in country_list[0:7]: 
+        for country in country_list[1:2]: 
             base_pie = base.transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
             ).mark_arc(outerRadius=(width/35))
@@ -1284,7 +1284,7 @@ class AltairRenderings:
             ).mark_text(radius=(width/30+10), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
-            chart1 |= (base_pie).add_selection(
+            chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
@@ -1329,7 +1329,7 @@ class AltairRenderings:
                 slider_selection
             ).properties(title=country,width=(width/8),height=(height/10+30))
 
-        return_chart = (chart1 & chart2 & chart3).configure_title(
+        return_chart = (chart1 ).configure_title(
             baseline="line-top",
             dy = -5
         )
