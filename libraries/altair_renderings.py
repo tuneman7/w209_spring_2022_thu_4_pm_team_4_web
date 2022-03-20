@@ -317,6 +317,7 @@ class AltairRenderings:
 
         export_bars = base.mark_bar(color = '#aec7e8').encode(
             x=alt.X('Export_Value:Q',axis=alt.Axis(title='Trade Value ($M in USD)'), scale=alt.Scale(domain=[-domain_x,domain_x])),
+        
             y=alt.Y('Export_Product:N',axis=alt.Axis(title='Export Product'), sort='x'),
             tooltip=alt.Tooltip('Export_Value', format="$,.0f")
         )
@@ -2855,4 +2856,43 @@ class AltairRenderings:
         row_1 = (chart1|chart2).resolve_scale(
             color='independent')
         return_chart = (row_1)
+        return return_chart
+
+    def get_altaire_yoy_trade_per_GDP_for_matrix(self,source_country,target_country,width=300,height=200):
+
+        my_data = self.my_data_object
+        title =  "Exports/GDP YoY Change by Sector Breakdown"
+        
+        df = my_data.imports_exports_GDP_by_sectors(source_country, target_country)
+        domain_x = [min(df['yoy_export_GDP_change']), max(df['yoy_export_GDP_change'])]
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        base = alt.Chart(df)
+
+        bars = base.mark_bar(size = 30).encode(
+            x=alt.X('yoy_export_GDP_change:Q',axis=alt.Axis(title='Year Over Year Trade/GDP Change by Sector', format=".1%")),
+            y=alt.Y('Country:N',axis=alt.Axis(title='Country')),
+            color = alt.Color(field="sector", type="nominal", scale=alt.Scale(scheme='tableau20')),
+            tooltip= [alt.Tooltip('sector'),
+                      alt.Tooltip('yoy_export_GDP_change', format=".2%")]
+        )
+
+        xrule = base.mark_rule(
+            strokeWidth=1
+        ).encode(x=alt.datum(0))
+
+        return_chart = alt.layer(bars, xrule).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).resolve_scale(
+            y = 'independent'
+        ).properties(
+            title=title,
+            width=width,
+            height=height
+        )
         return return_chart

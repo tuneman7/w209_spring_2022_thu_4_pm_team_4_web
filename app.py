@@ -190,7 +190,7 @@ def China_pie_chart():
 #def Covid_chart():
 #    my_altair = AltairRenderings()
 
-    chart_json = my_altair.get_altaire_scatter_Covid().to_json()
+    chart_json = my_altair.get_altaire_yoy_trade_per_GDP_for_matrix('United States', 'Canada').to_json()
     return render_template('pages/placeholder.piechart.html',country_list=None,visualization_form=None,form = None, chart_json = chart_json)
 
 @app.route('/china')

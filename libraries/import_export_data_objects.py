@@ -1327,4 +1327,45 @@ class import_export_data(Utility):
         my_return_data = psql.sqldf(my_sql)
         return my_return_data
 
+    
+    def imports_exports_GDP_by_sectors(self,source_country, target_country):
+        global ALL_COUNTRIES_BY_TYPE_DF
+        global ALL_COUNTRIES_GDP_DATA
 
+        df_by_type = ALL_COUNTRIES_BY_TYPE_DF
+        df_gdp = ALL_COUNTRIES_GDP_DATA
+
+        my_sql = '''
+        SELECT
+            Year, Country, sector,
+            export_to_GDP_ratio - LAG(export_to_GDP_ratio, 1) OVER (
+            PARTITION BY Country, sector ORDER BY Year) as yoy_export_GDP_change
+        FROM (
+            SELECT
+                df_sector_country.Year,
+                df_gdp.Country,
+                df_sector_country.Value / df_gdp.GDP *1000000 AS export_to_GDP_ratio,
+                [Product/Sector-reformatted] AS sector
+
+            FROM (
+                SELECT 
+                    Year, Value,
+                    [Product/Sector-reformatted],
+                    [Reporting Economy]
+                FROM df_by_type
+                WHERE      
+                    ([Reporting Economy] =  \'''' + source_country + '''\'
+                    or
+                    [Reporting Economy] =  \'''' + target_country + '''\'
+                    )
+                and
+                    Direction = 'exports'
+                and
+                    [Product/Sector-reformatted] NOT LIKE '%Total%'
+             ) AS df_sector_country
+            INNER JOIN df_gdp
+            ON df_sector_country.Year = df_gdp.Year AND df_gdp.Country = df_sector_country.[Reporting Economy]
+        )
+        '''
+        my_return_data = psql.sqldf(my_sql)
+        return my_return_data
