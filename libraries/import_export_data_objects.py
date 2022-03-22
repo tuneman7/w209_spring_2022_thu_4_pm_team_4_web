@@ -696,6 +696,7 @@ class import_export_data(Utility):
             sum([Net Exports ($M)]) NetTrade,
             sum(case WHEN [Total Trade ($M)] > 0 then 1 else 0 end) as [Trade Partners]
             from my_data_frame
+            where [Trading Partner]<>'European Union'
             group by [country],[year],[Trade Group]
             ) t
         '''
@@ -877,6 +878,44 @@ class import_export_data(Utility):
 
         my_return_data = psql.sqldf(my_sql)
         my_return_data['Continent Trade Rank']=my_return_data.groupby(['Level','country','Continent TP','year'])['Total Trade ($M)'].rank(ascending=False)
+        return my_return_data
+
+    def get_top20_trade_nafta_continental_cont_data(self):
+
+        country_mapping=pd.read_csv('data/trade_balance_datasets/country_mapping_2.csv')
+        country_mapping
+
+        top20_dataframe=self.load_and_clean_up_top_20_file()
+
+        my_sql = '''
+                    SELECT 
+                    'Trade Group' as [Level],
+                    'NAFTA' as [group],
+                    CASE
+                    when g.[Continent] in ('Arab World', 'Africa', 'Latin America', 'Australia', 'Oceania','null') then 'Other'
+                    else g.[Continent]
+                    end as [Continent TP],
+                    t.[year],
+                    sum(t.[Total Trade ($M)]) [Total Trade ($M)],
+                    sum(t.[Exports ($M)]) [Exports ($M)],
+                    sum(t.[Imports ($M)]) [Imports ($M)],
+                    sum(t.[Net Exports ($M)]) [Net Exports ($M)] 
+                    FROM top20_dataframe t
+                    left join
+                    country_mapping g
+                    ON
+                    t.[Trading Partner]=g.[Country]
+                    left join
+                    country_mapping g2
+                    ON
+                    t.[country]=g2.[Country]
+                    where t.[country] in ('United States','Mexico','Canada') and
+                    g.[Continent] not in ('Geo Group','','')
+                    group by [Level],[group],[Continent TP],[year]
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+        my_return_data['Continent Trade Rank']=my_return_data.groupby(['group','year'])['Total Trade ($M)'].rank(ascending=False)
         return my_return_data
 
 

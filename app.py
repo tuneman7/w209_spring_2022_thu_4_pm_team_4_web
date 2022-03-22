@@ -482,7 +482,7 @@ def render_nafta_graphs():
 
     if slide_no == "1":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_1().configure_axis(
+        chart_json = my_altair.get_nafta_section_1_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -490,7 +490,7 @@ def render_nafta_graphs():
 
     if slide_no == "2":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_2().configure_axis(
+        chart_json = my_altair.get_nafta_section_2_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -504,7 +504,7 @@ def render_nafta_graphs():
                 strokeWidth=0
             ).to_json()            
 
-    nafta_slides_total = 2
+    nafta_slides_total = 3
 
     return jsonify({'htmlresponse': render_template('modal/nafta_event.html',event_name=event_name,
     chart_json=chart_json,
