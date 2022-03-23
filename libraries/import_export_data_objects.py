@@ -1108,6 +1108,18 @@ class import_export_data(Utility):
 
         return my_return
 
+    def get_gdp_all_data_2(self):
+
+        global ALL_COUNTRIES_GDP_DATA
+
+        my_data=pd.read_csv('data/trade_balance_datasets/wb_econind_gdp_data_2.csv')
+
+        sql = "SELECT * FROM my_data"
+
+        my_return = psql.sqldf(sql)   
+
+        return my_return
+
     def get_trade_region_map_data(self):
 
         top_20_trading_nations = self.get_distinct_country_list(as_data_frame=True)

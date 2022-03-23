@@ -1446,6 +1446,63 @@ class AltairRenderings:
 
         return return_chart_2
 
+
+    def get_gdp_unemployment(self,height=250,width=350):
+
+        my_data = self.my_data_object
+
+        #Function Ready to Go
+        nafta_list=['Mexico','United States','Canada']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
+
+        #source_country=source_country
+        df_gdp_nafta=my_data.get_gdp_all_data_2()
+        df_gdp_nafta=df_gdp_nafta[(df_gdp_nafta['Country'].isin(['Mexico','United States','Canada'])) & (df_gdp_nafta['Year']>=1994)]
+
+        base = alt.Chart(df_gdp_nafta)
+
+        title='NAFTA National Unemployment'
+
+        bar = base.mark_bar().encode(
+        x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+        #y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP Per Capita $"))#,
+        y=alt.Y('Unemployment pct national est',axis=alt.Axis(title="Unemployment Pct"))#,
+        #color="Country:N"
+        #Alt Metric Unemployment pct national est
+        ).properties(
+        width=width,
+        height=height,
+        title=title
+        )
+
+        line = base.mark_line().encode(
+        x=alt.X('Year:N',axis=alt.Axis(title='Year')),
+        #y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP Per Capita $"))#,
+        y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title="Unemployment pct ILO")),
+        #y=alt.Y('Unemployment pct national est',axis=alt.Axis(title="Unemployment Pct")),#,
+        color="Country:N"
+        ).properties(
+        width=width,
+        height=height,
+        title=title
+        )
+
+        #Throw points on so that the tool tips will work better.
+        points = base.mark_circle(
+        color='red',
+        opacity=0.0,
+        size=1000
+        ).encode(
+        x=alt.X('Year:N',axis=alt.Axis(title='')),
+        y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title='')),
+        tooltip=['Unemployment pct ILO']
+        ).properties(width=700)
+
+        return_chart=alt.layer(line,points)
+        return return_chart
+
+
     def get_nafta_trade_data_pcts(self):
         
         my_data = self.my_data_object
@@ -2901,10 +2958,11 @@ class AltairRenderings:
         gdp_change=self.get_trade_group_gdp_growth_chart('NAFTA')
         impexp=self.get_import_export_prod_type_chart()
         gdp=self.get_gdp_per_cap_lcu_chart('Canada')
+        employ=self.get_gdp_unemployment()
 
-        row_1 = (gdp_change | impexp ).resolve_scale(
+        row_1 = (gdp_change | employ )
+        row_2 = ( gdp | impexp).resolve_scale(
             color='independent')
-        row_2 = ( gdp )
         return_chart = alt.vconcat(row_1,row_2)
         return return_chart
 

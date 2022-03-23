@@ -498,7 +498,7 @@ def render_nafta_graphs():
 
     if slide_no == "3":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_2().configure_axis(
+        chart_json = my_altair.get_nafta_section_3_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
