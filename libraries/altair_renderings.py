@@ -858,7 +858,6 @@ class AltairRenderings:
 
         return return_chart
 
-
     def get_time_series_gdp_compare_chart_form_matrix(self,source_country,target_country,width=300,height=200):
 
         my_data = self.my_data_object
@@ -1481,7 +1480,8 @@ class AltairRenderings:
         #y=alt.Y('GDP per capita:Q',axis=alt.Axis(title="GDP Per Capita $"))#,
         y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title="Unemployment pct ILO")),
         #y=alt.Y('Unemployment pct national est',axis=alt.Axis(title="Unemployment Pct")),#,
-        color="Country:N"
+        color=alt.Color("Country:N",
+                    legend = alt.Legend(title=None,orient='right'))
         ).properties(
         width=width,
         height=height,
@@ -1496,8 +1496,8 @@ class AltairRenderings:
         ).encode(
         x=alt.X('Year:N',axis=alt.Axis(title='')),
         y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title='')),
-        tooltip=['Unemployment pct ILO']
-        ).properties(width=700)
+        tooltip=[alt.Tooltip('Unemployment pct ILO', format=".2f")]
+        ).properties(width=350)
 
         return_chart=alt.layer(line,points)
         return return_chart
@@ -1569,6 +1569,7 @@ class AltairRenderings:
         trade_group=trade_group
         if trade_group=='NAFTA':
             nafta_gdp_growth=my_data.get_nafta_gdp_data_growth_rate()
+            nafta_gdp_growth=nafta_gdp_growth[nafta_gdp_growth['Continental'].isin(['Canada', 'Mexico','United States'])]
             base=alt.Chart(nafta_gdp_growth)
             title='NAFTA GDP Growth'
 
@@ -1581,7 +1582,8 @@ class AltairRenderings:
             y=alt.Y('GDP Pct Growth:Q'),
             #color='Continental:N'
             color=alt.Color(
-                            'Continental:N'#,
+                            'Continental:N',
+                            legend = alt.Legend(title=None,orient='right')#,
                             #legend=alt.Legend(
                             #title=None,
                             #orient='none',
@@ -1589,11 +1591,28 @@ class AltairRenderings:
                             #direction='horizontal',
                             #titleAnchor='end')
                             )
-            ).properties(title=title,height=height,width=width)
+            )#.properties(title=title,height=height,width=width)
+        
+        points = base.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
+            y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title='')),
+            tooltip=[alt.Tooltip("Continental:N"),
+                     alt.Tooltip("GDP Pct Growth:Q",format=".2f" ),
+                     alt.Tooltip("Year:N")]
+        )
 
-        return_chart=continent
+        #return_chart=continent
+        return_chart=alt.layer(continent, points).properties(
+                title=title,
+                width=width,
+                height=height
+            )
+
         return return_chart
-
 
     def get_nafta_world_trade_chart(self,trade_group,height=250,width=350):
 
@@ -1805,21 +1824,50 @@ class AltairRenderings:
             y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
             color='Trading Partner',
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
-        ).add_selection(
+        )
+        #.add_selection(
+         #   nafta_select
+          #  ).transform_filter(
+           # nafta_select
+            #).add_selection(
+        #    continent_select
+        #    ).transform_filter(
+        #    continent_select
+        #    ).properties(
+        #        title=title,
+        #        width=width,
+        #        height=height
+        #    )
+
+        points = base2.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='')),
+            tooltip=[alt.Tooltip("Trading Partner"),
+                     alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
+                     alt.Tooltip("year:N")]
+        )#.properties(width=700)
+
+        return_chart_2 = alt.layer(line, points).add_selection(
             nafta_select
             ).transform_filter(
             nafta_select
             ).add_selection(
-            continent_select
-            ).transform_filter(
-            continent_select
-            ).properties(
-                title=title,
-                width=width,
-                height=height
-            )
+        continent_select
+        ).transform_filter(
+        continent_select
+        ).resolve_scale(
+            y = 'independent'
+        ).properties(
+            title=title,
+            width=width,
+            height=height
+        )
 
-        return_chart_2=line
+        #return_chart_2=line
 
         return_chart=return_chart_1 | return_chart_2
         return return_chart
@@ -1896,17 +1944,37 @@ class AltairRenderings:
             nafta_select
             ).transform_filter(
             nafta_select
-        #    ).add_selection(
-        #    continent_select
-        #    ).transform_filter(
-        #    continent_select
             ).properties(
                 title=title2,
                 width=width,
                 height=height
             )
+        
+        points = base2.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='')),
+            tooltip=[alt.Tooltip("Continent TP"),
+                     alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
+                     alt.Tooltip("year:N")]
+        )
 
-        return_chart_2=line
+        return_chart_2 = alt.layer(line, points).add_selection(
+            nafta_select
+            ).transform_filter(
+            nafta_select
+            ).resolve_scale(
+            y = 'independent'
+        ).properties(
+            title=title,
+            width=width,
+            height=height
+        )
+
+        #return_chart_2=line
 
         return_chart=alt.hconcat(return_chart_1,return_chart_2)
         return_chart.configure_title(anchor='middle')
@@ -1974,12 +2042,27 @@ class AltairRenderings:
                 height=height
             )
 
-        return_chart_2=line
+        points = base2.mark_circle(
+            color='red',
+            opacity=0.0,
+            size=1000
+        ).encode(
+            x=alt.X('year:N',axis=alt.Axis(title='')),
+            y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='')),
+            tooltip=[alt.Tooltip("Continent TP"),
+                     alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
+                     alt.Tooltip("year:N")]
+        )
+
+        return_chart_2 = alt.layer(line, points).properties(
+                title=title2,
+                width=width,
+                height=height
+            )
 
         return_chart=alt.hconcat(return_chart_1,return_chart_2)
         return_chart.configure_title(anchor='middle')
         return return_chart
-
 
     def nafta_continental_trade_partners_trend(self,height=250,width=350):
         #CHART 2
@@ -2966,7 +3049,7 @@ class AltairRenderings:
         gdp=self.get_gdp_per_cap_lcu_chart('Canada')
         employ=self.get_gdp_unemployment()
 
-        row_1 = (gdp_change | employ )
+        row_1 = (gdp_change | employ ).resolve_scale(color='independent')
         row_2 = ( gdp | impexp).resolve_scale(
             color='independent')
         return_chart = alt.vconcat(row_1,row_2)
