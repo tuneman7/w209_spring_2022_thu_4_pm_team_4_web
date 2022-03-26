@@ -2938,11 +2938,17 @@ class AltairRenderings:
         #continent=self.nafta_continental_trade_partners_top5(height=250,width=350)
         continent=self.nafta_continental_trade()
 
+        t_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                    'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+
+        m_spacer = alt.Chart(t_data).mark_point(opacity=0.0)
+
+
         row_1 = (nafta1|nafta2).resolve_scale(
             color='independent')
         row_2 = (continent ).resolve_scale(
             color='independent')
-        return_chart = (row_1 & row_2)
+        return_chart = (m_spacer & row_1 & row_2)
         return return_chart
 
     def get_nafta_section_2_1(self):
