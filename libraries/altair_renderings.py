@@ -783,10 +783,11 @@ class AltairRenderings:
         time_s  = self.get_altaire_line_chart_county_trade_for_matrix(source_country,target_country)
         pie     = self.get_altaire_dual_pie_chart_by_types_for_matrix(source_country,target_country, "exports")
         gdp     = self.get_time_series_gdp_compare_chart_form_matrix(source_country,target_country)
+        yoy_chg = self.get_altaire_yoy_trade_per_GDP_for_matrix(source_country,target_country)
 
         row_1 = (time_s | pie).resolve_scale(
             color='independent')
-        row_2 = (gdp ).resolve_scale(
+        row_2 = (gdp | yoy_chg).resolve_scale(
             color='independent')
 
 
@@ -3114,8 +3115,6 @@ class AltairRenderings:
             slider_selection
         ).transform_filter(
             slider_selection
-        ).resolve_scale(
-            y = 'independent'
         ).properties(
             title=title,
             width=width,

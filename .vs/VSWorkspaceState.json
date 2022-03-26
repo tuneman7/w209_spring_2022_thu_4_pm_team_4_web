@@ -2,14 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\data",
-    "\\data\\china_trade",
-    "\\design_docs",
     "\\libraries",
+    "\\myproj",
     "\\screenshots",
     "\\templates",
-    "\\templates\\pages",
     "\\templates\\pages\\section_content"
   ],
-  "SelectedNode": "\\templates\\pages\\section_content\\placeholder.about.html",
+  "SelectedNode": "\\libraries\\altair_renderings.py",
   "PreviewInSolutionExplorer": false
 }
