@@ -3,12 +3,13 @@
     "",
     "\\data",
     "\\data\\china_trade",
-    "\\data\\world_events",
     "\\design_docs",
     "\\libraries",
     "\\screenshots",
-    "\\static\\css"
+    "\\templates",
+    "\\templates\\pages",
+    "\\templates\\pages\\section_content"
   ],
-  "SelectedNode": "\\libraries\\altair_renderings.py",
+  "SelectedNode": "\\templates\\pages\\section_content\\placeholder.about.html",
   "PreviewInSolutionExplorer": false
 }
