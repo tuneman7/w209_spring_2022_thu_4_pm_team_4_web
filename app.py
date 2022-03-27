@@ -543,7 +543,7 @@ def render_eu_graphs():
             ).to_json()            
 
     if slide_no == "2":
-        print("mybozo")
+        print("my_altair.get_eu_section_2()")
         chart_json = my_altair.get_eu_section_2().configure_axis(
                 grid=False
             ).configure_view(
