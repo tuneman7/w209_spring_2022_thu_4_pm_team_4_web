@@ -2414,7 +2414,7 @@ class AltairRenderings:
             color=alt.Color(field="isChinaPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with China', 'GDP Growth Pct', 
                                                         'Trades with Others', 'Trade/GDP ratio change'],
-                                            range = ['#265499', '#AFD097', '#2899CC', '#EEBC59']),
+                                            range = ['#265499', '#AFD097', '#B9CDDB', '#EEBC59']),
                             legend = alt.Legend(title="Key")),
 
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
