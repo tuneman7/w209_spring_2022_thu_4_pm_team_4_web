@@ -5,8 +5,7 @@
     "\\libraries",
     "\\myproj",
     "\\screenshots",
-    "\\templates",
-    "\\templates\\pages\\section_content"
+    "\\templates"
   ],
   "SelectedNode": "\\libraries\\altair_renderings.py",
   "PreviewInSolutionExplorer": false

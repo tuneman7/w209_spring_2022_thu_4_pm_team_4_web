@@ -1251,8 +1251,10 @@ class AltairRenderings:
         new_df = new_df.drop(columns=['total_toWorld_trade'])
         df = new_df.rename(columns={'total_trade_x': 'total_trade', 'total_trade_y': 'total_toWorld_trade'})
 
-        country_list = df['Country'].unique().tolist()
-
+        #country_list = df['Country'].unique().tolist()
+        country_list = ['Spain', 'France', 'Netherlands', 'Germany', 'Italy', 'United Kingdom', 'Switzerland',
+                        'Russia', 'United States', 'China', 'Saudi Arabia', 'Brazil', 'Iran', 'India','Japan',
+                        'South Korea', 'Australia', 'Canada', 'Indonesia', 'Mexico']
         test = df[(df['year']==2020)&(df['country']=='Australia')]
         print(df['isEuPartner'].unique())
         print(country_list)
@@ -1266,7 +1268,7 @@ class AltairRenderings:
             theta=alt.Theta(field="total_trade", type="quantitative"),
             color=alt.Color(field="isEuPartner", type="nominal",
                             scale = alt.Scale(domain = ['Trades with EU', 'Trades with Others'],
-                                              range = ['#265499', '#AFD097']), #'#2f6684', '#ff7c43', '#acc8df', '#665191', #2899CC', '#EEBC59'
+                                              range = ['#156296', '#B9CDDB']), 
                             legend = alt.Legend(title="Key")),
             
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
