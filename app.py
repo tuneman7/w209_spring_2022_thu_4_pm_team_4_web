@@ -482,7 +482,8 @@ def render_nafta_graphs():
 
     if slide_no == "1":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_1_1().configure_axis(
+        #chart_json = my_altair.get_nafta_section_1_1().configure_axis(
+        chart_json = my_altair.get_nafta_section_1a().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -536,7 +537,7 @@ def render_eu_graphs():
 
     if slide_no == "1":
         print("mybozo")
-        chart_json = my_altair.get_eu_section_1().configure_axis(
+        chart_json = my_altair.get_eu_section_2().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -544,7 +545,7 @@ def render_eu_graphs():
 
     if slide_no == "2":
         print("my_altair.get_eu_section_2()")
-        chart_json = my_altair.get_eu_section_2().configure_axis(
+        chart_json = my_altair.get_eu_section_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -552,13 +553,13 @@ def render_eu_graphs():
 
     if slide_no == "3":
         print("mybozo")
-        chart_json = my_altair.get_eu_section_2().configure_axis(
+        chart_json = my_altair.get_eu_section_1a().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
             ).to_json()            
 
-    eu_slides_total = 2
+    eu_slides_total = 3
 
     return jsonify({'htmlresponse': render_template('modal/eu_event.html',event_name=event_name,
     chart_json=chart_json,

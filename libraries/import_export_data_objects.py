@@ -1232,6 +1232,71 @@ class import_export_data(Utility):
 
         return my_return_data
 
+    #am here
+    def get_nafta_by_country(self):
+
+        global ALL_COUNTRIES_DATA_FRAME
+        global ALL_COUNTRIES_GDP_DATA
+
+        trade_data = ALL_COUNTRIES_DATA_FRAME
+        gdp_df = ALL_COUNTRIES_GDP_DATA
+
+        country_sql = "SELECT DISTINCT country FROM trade_data where ltrim(rtrim(country)) not in ('United States','Canada','Mexico')"
+        
+        country_set = psql.sqldf(country_sql)['country'].values.tolist()
+
+        my_sql = '''
+        SELECT
+            gdp_data.*,
+            trade_subset.*
+        FROM (
+            SELECT 
+                Country,
+                Year,
+                [GDP Growth Pct],
+                [Trade Pct GDP],
+                [Trade Pct GDP] - LAG([Trade Pct GDP], 1) OVER (
+                PARTITION BY country ORDER BY year) AS TradePctGDPChange
+            FROM gdp_df
+        ) gdp_data
+        LEFT JOIN (
+            SELECT *,
+                total_trade / total_toWorld_trade - 
+                LAG(total_trade / total_toWorld_trade, 1) OVER (
+                PARTITION BY country ORDER BY year) AS china_target_pct_chg
+
+            FROM (
+                SELECT *,
+                    SUM(total_trade) OVER (PARTITION BY country, year) as total_toWorld_trade,
+                    SUM(exports) OVER (PARTITION BY country, year) as total_toWorld_exports,
+                    SUM(imports) OVER (PARTITION BY country, year) as total_toWorld_imports,
+                    SUM(net_exports) OVER (PARTITION BY country, year) as total_toWorld_net_exports
+                FROM (
+                    SELECT
+                        country,
+                        year,
+                        SUM([Total Trade ($M)]) as total_trade,
+                        SUM([Exports ($M)]) as exports,
+                        SUM([Net Exports ($M)]) as net_exports,
+                        SUM([Imports ($M)]) as imports,
+                        CASE
+                            WHEN [Trading Partner] in ("United States", "Mexico", "Canada") THEN "Trades with NAFTA"
+                            ELSE "Trades with Others"
+                        END as isChinaPartner
+                    FROM trade_data
+                    GROUP BY isChinaPartner, country, year) t
+                ) s
+        ) AS trade_subset
+        ON (gdp_data.Country = trade_subset.country
+            and gdp_data.Year = trade_subset.year)
+        WHERE gdp_data.Country in (''' +  str(country_set)[1:-1] + ''')
+        '''
+        my_return_data = psql.sqldf(my_sql)
+
+        return my_return_data
+
+
+
     def get_EUdata_by_country(self):
 
         global ALL_COUNTRIES_DATA_FRAME
