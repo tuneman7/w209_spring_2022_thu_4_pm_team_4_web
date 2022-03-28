@@ -3072,11 +3072,11 @@ class AltairRenderings:
         space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
 
 
-        row_2 = (space_chart & chart2).resolve_scale(
+        row_2 = (chart2).resolve_scale(
             color='independent')
 
 
-        my_chart = ( row_2 ).configure_axis(
+        my_chart = (space_chart & row_2 ).configure_axis(
         grid=False
         ).configure_view(
         strokeWidth=0
@@ -3093,11 +3093,16 @@ class AltairRenderings:
         # row_1 = (chart1).resolve_scale(
         #     color='independent')
 
-        row_2 = (chart1).resolve_scale(
+        space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                                    'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+        
+        space_chart = alt.Chart(space_data).mark_point(opacity=0.0)   
+
+        row_2 = (space_chart & chart1).resolve_scale(
             color='independent')
 
 
-        my_chart = ( row_2 ).configure_axis(
+        my_chart = (row_2 ).configure_axis(
         grid=False
         ).configure_view(
         strokeWidth=0
