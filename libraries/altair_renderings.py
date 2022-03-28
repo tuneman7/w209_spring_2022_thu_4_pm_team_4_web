@@ -3059,18 +3059,18 @@ class AltairRenderings:
 
     def get_eu_section_1(self):
 
-        chart1 = self.get_eu_domestic_trading_chart()
+        #chart1 = self.get_eu_domestic_trading_chart()
         chart2 = self.get_eu_versus_noneu_trading_chart()
         #US will Start NAFTA Charts tomorrow morning
         
-        row_1 = (chart1).resolve_scale(
-            color='independent')
+        # row_1 = (chart1).resolve_scale(
+        #     color='independent')
 
         row_2 = (chart2).resolve_scale(
             color='independent')
 
 
-        my_chart = (row_1 & row_2 ).configure_axis(
+        my_chart = ( row_2 ).configure_axis(
         grid=False
         ).configure_view(
         strokeWidth=0
