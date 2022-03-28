@@ -3078,6 +3078,28 @@ class AltairRenderings:
 
         return my_chart
 
+    def get_eu_section_1a(self):
+
+        chart1 = self.get_eu_domestic_trading_chart()
+        #chart2 = self.get_eu_versus_noneu_trading_chart()
+        #US will Start NAFTA Charts tomorrow morning
+        
+        # row_1 = (chart1).resolve_scale(
+        #     color='independent')
+
+        row_2 = (chart1).resolve_scale(
+            color='independent')
+
+
+        my_chart = ( row_2 ).configure_axis(
+        grid=False
+        ).configure_view(
+        strokeWidth=0
+        )
+
+        return my_chart
+
+
     def get_eu_section_2(self):
 
         chart1 = self.get_altaire_multi_charts_for_EU()
