@@ -75,6 +75,7 @@ var eu_total_slides = {{eu_slides_total}};
 
 function move_forward_eu()
 {
+    nav_to_section("euro_trade");
     eu_slide_no +=1;
     page_loading();
     render_eu_graphs("eu_trade",eu_slide_no);
@@ -82,11 +83,13 @@ function move_forward_eu()
 
 function move_back_eu()
 {
+    nav_to_section("euro_trade");
     if(eu_slide_no==1)
     {
         return;
     }
     eu_slide_no -=1;
+
     page_loading();
     render_eu_graphs("eu_trade",eu_slide_no);
 }

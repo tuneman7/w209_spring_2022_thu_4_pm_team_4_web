@@ -1,7 +1,5 @@
 <b>EU Internal Trade Volume and Dependency</b>
 <br>
-European Union has been one of world's biggest players in global trade scheme since its formation in 1993. In 2020, EU poised as world's third largest economic entity trailing behind US and China. With over 3645 billion EUR trade volume (excludes intra-EU trade), we are interested in finding out which countries both as a EU member and as a non-EU country is doing the most amount of business with EU. </br>
-<br>
 Germany and France account for large percent for Intra-EU trade. Both countries lead the charge of trading with other EU members. France, Italy and Spain are among the ones within EU that intra-EU trade accounts for over half of countries' exports and imports. It proves that intra-EU partnership is supporting over half of the countries' trading activity. </br> 
 
 <br> 

@@ -78,6 +78,7 @@ var china_total_slides = {{china_slides_total}};
 
 function move_forward_china()
 {
+    nav_to_section("china_trade");
     china_slide_no +=1;
     page_loading();
     render_china_graphs("china_trade",china_slide_no);
@@ -86,7 +87,7 @@ function move_forward_china()
 }
 
 function move_back_china()
-{
+{   nav_to_section("china_trade");
     if(china_slide_no==1)
     {
         return;

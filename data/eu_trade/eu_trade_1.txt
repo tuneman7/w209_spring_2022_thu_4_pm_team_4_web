@@ -1,5 +1,8 @@
 <b>Understanding How Much the Top 20 Economies are Trading with EU</b>
 <br>
+European Union has been one of world's biggest players in global trade scheme since its formation in 1993. In 2020, 
+EU poised as world's third largest economic entity trailing behind US and China. With over 3645 billion EUR trade volume (excludes intra-EU trade), 
+we are interested in finding out which countries both as a EU member and as a non-EU country is doing the most amount of business with EU.
 The European Union is one of the main trading block in the world.  Below we show what percentage of trade the top 20 traditing  nations
 trade with the European Union.
 <br/>

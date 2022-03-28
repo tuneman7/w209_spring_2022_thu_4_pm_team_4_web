@@ -86,6 +86,7 @@ var nafta_total_slides = {{nafta_slides_total}};
 
 function move_forward_nafta()
 {
+    nav_to_section("nafta_trade");
     nafta_slide_no +=1;
     page_loading();
     render_nafta_graphs("nafta_trade",nafta_slide_no);
@@ -95,6 +96,7 @@ function move_forward_nafta()
 
 function move_back_nafta()
 {
+    nav_to_section("nafta_trade");
     if(nafta_slide_no==1)
     {
         return;

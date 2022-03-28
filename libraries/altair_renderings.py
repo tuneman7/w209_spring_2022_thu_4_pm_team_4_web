@@ -251,7 +251,6 @@ class AltairRenderings:
             y=alt.Y('net_trade:Q',axis=alt.Axis(title=''))
         )
 
-        #am here
         line_text = base.mark_text(
             color="black",
             opacity=1,
@@ -549,13 +548,18 @@ class AltairRenderings:
         sk = self.get_import_export_balance_top_five("South Korea",for_matrix=True,width=width,height=height)
         jap = self.get_import_export_balance_top_five("Japan",for_matrix=True,width=width,height=height)
 
+        space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                            'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+
+        space_chart = alt.Chart(space_data).mark_point(opacity=0.0)   
+
         row_1  = (sk | jap )
         row_3  = (indo | aus )
-        my_chart = (row_1 & row_3).configure_axis(
+        my_chart = (space_chart & row_1 & row_3).configure_axis(
                     grid=False
                 ).configure_view(
                     strokeWidth=0
-                )
+                ).resolve_scale(color='independent')
 
         return my_chart
 
@@ -2332,13 +2336,19 @@ class AltairRenderings:
         sk = self.get_altaire_bar_top5_partners_for_matrix("South Korea")
         jap = self.get_altaire_bar_top5_partners_for_matrix("Japan")
 
+        space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                                    'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+        
+        space_chart = alt.Chart(space_data).mark_point(opacity=0.0)   
+
         row_1  = (sk | jap )
         row_3  = (indo | aus )
-        my_chart = (row_1 & row_3).configure_axis(
+        my_chart = (space_chart & row_1 & row_3).configure_axis(
                     grid=False
                 ).configure_view(
                     strokeWidth=0
-                )
+                ).resolve_scale(
+            color='independent')
 
         return my_chart
 
