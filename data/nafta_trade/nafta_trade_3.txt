@@ -1,7 +1,6 @@
-<b>NAFTA Impact</b>
+<b>North America Trade with Other Continents</b>
 <br/>
-The impact of NAFTA is widely debated across issues such as trade and industry growth, positive and negative impact on employment and employment practices, stimulation of innovation, and impact of trade and international relations among the NAFTA countries and with other international trade groups.
 
-The charts below show consistent GDP growth for each of the NAFTA countries which can also be seen by looking at each countrys annual GDP in their local currency. GDP is helpful to measure economic growth however we note that trade is one of many variables that impact GDP.
-
-We are also investigating trade patterns to understand the types of merchandise and services which have developed as a result of the open trade agreements.
+The tool below provides insight into North American Trade with the rest of the world by continent and the top countries within each continent. 
+Asia and Europe are consistently the #1 and #2 continents. China is the top trade partner in Asia. For Europe, Canada and the United States' 
+top trade partners are Germany and the UK while Mexico's are with Germany and Spain.
