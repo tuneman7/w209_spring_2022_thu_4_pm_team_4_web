@@ -1,0 +1,56 @@
+    {% if form is not none %}
+
+<style>
+  .large-text-input
+  {
+  height:100px
+  }
+</style>
+
+  <div class="form-only-page">
+    <form method="post" action="/send_email" id="sendmessage" name="sendmessage">
+
+      {{ form.first_name(class_ = 'form-control first-input', placeholder = 'First Name', required = true, autofocus = true) }}
+      <br/>
+      {% for field, errors in form.errors.items() %}
+        {%if field=='email_address'%}
+        {{ '<br/>'.join(errors) | safe }}
+        {%endif%}
+      {% endfor %}
+      {{ form.email_address(class_ = 'form-control first-input', placeholder = 'Email Address', required = true, autofocus = true) }}
+      <br/>
+      {{ form.message_text(class_ = 'form-control large-text-input', placeholder = 'Message Text', required = true, autofocus = true) }}
+      <br/>
+      {{ form.csrf_token }}
+
+      
+      <input type="submit" value="Send Your Message" class="btn btn-primary btn-sm btn-block" id="btnSubmit" name="btnSubmit">
+      
+    </form>
+  </div>
+
+
+    {% endif %}
+
+
+
+{% endblock %}
+
+<script>
+  
+  $(document).ready(function () {
+
+      page_not_loading();
+
+      $("#sendmessage").submit(function (e) {
+
+          //stop submitting the form to see the disabled button effect
+          e.preventDefault();
+
+          //disable the submit button
+          $("#btnSubmit").attr("disabled", true);
+
+          return true;
+      });
+  });
+</script>

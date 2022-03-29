@@ -12,6 +12,7 @@ from forms import *
 import os
 from os import stat_result
 from flask import Flask, render_template, url_for, request, redirect, flash,get_flashed_messages ,Markup
+from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.types import Integer
 from sqlalchemy.schema import MetaData, Table, Column, ForeignKey
@@ -40,6 +41,18 @@ import altair as alt
 app = Flask(__name__)
 app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///get_my_post_card.db'
+
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": "mids.2022.spr.w209.th.4.tm.4@gmail.com",
+    "MAIL_PASSWORD": "Spring2022!$"
+}
+
+app.config.update(mail_settings)
+mail = Mail(app)
 
 
 # Dev Recaptcha 127
@@ -109,6 +122,33 @@ def get_carousel_width():
 # Controllers.
 #----------------------------------------------------------------------------#
 
+@app.route('/send_email', methods=['POST', 'GET'])
+def send_email():
+    if request.method == 'POST':
+        form = email_form(request.form)
+        if not form.validate():
+            print("bozo")
+        else:
+            print("valid")
+
+
+        # line_break = '\n'  # used to replace line breaks with html breaks
+
+        # email_body = "Email from W209 Project \n" \
+        #              "Sender's Name: " + first_name + "\n" \
+        #              "Sender's Email: " + email_address + "\n\n" \
+        #              "Sender's Message: \n\n" + message_text + "\n\n" \
+
+        # with app.app_context():
+        #     msg = Message(subject="Email From MIDS W209 Project Spring 2022",
+        #                   sender=app.config.get("MAIL_USERNAME"),
+        #                   recipients="don.irwin@berkeley.edu".split(),  # replace with your email for testing
+        #                   body=email_body)
+        #     mail.send(msg)
+
+    slide_show_width = get_carousel_width()
+    #return render_template('pages/placeholder.home.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width)
+    return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width)})
 
 @app.route('/fourchartmatrix', methods=['POST', 'GET'])
 def fourchartmatrix():
@@ -678,3 +718,10 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 '''
+
+    # with app.app_context():
+    #     msg = Message(subject="Hello",
+    #                   sender=app.config.get("MAIL_USERNAME"),
+    #                   recipients="don.irwin@berkeley.edu".split(), # replace with your email for testing
+    #                   body="This is a test email I sent with Gmail and Python!")
+    #     mail.send(msg)    
