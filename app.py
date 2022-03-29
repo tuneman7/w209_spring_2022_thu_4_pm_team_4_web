@@ -124,31 +124,45 @@ def get_carousel_width():
 
 @app.route('/send_email', methods=['POST', 'GET'])
 def send_email():
+
+    form = email_form(request.form)
+    success = False
+    slide_show_width = get_carousel_width()    
     if request.method == 'POST':
-        form = email_form(request.form)
         if not form.validate():
             print("bozo")
+            return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
         else:
             print("valid")
+            first_name = request.form["first_name"] 
+            email_address = request.form["email_address"]
+            message_text = request.form["message_text"]
+            line_break = '\n'  # used to replace line breaks with html breaks
+
+            email_body = "Email from W209 Project "+ datetime.now().strftime("%d-%b-%Y-%H:%M:%S") + "\n" \
+                         "Sender's Name: " + first_name + "\n" \
+                         "Sender's Email: " + email_address + "\n\n" \
+                         "Sender's Message: \n\n" + message_text + "\n\n" \
+
+            with app.app_context():
+                msg = Message(subject="Email From MIDS W209 Project Spring 2022 "+ datetime.now().strftime("%d-%b-%Y-%H:%M:%S"),
+                              sender=app.config.get("MAIL_USERNAME"),
+                              recipients="sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu".split(","),  # replace with your email for testing
+                              body=email_body)
+                mail.send(msg)
+                success=True
+
+            return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
+    else:
+        return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
 
 
-        # line_break = '\n'  # used to replace line breaks with html breaks
+        
 
-        # email_body = "Email from W209 Project \n" \
-        #              "Sender's Name: " + first_name + "\n" \
-        #              "Sender's Email: " + email_address + "\n\n" \
-        #              "Sender's Message: \n\n" + message_text + "\n\n" \
 
-        # with app.app_context():
-        #     msg = Message(subject="Email From MIDS W209 Project Spring 2022",
-        #                   sender=app.config.get("MAIL_USERNAME"),
-        #                   recipients="don.irwin@berkeley.edu".split(),  # replace with your email for testing
-        #                   body=email_body)
-        #     mail.send(msg)
 
-    slide_show_width = get_carousel_width()
     #return render_template('pages/placeholder.home.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width)
-    return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width)})
+    
 
 @app.route('/fourchartmatrix', methods=['POST', 'GET'])
 def fourchartmatrix():

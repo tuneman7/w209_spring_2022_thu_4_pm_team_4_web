@@ -70,7 +70,7 @@ html {
               <h2>Amber Chen</h2>
               <p class="title my_p">CEO & Founder</p>
                 <p class="text_wrap my_p">Responsible for product planning and visualization implementation. Passionate about telling good stories with data and analytics.</p>
-                <p><a href='mailto:sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu'>sy7chen@ischool.berkeley.edu</a></p>
+                <p><a href='javascript:render_email_modal();'>Contact Me</a></p>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ html {
               <h2>Don Irwin</h2>
               <p class="title my_p">Solutions Architect</p>
               <p class="text_wrap">Responsible for analysis, task identification, task sequencing, solution delivery, and solution architecture.</p>
-              <p><a href='mailto:sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu'>don.irwin@ischool.berkeley.edu</a></p>
+              <p><a href='javascript:render_email_modal();'>Contact Me</a></p>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@ html {
               <h2>Justin Peabody</h2>
               <p class="my_title">Chief Data Offier</p>
               <p class="text_wrap">Data analytics lead currently developing expertise in World Trade. Located in Virginia with expertise in Consumer and Business Financial Services data.</p>
-              <p><a href='mailto:sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu'>justin.peabody@ischool.berkeley.edu</a></p>              
+              <p><a href='javascript:render_email_modal();'>Contact Me</a></p>
             </div>
           </div>
         </div>
@@ -107,22 +107,21 @@ html {
               <h2>Fenjun Zhang</h2>
               <p class="my_title">Art Director</p>
               <p class="text_wrap">Responsible for world map and EU section analysis.</p>
-              <p><a href='mailto:sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu'>zhangs@ischool.berkeley.edu</a></p>                            
+              <p><a href='javascript:render_email_modal();'>Contact Me</a></p>
             </div>
           </div>
         </div>
       </div>
   </div>
 
-
-
  
   <div class="modal fade" id="email_modal" >
-    <div class="modal-dialog modal-lg" >
-        <div class="modal-content modal-lg">
-            <div class="modal-header modal-lg">
+    <div class="modal-dialog modal-md" >
+        <div class="modal-content modal-md">
+            <div class="modal-header modal-md">
                 <h4 class="modal-title">
-                  <button type="button" class="close" data-dismiss="modal">X</button>
+                  Send us a message.
+                  <button type="button" class="close" id="closemailmodal" data-dismiss="modal">X</button>
                 </h4>
             </div>
             <div class="modal-body modal-lg">
@@ -133,14 +132,16 @@ html {
     
 <script>
 
-  function render_email_modal(country){
+  function render_email_modal(){
 
+          $('#email_modal').modal('show'); 
           //Implicit else
             page_loading();
+            
 
             $.ajax({
                 url: '/send_email',
-                type: 'post',
+                type: 'get',
                 success: function(data){ 
                     $('.modal-body').html(data); 
                     $('.modal-body').append(data.htmlresponse);
