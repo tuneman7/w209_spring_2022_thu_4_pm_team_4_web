@@ -1461,6 +1461,9 @@ class AltairRenderings:
 
         base = alt.Chart(df_gdp_nafta)
 
+        highlight = alt.selection(type='single', on='mouseover',
+                        fields=['Country'], nearest=True)
+
         title='NAFTA National Unemployment'
 
         bar = base.mark_bar().encode(
@@ -1481,7 +1484,8 @@ class AltairRenderings:
         y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title="Unemployment pct ILO")),
         #y=alt.Y('Unemployment pct national est',axis=alt.Axis(title="Unemployment Pct")),#,
         color=alt.Color("Country:N",
-                    legend = alt.Legend(title=None,orient='right'))
+                    legend = alt.Legend(title=None,orient='right')),
+        size=alt.condition(~highlight, alt.value(1), alt.value(3))
         ).properties(
         width=width,
         height=height,
@@ -1497,9 +1501,76 @@ class AltairRenderings:
         x=alt.X('Year:N',axis=alt.Axis(title='')),
         y=alt.Y('Unemployment pct ILO',axis=alt.Axis(title='')),
         tooltip=[alt.Tooltip('Unemployment pct ILO', format=".2f")]
+        ).encode(
+        opacity=alt.value(0)
+        ).add_selection(
+            highlight
         ).properties(width=350)
 
         return_chart=alt.layer(line,points)
+        return return_chart
+
+
+    def get_nafta_import_export_pie_chart(self,height=250,width=350):
+    
+        my_data = self.my_data_object
+
+        title = "Exports Breakdown"
+
+        imp_exp=my_data.imports_exports_by_sectors_source()
+        nafta_imp_exp=imp_exp[imp_exp['Reporting Economy'].isin(['United States','Mexico','Canada'])]
+        nafta_exp=nafta_imp_exp[nafta_imp_exp['Direction']=='exports']
+        nafta_exp=nafta_exp.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
+
+        nafta_list=['Mexico','United States','Canada']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Reporting Economy")
+        nafta_select = alt.selection_single(fields=['Reporting Economy'], bind=nafta_dropdown, init={'Reporting Economy': nafta_list[0]})
+
+        # A slider filter
+        year_slider = alt.binding_range(min=2014, max=2020, step=1)
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
+
+        base = alt.Chart(nafta_exp).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal", scale=alt.Scale(scheme='tableau20')),
+            tooltip=alt.Tooltip(['Product_Type',
+                            'Value']
+                            )
+        )
+
+        source_pie_chart = base.mark_arc(outerRadius=(width/4)).add_selection(nafta_select).transform_filter(nafta_select).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(width=width,height=height)
+
+        return_chart1=source_pie_chart.properties(
+            title=alt.TitleParams(text=title))
+
+
+        title2 = "Imports Breakdown"
+
+        nafta_imp=nafta_imp_exp[nafta_imp_exp['Direction']=='imports']
+        nafta_imp=nafta_imp.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
+
+
+        base_imp = alt.Chart(nafta_imp).encode(
+            theta=alt.Theta(field="Value", type="quantitative"),
+            color=alt.Color(field="Product_Type", type="nominal", scale=alt.Scale(scheme='tableau20')),
+            tooltip=alt.Tooltip(['Product_Type',
+                            'Value'])
+        )
+
+        source_pie_chart_imp = base_imp.mark_arc(outerRadius=(width/4)).add_selection(nafta_select).transform_filter(nafta_select).add_selection(
+            slider_selection
+        ).transform_filter(
+            slider_selection
+        ).properties(width=width,height=height)
+
+        return_chart2=source_pie_chart_imp.properties(
+            title=alt.TitleParams(text=title2))
+
+        return_chart = alt.hconcat(return_chart1, return_chart2).resolve_scale(y='independent')
         return return_chart
 
 
@@ -1566,7 +1637,6 @@ class AltairRenderings:
 
         my_data = self.my_data_object
 
-        trade_group=trade_group
         if trade_group=='NAFTA':
             nafta_gdp_growth=my_data.get_nafta_gdp_data_growth_rate()
             nafta_gdp_growth=nafta_gdp_growth[nafta_gdp_growth['Continental'].isin(['Canada', 'Mexico','United States'])]
@@ -1576,6 +1646,10 @@ class AltairRenderings:
         else:# trade_group='EU':
             gdp_growth=my_data.get_eu_gdp_data_growth_rate('1')
             base=alt.Chart(gdp_growth)
+
+            
+        highlight = alt.selection(type='single', on='mouseover',
+                                fields=['Continental'], nearest=True)    
 
         continent=base.mark_line().encode(
             x=alt.X('Year:N'),
@@ -1590,9 +1664,10 @@ class AltairRenderings:
                             #legendX=50, legendY=-20,
                             #direction='horizontal',
                             #titleAnchor='end')
-                            )
+                            ),
+            size=alt.condition(~highlight, alt.value(1), alt.value(3))
             )#.properties(title=title,height=height,width=width)
-        
+
         points = base.mark_circle(
             color='red',
             opacity=0.0,
@@ -1601,8 +1676,12 @@ class AltairRenderings:
             x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('GDP Pct Growth:Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Continental:N"),
-                     alt.Tooltip("GDP Pct Growth:Q",format=".2f" ),
-                     alt.Tooltip("Year:N")]
+                    alt.Tooltip("GDP Pct Growth:Q",format=".2f" ),
+                    alt.Tooltip("Year:N")]
+        ).encode(
+        opacity=alt.value(0)
+        ).add_selection(
+            highlight
         )
 
         #return_chart=continent
@@ -1785,7 +1864,7 @@ class AltairRenderings:
         title = "NAFTA Top Continental Trade Partners Rank"
         base = alt.Chart(my_return_data_top5_continent)
 
-        bars = base.mark_bar(color = '#9CBAD5').encode(
+        bars = base.mark_bar(color = '#02075d').encode(
             x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
             y=alt.Y('Trading Partner:N',axis=alt.Axis(title='Trading Partner'), sort='-x'),
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
@@ -1877,37 +1956,44 @@ class AltairRenderings:
 
         my_data = self.my_data_object
         #NAFTA Top 5 Trade Partner by Continent
-        nafta_return_top5=my_data.get_top20_trade_continental_cont_data()
-        my_return_data_top5_continent=nafta_return_top5[nafta_return_top5['Continent Trade Rank']<=5]
-        my_return_data_top5_continent
+        #nafta_return_top5=my_data.get_top20_trade_continental_cont_data()
+        nafta_return_top5=my_data.get_data_nafta_trade_continent_tool()
+        my_return_data_top5_continent=nafta_return_top5
 
         #CONTINENT COUNTRY DROPDOWN LIST
         continent_list=['Arab World', 'Africa', 'South America', 'Australia', 'Europe','Asia', 'Latin America', 'Geo Group', 'North America', 'Oceania']
-        continent_dropdown = alt.binding_select(options= continent_list,name="Continent TP")
-        continent_select = alt.selection_single(fields=['Continent TP'], bind=continent_dropdown, init={'Continent TP': continent_list[0]})
+        continent_dropdown = alt.binding_select(options= continent_list,name="Continent")
+        continent_select = alt.selection_single(fields=['Continent'], bind=continent_dropdown, init={'Continent': continent_list[0]})
 
         #NAFTA COUNTRY LIST
-        nafta_list=['Mexico','United States','Canada']
-        nafta_dropdown = alt.binding_select(options= nafta_list,name="country")
-        nafta_select = alt.selection_single(fields=['country'], bind=nafta_dropdown, init={'country': nafta_list[0]})
+        nafta_list=['Mexico','United States','Canada','NAFTA']
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Trade Group")
+        nafta_select = alt.selection_single(fields=['Trade Group'], bind=nafta_dropdown, init={'Trade Group': nafta_list[0]})
 
         # A slider filter
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
-        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
 
         #CHART 1
         title = "NAFTA Trade by Continent"
         base = alt.Chart(my_return_data_top5_continent)
 
-        bars = base.mark_bar(color = '#9CBAD5').encode(
+        bars = base.mark_bar(color = '#02075d').encode(
             x=alt.X('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
-            y=alt.Y('Continent TP:N',axis=alt.Axis(title='Continent TP'), sort='-x'),
+            y=alt.Y('Continent:N',axis=alt.Axis(title='Continent'), sort='-x'),
+            color=alt.Color(
+                'Continent:N',
+                scale=alt.Scale(
+                domain=['North America','Asia','Europe','Other','South America'],
+                range=['#778ba5', '#02075d','#02075d','#02075d','#02075d']),
+                legend=None
+                ),
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
-        )
+            )
 
         text = base.mark_text(align='left', dx=5, dy=-5).encode(
             x=alt.X('Total Trade ($M):Q'),
-            y=alt.Y('Continent TP:N', sort='-x',axis=None),
+            y=alt.Y('Continent:N', sort='-x',axis=None),
             text=alt.Text('Total Trade ($M):Q', format='$,.0f')
         )
 
@@ -1936,9 +2022,9 @@ class AltairRenderings:
         title2 = "NAFTA Trade by Continent 2014 to 2020"
 
         line = base2.mark_line().encode(
-            x=alt.X('year:N',axis=alt.Axis(title='Year')),
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
-            color='Continent TP',
+            color='Continent',
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
         ).add_selection(
             nafta_select
@@ -1949,17 +2035,17 @@ class AltairRenderings:
                 width=width,
                 height=height
             )
-        
+
         points = base2.mark_circle(
             color='red',
             opacity=0.0,
             size=1000
         ).encode(
-            x=alt.X('year:N',axis=alt.Axis(title='')),
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='')),
-            tooltip=[alt.Tooltip("Continent TP"),
-                     alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
-                     alt.Tooltip("year:N")]
+            tooltip=[alt.Tooltip("Continent"),
+                    alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
+                    alt.Tooltip("Year:N")]
         )
 
         return_chart_2 = alt.layer(line, points).add_selection(
@@ -1974,10 +2060,7 @@ class AltairRenderings:
             height=height
         )
 
-        #return_chart_2=line
-
-        return_chart=alt.hconcat(return_chart_1,return_chart_2)
-        return_chart.configure_title(anchor='middle')
+        return_chart=alt.hconcat(return_chart_1,return_chart_2).resolve_scale(color='independent')
         return return_chart
 
     def nafta_continental_trade(self,height=250,width=350):
@@ -3014,44 +3097,73 @@ class AltairRenderings:
         return_chart = (row_1 & row_2)
         return return_chart
         
+    # def get_nafta_section_1_1(self):
+    #     #CHARTS
+    #     nafta1=self.get_nafta_world_inter_trade()
+    #     nafta2=self.get_nafta_world_trade_chart('NAFTA')
+    #     #continent=self.nafta_continental_trade_partners_top5(height=250,width=350)
+    #     continent=self.nafta_continental_trade()
+
+    #     space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+    #                                 'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+        
+    #     space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
+
+    #     row_1 = (nafta1|nafta2).resolve_scale(
+    #         color='independent')
+    #     row_2 = (continent ).resolve_scale(
+    #         color='independent')
+    #     row_1_2 = (space_chart & row_1)
+    #     return_chart = (row_1_2 & row_2)
+    #     return return_chart
+        
     def get_nafta_section_1_1(self):
         #CHARTS
-        nafta1=self.get_nafta_world_inter_trade()
-        nafta2=self.get_nafta_world_trade_chart('NAFTA')
-        #continent=self.nafta_continental_trade_partners_top5(height=250,width=350)
-        continent=self.nafta_continental_trade()
-
+        cont_cont=self.nafta_continental_trade_partners_top5_country_cont()
+        #cont_tp_t5=self.nafta_continental_trade_partners_top5_country()
+        
         space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
-                                    'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+                                 'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
         
         space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
 
-        row_1 = (nafta1|nafta2).resolve_scale(
-            color='independent')
-        row_2 = (continent ).resolve_scale(
-            color='independent')
-        row_1_2 = (space_chart & row_1)
-        return_chart = (row_1_2 & row_2)
-        return return_chart
+        row_1 = cont_cont.resolve_scale(color='independent')
+        return_chart = alt.vconcat(space_chart,row_1)
         
+        return return_chart
+
     def get_nafta_section_2_1(self):
         #CHARTS
-        cont_cont=self.nafta_continental_trade_partners_top5_country_cont()
+        #cont_cont=self.nafta_continental_trade_partners_top5_country_cont()
         cont_tp_t5=self.nafta_continental_trade_partners_top5_country()
-        return_chart = alt.vconcat(cont_cont, cont_tp_t5).resolve_scale(color='independent')
+        row_1 = cont_tp_t5.resolve_scale(color='independent')
+
+        space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                                 'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+        
+        space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
+
+        return_chart = alt.vconcat(space_chart,row_1)
+        
         return return_chart
 
     def get_nafta_section_3_1(self):
         #CHARTS
         gdp_change=self.get_trade_group_gdp_growth_chart('NAFTA')
-        impexp=self.get_import_export_prod_type_chart()
+        #impexp=self.get_import_export_prod_type_chart()
         gdp=self.get_gdp_per_cap_lcu_chart('Canada')
+        impexp=self.get_nafta_import_export_pie_chart()
         employ=self.get_gdp_unemployment()
 
+        space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
+                            'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
+        
+        space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
+
         row_1 = (gdp_change | employ ).resolve_scale(color='independent')
-        row_2 = ( gdp | impexp).resolve_scale(
-            color='independent')
-        return_chart = alt.vconcat(row_1,row_2)
+        row_2 = (impexp).resolve_scale(color='independent')
+        row_1_2 = (space_chart & row_1)
+        return_chart = alt.vconcat(row_1_2,row_2)
         return return_chart
 
     def get_eu_section_1(self):

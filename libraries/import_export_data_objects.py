@@ -665,6 +665,40 @@ class import_export_data(Utility):
         my_return_data['EUvsWorld Total Trade %']=(my_return_data['EUvWorld_TotalTrade_tradepct']*100).round(2)
         return my_return_data
 
+    def get_data_nafta_trade_continent_tool(self):
+        nafta_return_top5=self.get_top20_trade_continental_cont_data()
+        my_return_data_top5_continent=nafta_return_top5[nafta_return_top5['Continent Trade Rank']<=5]
+        my_return_data_top5_continent
+
+        my_dataframe=self.get_top20_trade_nafta_continental_cont_data()
+        my_dataframe
+
+        my_sql = '''
+                    SELECT 
+                    country as [Trade Group],
+                    [Continent TP] as [Continent],
+                    [year] as [Year],
+                    [Exports ($M)],
+                    [Imports ($M)],
+                    [Net Exports ($M)],
+                    [Total Trade ($M)],
+                    [Continent Trade Rank]
+                    FROM my_return_data_top5_continent
+                    UNION
+                    SELECT
+                    [group] as [Trade Group],
+                    [Continent TP] as [Continent],
+                    [year] [Year],
+                    [Exports ($M)],
+                    [Imports ($M)],
+                    [Net Exports ($M)],
+                    [Total Trade ($M)],
+                    [Continent Trade Rank]
+                    from my_dataframe
+                '''
+
+        my_return_data = psql.sqldf(my_sql)
+        return my_return_data
 
     def get_nafta_trade_data(self):
         
