@@ -7,7 +7,7 @@ from time import sleep
 import copy
 import threading
 import imp
-
+import socket
 
 class Utility:
     '''
@@ -47,6 +47,11 @@ class Utility:
         Return the working directory.
         :return:
         '''
-        thisdir = os.getcwd()
+
+        
+        if socket.gethostname() == "snow.ischool.berkeley.edu":
+            thisdir = "/groups/w209_spring_2022_thu_4_pm_team_4/w209/"
+        else:
+            thisdir = os.getcwd()
         return thisdir
 

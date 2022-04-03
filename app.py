@@ -12,6 +12,7 @@ from forms import *
 import os
 from os import stat_result
 from flask import Flask, render_template, url_for, request, redirect, flash,get_flashed_messages ,Markup
+from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.types import Integer
 from sqlalchemy.schema import MetaData, Table, Column, ForeignKey
@@ -40,6 +41,18 @@ import altair as alt
 app = Flask(__name__)
 app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///get_my_post_card.db'
+
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": "mids.2022.spr.w209.th.4.tm.4@gmail.com",
+    "MAIL_PASSWORD": "Spring2022!$"
+}
+
+app.config.update(mail_settings)
+mail = Mail(app)
 
 
 # Dev Recaptcha 127
@@ -109,6 +122,47 @@ def get_carousel_width():
 # Controllers.
 #----------------------------------------------------------------------------#
 
+@app.route('/send_email', methods=['POST', 'GET'])
+def send_email():
+
+    form = email_form(request.form)
+    success = False
+    slide_show_width = get_carousel_width()    
+    if request.method == 'POST':
+        if not form.validate():
+            print("bozo")
+            return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
+        else:
+            print("valid")
+            first_name = request.form["first_name"] 
+            email_address = request.form["email_address"]
+            message_text = request.form["message_text"]
+            line_break = '\n'  # used to replace line breaks with html breaks
+
+            email_body = "Email from W209 Project "+ datetime.now().strftime("%d-%b-%Y-%H:%M:%S") + "\n" \
+                         "Sender's Name: " + first_name + "\n" \
+                         "Sender's Email: " + email_address + "\n\n" \
+                         "Sender's Message: \n\n" + message_text + "\n\n" \
+
+            with app.app_context():
+                msg = Message(subject="Email From MIDS W209 Project Spring 2022 "+ datetime.now().strftime("%d-%b-%Y-%H:%M:%S"),
+                              sender=app.config.get("MAIL_USERNAME"),
+                              recipients="sy7chen@ischool.berkeley.edu,don.irwin@ischool.berkeley.edu,justin.peabody@ischool.berkeley.edu,zhangs@ischool.berkeley.edu".split(","),  # replace with your email for testing
+                              body=email_body)
+                mail.send(msg)
+                success=True
+
+            return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
+    else:
+        return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})
+
+
+        
+
+
+
+    #return render_template('pages/placeholder.home.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width)
+    
 
 @app.route('/fourchartmatrix', methods=['POST', 'GET'])
 def fourchartmatrix():
@@ -482,7 +536,8 @@ def render_nafta_graphs():
 
     if slide_no == "1":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_1_1().configure_axis(
+        #chart_json = my_altair.get_nafta_section_1_1().configure_axis(
+        chart_json = my_altair.get_nafta_section_1a().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -490,7 +545,7 @@ def render_nafta_graphs():
 
     if slide_no == "2":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_2_1().configure_axis(
+        chart_json = my_altair.get_nafta_section_1_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -498,13 +553,22 @@ def render_nafta_graphs():
 
     if slide_no == "3":
         print("mybozo")
-        chart_json = my_altair.get_nafta_section_3_1().configure_axis(
+        chart_json = my_altair.get_nafta_section_2_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
             ).to_json()            
 
-    nafta_slides_total = 3
+    
+    if slide_no == "4":
+        print("mybozo")
+        chart_json = my_altair.get_nafta_section_3_1().configure_axis(
+                grid=False
+            ).configure_view(
+                strokeWidth=0
+            ).to_json()                    
+
+    nafta_slides_total = 4
 
     return jsonify({'htmlresponse': render_template('modal/nafta_event.html',event_name=event_name,
     chart_json=chart_json,
@@ -536,15 +600,15 @@ def render_eu_graphs():
 
     if slide_no == "1":
         print("mybozo")
-        chart_json = my_altair.get_eu_section_1().configure_axis(
+        chart_json = my_altair.get_eu_section_2().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
             ).to_json()            
 
     if slide_no == "2":
-        print("mybozo")
-        chart_json = my_altair.get_eu_section_2().configure_axis(
+        print("my_altair.get_eu_section_2()")
+        chart_json = my_altair.get_eu_section_1().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
@@ -552,13 +616,13 @@ def render_eu_graphs():
 
     if slide_no == "3":
         print("mybozo")
-        chart_json = my_altair.get_eu_section_2().configure_axis(
+        chart_json = my_altair.get_eu_section_1a().configure_axis(
                 grid=False
             ).configure_view(
                 strokeWidth=0
             ).to_json()            
 
-    eu_slides_total = 2
+    eu_slides_total = 3
 
     return jsonify({'htmlresponse': render_template('modal/eu_event.html',event_name=event_name,
     chart_json=chart_json,
@@ -577,11 +641,16 @@ def ajaxfile():
     source_country = "United States"
     target_country = "World"
     if request.method == 'POST':
-        source_country = request.form["source_country"]
-        target_country = request.form["target_country"]
+        source_country = request.form["source_country"].strip()
+        target_country = request.form["target_country"].strip()
+    print("source_country=", source_country)
+    print("target_country=", target_country)
     if target_country.lower() == "world":        
         title = "Trade between <b>" + source_country + "</b> and <b>" + target_country + "</b> top 20 trading nations. To see trade with another country select from drop-down: "
+        print("source_country='{}'".format(source_country))
+        print("target_country=", target_country)
         chart_json = my_altair.get_charts_for_click_from_world_map(source_country,width=350,height=200).to_json()
+        #chart_json = my_altair.get_charts_for_click_from_world_map("Russia",width=350,height=200).to_json()
         form = CountryToWorldVisualizationFormWithWorld(request.form,current_source_country=source_country) 
         return jsonify({'htmlresponse': render_template('modal/modal_chart.html',visualization_form=None,chart_json = chart_json,form=form,source_country=source_country,current_target_country=target_country,country_list=None,modal_title=escape(title))})
 
@@ -663,3 +732,10 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 '''
+
+    # with app.app_context():
+    #     msg = Message(subject="Hello",
+    #                   sender=app.config.get("MAIL_USERNAME"),
+    #                   recipients="don.irwin@berkeley.edu".split(), # replace with your email for testing
+    #                   body="This is a test email I sent with Gmail and Python!")
+    #     mail.send(msg)    

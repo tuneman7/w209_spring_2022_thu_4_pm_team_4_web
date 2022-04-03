@@ -5,6 +5,21 @@ from libraries.import_export_data_objects import import_export_data as Import_Ex
 
 # Set your classes here.
 
+class email_form(Form):
+
+    first_name = TextField(
+        'first_name', validators=[DataRequired(message="First name required"), Length(min=6, max=25)]
+    )
+    email_address = TextField(
+        'email_address', validators=[Email(message="Please enter a valid email address"), Length(min=6, max=60),DataRequired()]
+        # email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+        #email = EmailField('Email', [validators.DataRequired(), validators.Email()])
+    )
+    message_text = TextField(
+        'message_text', validators=[DataRequired(message="Please enter a text message."), Length(min=20, max=600)]
+    )
+
+
 class CountryDetailVisualizationForm(Form):
     my_data = Import_Export_Data()
 

@@ -6,6 +6,10 @@
 .back-button {
     margin-left: calc(5px + (-1 * (39px - 1.5em)) / 2);
 }
+
+.pointer{
+    cursor: pointer;
+}
 </style>
 
 <h1 id="event_title">World Events</h1>
@@ -34,7 +38,7 @@ World events inpact trade.  Below are stories of of four major world events whic
                         <tbody>
                             {% for index,event in world_events.iterrows() %}
                             
-                            <tr onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
+                            <tr class="pointer" onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
                             '{{event['event_description']}}',
                              '{{ event["year_begin"] }}',
                              '{{event["year_end"] | replace('.0','')}}',
@@ -203,6 +207,7 @@ function move_forward()
 
 function back_to_events()
 {
+    nav_to_section('world_events');
     slide_no = 1;
     back_to_list();
 }
