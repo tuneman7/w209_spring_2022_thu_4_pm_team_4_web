@@ -440,10 +440,10 @@ class AltairRenderings:
             .mark_geoshape(stroke="black", strokeWidth=1)
             .encode(
                 color = alt.condition('datum.GDP > 0', 
-                                    alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM"),
-                                              scale = alt.Scale(scheme="blues")),
+                                    alt.Color('GDP:Q',legend=alt.Legend(title="County GDP in $MM")),
                                     alt.value('#f3f3f3')),
-                tooltip=[alt.Tooltip("Country:N", title="Country")]
+                tooltip=[alt.Tooltip("Country:N", title="Country"),
+                         alt.Tooltip("GDP:Q", title="GDP", format="$,.0f")]
             )
             .transform_lookup(
                 lookup="id",
@@ -2288,7 +2288,7 @@ class AltairRenderings:
             ).transform_filter(
                 slider_selection
             ).properties(title=country,width=(width/8),height=(height/10+30))
-        
+
         # brush selection
         brush_selection = alt.selection_single(fields=['Country'], empty='none')
 
@@ -2318,7 +2318,7 @@ class AltairRenderings:
         ).add_selection(
             brush_selection
         ).properties(
-            title="Click a country to see how its economy growth is associated to its trade growth",
+            title="Trade Reliance on China",
             width=(width*0.75),height=(height/10)
         )
 
@@ -2757,7 +2757,7 @@ class AltairRenderings:
         ).add_selection(
             brush_selection
         ).properties(
-            title="Click a country to see how its economy growth is associated to its trade growth",
+            title="Trade Reliance on China",
             width=(width*0.75),height=(height/10+50)
         )
 
@@ -2959,7 +2959,7 @@ class AltairRenderings:
             ).properties(title=country,width=(width/8),height=(height/10+40))
 
         # brush selection
-        brush_selection = alt.selection_single(fields=['Country'], empty='none')
+        brush_selection = alt.selection_single(fields=['Country'], empty='none', init={'Country': 'Australia'})
 
         # line charts
         dependency_bars = alt.Chart(df).mark_bar(opacity = 0.9, color = '#156296', size = 30).encode(
@@ -2987,7 +2987,7 @@ class AltairRenderings:
         ).add_selection(
             brush_selection
         ).properties(
-            title="Click a country to see how its economy growth is associated to its trade growth",
+            title="Trade Reliance on China",
             width=(width*0.75),height=(height/10+50)
         )
 

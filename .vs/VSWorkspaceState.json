@@ -2,10 +2,14 @@
   "ExpandedNodes": [
     "",
     "\\data",
+    "\\data\\china_trade",
+    "\\data\\eu_trade",
     "\\libraries",
     "\\myproj",
     "\\screenshots",
-    "\\templates"
+    "\\templates",
+    "\\templates\\modal",
+    "\\templates\\pages"
   ],
   "SelectedNode": "\\libraries\\altair_renderings.py",
   "PreviewInSolutionExplorer": false
