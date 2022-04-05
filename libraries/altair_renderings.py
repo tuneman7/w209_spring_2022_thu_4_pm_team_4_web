@@ -1617,8 +1617,6 @@ class AltairRenderings:
         gnafta1=base.mark_bar(size=(35)).encode(
             x=alt.X('year:N',axis=alt.Axis(title='')),
             y=alt.Y('TotalTrade:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"'),scale=alt.Scale(domain=[0, 6500000])),
-            #y=alt.Y('TotalTrade:Q'),
-            #color='Trade Group:N',
             color=alt.Color(
                 'Trade Group:N',
                 scale=alt.Scale(
@@ -1728,13 +1726,14 @@ class AltairRenderings:
 
         bar = base.mark_bar(size=(35)).encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            #y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),
             y=alt.Y('value:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"')),
             #,#strokeWidth=alt.value(3)
             #,scale=alt.Scale(domain=[-3000000, 2000000])
             tooltip=[alt.Tooltip('Year:N'),
-                        alt.Tooltip('value:Q', format=".2f"),
-                        alt.Tooltip('key:N', format=".2f")],
+                        alt.Tooltip('value:Q',title='Import/Export Amt' , format='$,.0f'),
+                        alt.Tooltip('Trading Group'),
+                        alt.Tooltip('Country')
+                        ],
             color=alt.Color("key:N",scale=alt.Scale(scheme='blues'),legend=alt.Legend(
                 title=None,
                 orient='none',
@@ -1758,10 +1757,21 @@ class AltairRenderings:
             x=alt.X('Year:N'),#,axis=alt.Axis(title='Year')),
             y=alt.Y('Net_Exports:Q'),#,axis=alt.Axis(title="Trade")),#,
             #,scale=alt.Scale(domain=[-3000000, 2000000])
-            strokeWidth=alt.value(1)
+            strokeWidth=alt.value(4)
         ).properties(width=width,height=height)
 
-        return_chart=alt.layer(bar,line).add_selection(
+        line_text = base2.mark_text(
+            color="black",
+            opacity=1,
+            fontSize=9,
+            dy=-14
+        ).encode(
+            x=alt.X('Year:N'),
+            y=alt.Y('Net_Exports:Q',axis=alt.Axis(title='')),
+            text=alt.Text('Net_Exports:Q', format='$,.0f')
+        )
+
+        return_chart=alt.layer(bar,line,line_text).add_selection(
                 nafta_select
                 ).transform_filter(
                 nafta_select).add_selection(
