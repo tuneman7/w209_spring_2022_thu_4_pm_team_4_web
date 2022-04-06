@@ -3304,7 +3304,7 @@ class AltairRenderings:
         country_list = df[df['Country'] !='China']['Country'].unique()
         #country_list = df[df['Country'] !='China']['Country'].unique()
 
-        country_list = [ 'Japan','South Korea', 'Brazil','India',  'Switzerland', 'Indonesia', 'United Kingdom','Australia'
+        country_list = [ 'Japan','China','South Korea', 'Brazil','India',  'Switzerland', 'Indonesia', 'United Kingdom','Australia'
                         ,'Saudi Arabia', 'Italy', 'Netherlands', 'Germany',  'France','Russia',
                           'Spain','Iran']
 
