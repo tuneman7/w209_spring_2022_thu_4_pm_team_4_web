@@ -1603,39 +1603,49 @@ class AltairRenderings:
         return return_chart
 
 
-    def get_nafta_world_inter_trade(self):
+    def get_nafta_world_inter_trade(self,height=250,width=350):
         
         my_data = self.my_data_object
 
-        df_nafta=my_data.get_nafta_trade_data_pcts()
-        df_nafta_n=df_nafta[df_nafta['Top20group']=='NAFTA']
-
         title="North America Trade - World vs Inter"
 
-        base=alt.Chart(df_nafta_n)
+        #Tool Tips
+        df_nafta=my_data.get_nafta_trade_data_pcts()
+        df_nafta_n=df_nafta[df_nafta['Top20group']=='NAFTA']
+        df_nafta_tt=df_nafta_n[['Top20group','year','Trade Group','Imports','Exports','TotalTrade','NetTrade','NAFTA Imports %','NAFTA Exports %','NAFTA Total Trade %']]
+        df_nafta_tt=df_nafta_tt.rename(columns={'NAFTA Imports %': 'Imports %','NAFTA Exports %':'Exports %','NAFTA Total Trade %':'Total Trade %'})
+        df_nafta_pivot=df_nafta_tt.pivot(index=['Top20group','year'], columns=['Trade Group'], values=['Imports %','Exports %','Total Trade %','Imports','Exports','TotalTrade']).reset_index()
+        df_nafta_pivot.columns = df_nafta_pivot.columns.droplevel(1)
+        df_colnames=['Top20group','year','NAFTA Imports %','World Imports %','NAFTA Exports %','World Exports %','NAFTA Total Trade %','World Total Trade %','NAFTA Imports','World Imports','NAFTA Exports','World Exports','NAFTA Total Trade','World Total Trade']
+        df_nafta_pivot.columns=df_colnames
 
-        gnafta1=base.mark_bar(size=(35)).encode(
-            x=alt.X('year:N',axis=alt.Axis(title='')),
-            y=alt.Y('TotalTrade:Q',axis=alt.Axis(title="Trade",labelExpr='"$" + datum.value / 1E3 + "B"'),scale=alt.Scale(domain=[0, 6500000])),
-            color=alt.Color(
-                'Trade Group:N',
+        base_tt = alt.Chart(df_nafta_pivot).transform_fold(
+                                                            ['World Total Trade','NAFTA Total Trade'],
+                                                            as_ = ['column','value']
+                                                            )
+
+        bars_tt = base_tt.mark_bar(
+            size=(35)
+        ).encode(
+            y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($B)',labelExpr='"$" + datum.value / 1E3 + "B"'),scale=alt.Scale(domain=[0, 6500000])),
+            x=alt.X('year:N'),
+            tooltip=[alt.Tooltip('NAFTA Total Trade',format="$,.0f"),alt.Tooltip('World Total Trade',format="$,.0f"),alt.Tooltip('NAFTA Total Trade %'),alt.Tooltip('World Total Trade %')],                
+        color=alt.Color(
+                'column:N',
                 scale=alt.Scale(
-                domain=['NAFTA','World'],
+                #domain=['NAFTA','World'],
                 range=['#778ba5', '#02075d']),
                 legend=alt.Legend(
                 title=None,
                 orient='none',
-                legendX=130, legendY=-40,
+                legendX=85, legendY=-20,
                 direction='horizontal',
                 titleAnchor='middle')
                 ),
-            order=alt.Order('Trade Group', sort='ascending'),
-            tooltip=[alt.Tooltip('year'),
-                            alt.Tooltip('TotalTrade:Q', format=".2f"),
-                            alt.Tooltip('NAFTA Total Trade %', format=".2f")]
-        ).properties(title=title,height=250,width=350)
+            order=alt.Order('column:N', sort='ascending')
+        ).properties(title=title,height=height,width=width)
 
-        return_chart=gnafta1
+        return_chart=bars_tt
         return return_chart
 
     def get_trade_group_gdp_growth_chart(self,trade_group,height=250,width=350):
@@ -2040,7 +2050,7 @@ class AltairRenderings:
 
         line = base2.mark_line().encode(
             x=alt.X('Year:N',axis=alt.Axis(title='Year')),
-            y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
+            y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade ($B)',labelExpr='"$" + datum.value / 1E3 + "B"')),
             color='Continent',
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
         ).add_selection(
@@ -2069,8 +2079,8 @@ class AltairRenderings:
             nafta_select
             ).transform_filter(
             nafta_select
-            ).resolve_scale(
-            y = 'independent'
+            #).resolve_scale(
+            #y = 'independent'
         ).properties(
             title=title,
             width=width,
@@ -2078,7 +2088,7 @@ class AltairRenderings:
         )
 
         return_chart=alt.hconcat(return_chart_1,return_chart_2).resolve_scale(color='independent')
-        return return_chart
+        return return_chart_2
 
     def nafta_continental_trade(self,height=250,width=350):
 
@@ -3144,14 +3154,14 @@ class AltairRenderings:
         #CHARTS
         cont_cont=self.nafta_continental_trade_partners_top5_country_cont()
         #cont_tp_t5=self.nafta_continental_trade_partners_top5_country()
-        
+        inter=self.get_nafta_world_inter_trade()
         space_data = pd.DataFrame({'a': list('CCCDDDEEE'),
                                  'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
         
         space_chart = alt.Chart(space_data).mark_point(opacity=0.0)
 
-        row_1 = cont_cont.resolve_scale(color='independent')
-        return_chart = alt.vconcat(space_chart,row_1)
+        row_1 = alt.hconcat(inter,cont_cont).resolve_scale(color='independent')
+        return_chart = alt.vconcat(row_1)
         
         return return_chart
 
