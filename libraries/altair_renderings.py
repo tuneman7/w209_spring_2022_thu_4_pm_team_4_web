@@ -1527,11 +1527,11 @@ class AltairRenderings:
         imp_exp=my_data.imports_exports_by_sectors_source()
         nafta_imp_exp=imp_exp[imp_exp['Reporting Economy'].isin(['United States','Mexico','Canada'])]
         nafta_exp=nafta_imp_exp[nafta_imp_exp['Direction']=='exports']
-        nafta_exp=nafta_exp.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
+        nafta_exp=nafta_exp.rename(columns={'Product/Sector-reformatted': 'Product_Type','Reporting Economy':'Country'})
 
         nafta_list=['Mexico','United States','Canada']
-        nafta_dropdown = alt.binding_select(options= nafta_list,name="Reporting Economy")
-        nafta_select = alt.selection_single(fields=['Reporting Economy'], bind=nafta_dropdown, init={'Reporting Economy': nafta_list[0]})
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
 
         # A slider filter
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
@@ -1558,8 +1558,7 @@ class AltairRenderings:
         title2 = "Imports Breakdown"
 
         nafta_imp=nafta_imp_exp[nafta_imp_exp['Direction']=='imports']
-        nafta_imp=nafta_imp.rename(columns={'Product/Sector-reformatted': 'Product_Type'})
-
+        nafta_imp=nafta_imp.rename(columns={'Product/Sector-reformatted': 'Product_Type','Reporting Economy':'Country'})
 
         base_imp = alt.Chart(nafta_imp).encode(
             theta=alt.Theta(field="Value", type="quantitative"),
@@ -1870,22 +1869,29 @@ class AltairRenderings:
         #NAFTA Top 5 Trade Partner by Continent
         my_dataframe=my_data.get_top20_trade_continental_data()
         nafta_return_top5=my_dataframe[(my_dataframe['Level']=='Country') & (my_dataframe['TradeGroup country']=='NAFTA')]
+        nafta_return_top5=nafta_return_top5.rename(columns={'year':'Year','country': 'Country','Continent TP':'Continent'})
         my_return_data_top5_continent=nafta_return_top5[nafta_return_top5['Continent Trade Rank']<=5]
         my_return_data_top5_continent
 
+        #my_dataframe=my_data.get_top20_trade_continental_data()
+        #nafta_return_top5=my_dataframe[(my_dataframe['Level']=='Country') & (my_dataframe['TradeGroup country']=='NAFTA')]
+        #nafta_return_top5=nafta_return_top5.rename(columns={'year':'Year','country': 'Country','Continent TP':'Continent'})
+        #my_return_data_top5_continent=nafta_return_top5[nafta_return_top5['Continent Trade Rank']<=5]
+        #my_return_data_top5_continent
+
         #CONTINENT COUNTRY DROPDOWN LIST
-        continent_list=['Arab World', 'Africa', 'South America', 'Australia', 'Europe','Asia', 'Latin America', 'Geo Group', 'North America', 'Oceania']
-        continent_dropdown = alt.binding_select(options= continent_list,name="Continent TP")
-        continent_select = alt.selection_single(fields=['Continent TP'], bind=continent_dropdown, init={'Continent TP': continent_list[0]})
+        continent_list=['Arab World', 'Africa', 'South America', 'Europe','Asia', 'Latin America',  'North America', 'Oceania']
+        continent_dropdown = alt.binding_select(options= continent_list,name="Continent")
+        continent_select = alt.selection_single(fields=['Continent'], bind=continent_dropdown, init={'Continent': continent_list[0]})
 
         #NAFTA COUNTRY LIST
         nafta_list=['Mexico','United States','Canada']
-        nafta_dropdown = alt.binding_select(options= nafta_list,name="country")
-        nafta_select = alt.selection_single(fields=['country'], bind=nafta_dropdown, init={'country': nafta_list[0]})
+        nafta_dropdown = alt.binding_select(options= nafta_list,name="Country")
+        nafta_select = alt.selection_single(fields=['Country'], bind=nafta_dropdown, init={'Country': nafta_list[0]})
 
         # A slider filter
         year_slider = alt.binding_range(min=2014, max=2020, step=1)
-        slider_selection = alt.selection_single(bind=year_slider, fields=['year'], name="Year", init={'year': 2020})
+        slider_selection = alt.selection_single(bind=year_slider, fields=['Year'], name="Year", init={'Year': 2020})
 
         #CHART 1
         title = "NAFTA Top Continental Trade Partners Rank"
@@ -1926,7 +1932,7 @@ class AltairRenderings:
         base2 = alt.Chart(my_return_data_top5_continent)
 
         line = base2.mark_line().encode(
-            x=alt.X('year:N',axis=alt.Axis(title='Year')),
+            x=alt.X('Year:N',axis=alt.Axis(title='Year')),
             y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='Total Trade Value ($M in USD)')),
             color='Trading Partner',
             tooltip=alt.Tooltip('Total Trade ($M)', format="$,.0f")
@@ -1950,7 +1956,7 @@ class AltairRenderings:
             opacity=0.0,
             size=1000
         ).encode(
-            x=alt.X('year:N',axis=alt.Axis(title='')),
+            x=alt.X('Year:N',axis=alt.Axis(title='')),
             y=alt.Y('Total Trade ($M):Q',axis=alt.Axis(title='')),
             tooltip=[alt.Tooltip("Trading Partner"),
                      alt.Tooltip("Total Trade ($M):Q",format="$,.0f" ),
@@ -1965,8 +1971,8 @@ class AltairRenderings:
         continent_select
         ).transform_filter(
         continent_select
-        ).resolve_scale(
-            y = 'independent'
+        #).resolve_scale(
+         #   y = 'independent'
         ).properties(
             title=title,
             width=width,

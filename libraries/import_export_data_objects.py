@@ -819,14 +819,19 @@ class import_export_data(Utility):
         top20_dataframe=self.load_and_clean_up_top_20_file()
 
         my_sql = '''
-                    
+
                     SELECT 
                     'Country' as [Level],
                     t.[country],
                     g2.[TradeGroup] as [TradeGroup country],
                     g2.[Top20] as [Top20 country],
                     t.[Trading Partner],
-                    g.[Continent] as [Continent TP],
+                    --g.[Continent] as [Continent TP],
+                    CASE
+                    when g.[Continent] in ('Australia', 'Oceania') then 'Oceania'
+                    when g.[Continent] in ('null') then 'Other'
+                    else g.[Continent]
+                    end as [Continent TP],
                     t.[year],
                     t.[Total Trade ($M)],
                     t.[Exports ($M)],
@@ -842,16 +847,21 @@ class import_export_data(Utility):
                     ON
                     t.[country]=g2.[Country]
                     where t.[country] in ('United States','Mexico','Canada')
-                    
+                    and g.[Continent] not in ('Geo Group','','')
+
                     UNION
-                    
+
                     SELECT 
                     'Trade Group' as [Level],
                     g2.[TradeGroup] as [TradeGroup country],
                     g2.[TradeGroup] as [TradeGroup country],
                     g2.[Top20] as [Top20 country],
                     t.[Trading Partner],
-                    g.[Continent] as [Continent TP],
+                    CASE
+                    when g.[Continent] in ('Australia', 'Oceania') then 'Oceania'
+                    when g.[Continent] in ('null') then 'Other'
+                    else g.[Continent]
+                    end as [Continent TP],
                     t.[year],
                     sum(t.[Total Trade ($M)]) [Total Trade ($M)],
                     sum(t.[Exports ($M)]) [Exports ($M)],
@@ -867,8 +877,9 @@ class import_export_data(Utility):
                     ON
                     t.[country]=g2.[Country]
                     where g2.[TradeGroup] in ('NAFTA')
+                    and g.[Continent] not in ('Geo Group','','')
                     group by g2.[TradeGroup],g2.[TradeGroup],g2.[Top20],t.[Trading Partner],g.[Continent],t.[year]
-                    
+
                 '''
 
         my_return_data = psql.sqldf(my_sql)
