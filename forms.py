@@ -16,7 +16,7 @@ class email_form(Form):
         #email = EmailField('Email', [validators.DataRequired(), validators.Email()])
     )
     message_text = TextField(
-        'message_text', validators=[DataRequired(message="Please enter a text message."), Length(min=20, max=600)]
+        'message_text', validators=[DataRequired(message="Please enter a text message."), Length(min=4, max=600)]
     )
 
 
