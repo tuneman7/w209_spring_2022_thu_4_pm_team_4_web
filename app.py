@@ -9,7 +9,7 @@ import logging
 import random
 from logging import Formatter, FileHandler
 from forms import *
-import os
+import os, time
 from os import stat_result
 from flask import Flask, render_template, url_for, request, redirect, flash,get_flashed_messages ,Markup
 from flask_mail import Mail, Message
@@ -122,6 +122,41 @@ def get_carousel_width():
 # Controllers.
 #----------------------------------------------------------------------------#
 
+import glob
+
+def check_if_new_user():
+    my_util = Utility()
+    filenames = glob.glob('./ip_tracking_directory/*.ip')
+    
+    file_dict = {}
+
+    ip_file_name = request.remote_addr + ".ip"
+
+    in_directory = False
+
+    for f in filenames:
+        age = time.time() - os.path.getmtime(f)
+        minutes = int(age) / 60
+        if minutes > 10:
+            os.remove(f)
+            continue
+        if ip_file_name in f:
+            in_directory = True
+            str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
+            my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
+
+            
+    
+    if in_directory == False:
+        str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
+        my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
+
+    if in_directory == False:
+        return True
+    else:
+        return False
+
+
 @app.route('/send_email', methods=['POST', 'GET'])
 def send_email():
 
@@ -186,12 +221,17 @@ def fourchartmatrix():
 @app.route('/', methods=['POST', 'GET'])
 def home():
 
+    is_new_user = check_if_new_user()
+
+    print("is_new_user=",is_new_user)
+
     my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
     country_list = my_altair.get_top_20_countries()
     return render_template('pages/placeholder.home.html',
     map_json=map_json.to_json(),
-    country_list=json.dumps(country_list))
+    country_list=json.dumps(country_list),
+    is_new_user = is_new_user )
 
     
 
@@ -665,7 +705,7 @@ def ajaxfile():
  
 
 
-import glob
+
 
 def get_about_slides_show_images():
     filenames = glob.glob('./images/about_slideshow/*.*')

@@ -37,7 +37,14 @@
 </div>
 
 
-  <script>
+<script>
+
+{% if is_new_user == true %}
+var is_new_user = true;
+{% else %}
+var is_new_user = false;
+{% endif %}                                    
+
 
 function nav_to_section(section_name)
 {

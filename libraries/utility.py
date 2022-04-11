@@ -42,6 +42,12 @@ class Utility:
 
         return data
 
+    def write_data_to_file(self,str_file_name,current_dir=False,content_to_write=""):
+        if current_dir==True:
+            str_file_name = os.path.join(self.get_this_dir(),str_file_name)
+        with open(str_file_name, 'w') as file:
+            file.write(content_to_write)
+
     def get_this_dir(self):
         '''
         Return the working directory.
