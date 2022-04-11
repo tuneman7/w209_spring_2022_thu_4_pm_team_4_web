@@ -124,6 +124,27 @@ def get_carousel_width():
 
 import glob
 
+@app.route('/clearthisuser', methods=['POST', 'GET'])
+def clear_this_user():
+    my_util = Utility()
+    filenames = glob.glob('./ip_tracking_directory/*.ip')
+    
+    file_dict = {}
+
+    ip_file_name = request.remote_addr + ".ip"
+
+    in_directory = False
+
+    for f in filenames:
+        age = time.time() - os.path.getmtime(f)
+        minutes = int(age) / 60
+        if ip_file_name in f:
+            os.remove(f)
+
+    return home()
+
+
+
 def check_if_new_user():
     my_util = Utility()
     filenames = glob.glob('./ip_tracking_directory/*.ip')
