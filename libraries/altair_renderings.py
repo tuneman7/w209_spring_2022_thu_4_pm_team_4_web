@@ -1242,6 +1242,7 @@ class AltairRenderings:
     def get_altaire_multi_charts_for_EU(self,width=1000,height=600):
         my_data = self.my_data_object
         title = "Percentage of Total Trades Done with EU"
+        background = '#f9f9f9'
         
         df = my_data.get_EUdata_by_country()
         df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
@@ -1278,6 +1279,15 @@ class AltairRenderings:
             tooltip=alt.Tooltip('total_trade', format="$,.0f")
         )
 
+        base2 = alt.Chart(df).encode(
+            theta=alt.Theta(field="total_trade", type="quantitative"),
+            color=alt.Color(field="isEuPartner", type="nominal",
+                            scale = alt.Scale(domain = ['Trades with EU', 'Trades with Others'],
+                                              range = ['#156296', '#B9CDDB']),
+                            legend = None),
+            tooltip=alt.Tooltip('total_trade', format="$,.0f")
+        )
+
         chart1 = alt.hconcat()
         for country in country_list[0:7]: 
             base_pie = base.transform_filter(
@@ -1291,19 +1301,21 @@ class AltairRenderings:
             ).mark_text(radius=(width/30+10), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
+
+            EU_tag = country + ' (EU)'
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
                 slider_selection
-            ).properties(title=country,width=(width/8),height=(height/10+30))
+            ).properties(title=EU_tag,width=(width/8),height=(height/10+30))
         
         chart2 = alt.hconcat()
         for country in country_list[7:7*2]:
-            base_pie = base.transform_filter(
+            base_pie = base2.transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
             ).mark_arc(outerRadius=(width/35))
 
-            base_text = base.transform_calculate(
+            base_text = base2.transform_calculate(
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
@@ -1318,11 +1330,11 @@ class AltairRenderings:
 
         chart3 = alt.hconcat()
         for country in country_list[14:]:
-            base_pie = base.transform_filter(
+            base_pie = base2.transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
             ).mark_arc(outerRadius=(width/35))
 
-            base_text = base.transform_calculate(
+            base_text = base2.transform_calculate(
                 PercentOfTotal="datum.total_trade / datum.total_toWorld_trade"
             ).transform_filter(
                 alt.FieldEqualPredicate(field='Country', equal=country)
@@ -1336,10 +1348,11 @@ class AltairRenderings:
                 slider_selection
             ).properties(title=country,width=(width/8),height=(height/10+30))
 
+
         return_chart = (chart1 & chart2 & chart3 ).configure_title(
             baseline="line-top",
             dy = -5
-        )
+        ).configure_legend(orient='right')
         return return_chart
 
 
