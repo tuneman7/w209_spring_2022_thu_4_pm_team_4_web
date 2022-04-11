@@ -125,10 +125,11 @@ def get_carousel_width():
 @app.route('/send_email', methods=['POST', 'GET'])
 def send_email():
 
-    form = email_form(request.form)
+    form = email_form()
     success = False
     slide_show_width = get_carousel_width()    
     if request.method == 'POST':
+        form = email_form(request.form)
         if not form.validate():
             print("bozo")
             return jsonify({'htmlresponse': render_template('modal/email_modal.html',form=form,already_registered_email=None,is_verified=None,slide_show_width=slide_show_width,success=success)})

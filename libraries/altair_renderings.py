@@ -216,7 +216,7 @@ class AltairRenderings:
 
         bars = base.mark_bar(opacity=0.6).encode(
             y=alt.Y('value:Q',axis=alt.Axis(title='Total Trade ($M)')),
-            x=alt.X('Trading Partner', sort='-y'),
+            x=alt.X('Trading Partner',  sort=alt.EncodingSortField(field='Trading Partner', op='value', order='descending')),
             tooltip=[alt.Tooltip("Total Trade ($M)",format="$,.0f"),alt.Tooltip("net_trade",format="$,.0f", title="Net Trade"),alt.Tooltip("Exports ($M)",format="$,.0f" ),alt.Tooltip("Imports ($M)",format="$,.0f"),alt.Tooltip("Imports ($M)",format="$,.0f")],
             color=alt.Color(field="column", type="nominal",
                             scale = alt.Scale(range = ['#265499', '#A8DDA4']),
