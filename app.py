@@ -672,6 +672,9 @@ def render_eu_graphs():
     eu_slides_total=eu_slides_total,)})
 
 
+@app.route("/videomodaldata",methods=["POST","GET"])
+def render_video_modal():
+    return jsonify({'htmlresponse': render_template('modal/video_modal.html')})
 
 @app.route("/mapmodaldata",methods=["POST","GET"])
 def ajaxfile():
