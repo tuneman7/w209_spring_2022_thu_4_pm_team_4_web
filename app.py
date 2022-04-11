@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, jsonify,escape
+from flask import Flask, render_template, request, jsonify,escape,make_response
 # from flask.ext.sqlalchemy import SQLAlchemy
 import json
 import logging
@@ -33,6 +33,7 @@ from libraries.import_export_data_objects import import_export_data as Import_Ex
 from libraries.altair_renderings import AltairRenderings
 from libraries.utility import Utility
 import altair as alt
+from datetime import timedelta
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -126,56 +127,55 @@ import glob
 
 @app.route('/clearthisuser', methods=['POST', 'GET'])
 def clear_this_user():
-    my_util = Utility()
-    filenames = glob.glob('./ip_tracking_directory/*.ip')
-    
-    file_dict = {}
-
-    ip_file_name = request.remote_addr + ".ip"
-
-    in_directory = False
-
-    for f in filenames:
-        age = time.time() - os.path.getmtime(f)
-        minutes = int(age) / 60
-        if ip_file_name in f:
-            os.remove(f)
-
-    return home()
-
-
+    res = make_response("clear cookies")
+    expire_date = datetime.now()
+    expire_date = expire_date + timedelta(minutes=-10)
+    res.delete_cookie('sessionID')
+    return res
 
 def check_if_new_user():
-    my_util = Utility()
-    filenames = glob.glob('./ip_tracking_directory/*.ip')
+    for key in request.cookies.keys():
+        print("key=",key)
+        if key=='sessionID':
+            print("FOUND THE DEALIO")
+            return False
+
+    return True
+
+
+
+
+# def check_if_new_user():
+#     my_util = Utility()
+#     filenames = glob.glob('./ip_tracking_directory/*.ip')
     
-    file_dict = {}
+#     file_dict = {}
 
-    ip_file_name = request.remote_addr + ".ip"
+#     ip_file_name = request.remote_addr + ".ip"
 
-    in_directory = False
+#     in_directory = False
 
-    for f in filenames:
-        age = time.time() - os.path.getmtime(f)
-        minutes = int(age) / 60
-        if minutes > 10:
-            os.remove(f)
-            continue
-        if ip_file_name in f:
-            in_directory = True
-            str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
-            my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
+#     for f in filenames:
+#         age = time.time() - os.path.getmtime(f)
+#         minutes = int(age) / 60
+#         if minutes > 10:
+#             os.remove(f)
+#             continue
+#         if ip_file_name in f:
+#             in_directory = True
+#             str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
+#             my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
 
             
     
-    if in_directory == False:
-        str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
-        my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
+#     if in_directory == False:
+#         str_file_name = os.path.join(my_util.get_this_dir(),"ip_tracking_directory",ip_file_name)
+#         my_util.write_data_to_file(str_file_name=str_file_name,content_to_write="")
 
-    if in_directory == False:
-        return True
-    else:
-        return False
+#     if in_directory == False:
+#         return True
+#     else:
+#         return False
 
 
 @app.route('/send_email', methods=['POST', 'GET'])
@@ -249,10 +249,19 @@ def home():
     my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
     country_list = my_altair.get_top_20_countries()
-    return render_template('pages/placeholder.home.html',
-    map_json=map_json.to_json(),
-    country_list=json.dumps(country_list),
-    is_new_user = is_new_user )
+
+    res = make_response(render_template('pages/placeholder.home.html',
+            map_json=map_json.to_json(),
+            country_list=json.dumps(country_list),
+            is_new_user = is_new_user ))
+    expire_date = datetime.now()
+    expire_date = expire_date + timedelta(minutes=10)
+    print("expire_date=",expire_date)
+    print("request.base_url=",request.base_url)
+    res.set_cookie('sessionID', 'fido',max_age=60*10)
+    return res
+
+
 
     
 
