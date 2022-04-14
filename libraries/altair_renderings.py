@@ -1243,7 +1243,9 @@ class AltairRenderings:
         my_data = self.my_data_object
         title = "Percentage of Total Trades Done with EU"
         background = '#f9f9f9'
-        
+
+        eu_countries=['Austria','Belgium','Croatia','Czech Republic','Denmark','Finland','France','Germany','Greece','Hungary','Italy','Netherlands','Poland','Portugal','Spain','Sweden','United Kingdom','European Union']
+ 
         df = my_data.get_EUdata_by_country()
         df = df.rename(columns={'TradePctGDPChange': 'Trade/GDP ratio change'})
 
@@ -1301,8 +1303,12 @@ class AltairRenderings:
             ).mark_text(radius=(width/30+10), size=12).encode(
                 text=alt.Text("PercentOfTotal:Q", format='.1%')
             )
+            
+            if country in eu_countries:
+                EU_tag = country + ' (EU)'
+            else:
+                EU_tag = country 
 
-            EU_tag = country + ' (EU)'
             chart1 |= (base_pie+base_text).add_selection(
                 slider_selection
             ).transform_filter(
