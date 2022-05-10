@@ -25,7 +25,7 @@ git clone https://github.com/tuneman7/w209_spring_2022_thu_4_pm_team_4_web
 **Mac/Linux Setup Sequence:**
 Run:
 
-. setup_venv.sh
+. setup_venv.sh.  
 . rd.sh
 
 
