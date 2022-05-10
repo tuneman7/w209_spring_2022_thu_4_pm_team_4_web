@@ -6,6 +6,8 @@ https://w209-team-4.herokuapp.com/
 
 Video of setup Seqence:
 
+https://www.youtube.com/watch?v=dKLMDP_nV-o
+
 **Requirements: Python3.X, pip**
 
 Suggested tools -- Visual Studio Code
