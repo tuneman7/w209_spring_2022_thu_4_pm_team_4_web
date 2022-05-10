@@ -33,4 +33,11 @@ Run:
 . rd.sh
 
 
+Some Test Pages:
+/china
+/china1
+/piechart
+/worldmap
+
+
 
