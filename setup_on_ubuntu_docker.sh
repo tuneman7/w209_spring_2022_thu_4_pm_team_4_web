@@ -1,4 +1,4 @@
-jupyter notebook --no-browser --ip=0.0.0.0 --allow-root --port=8888 &
 cd /w209_spring_2022_thu_4_pm_team_4_web
-./rd.sh 
-
+./rd.sh &
+sleep 15
+jupyter notebook --no-browser --ip=0.0.0.0 --allow-root 
