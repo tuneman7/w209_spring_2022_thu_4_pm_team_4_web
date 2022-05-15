@@ -1,0 +1,41 @@
+# FROM nvidia/cuda
+# FROM nvidia/cuda:8.0-cudnn6-devel
+# FROM nvidia/cuda:8.0-cudnn5-devel
+FROM ubuntu
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    python3-pip \
+    python-setuptools \
+    python-dev-is-python3 \
+  && rm -rf /var/lib/apt/lists/*
+  
+RUN apt-get update\
+  && apt-get install -y python3.10-venv
+
+RUN pip3 install --upgrade pip
+RUN pip3 install 'ipython<6'
+
+RUN git clone https://github.com/tuneman7/w209_spring_2022_thu_4_pm_team_4_web
+
+RUN pip3 install -r /w209_spring_2022_thu_4_pm_team_4_web/requirements.txt
+
+
+RUN pip3 install jupyter
+
+COPY setup_on_ubuntu_docker.sh setup_on_ubuntu_docker.sh
+
+VOLUME /notebook
+WORKDIR /notebook
+#EXPOSE 8888
+EXPOSE 5000
+
+
+#  CMD jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token= --allow-root
+#CMD jupyter notebook --no-browser --ip=0.0.0.0 --allow-root
+#ENTRYPOINT ["/w209_spring_2022_thu_4_pm_team_4_web/setup_on_ubuntu_docker.sh"]
+#ENTRYPOINT ["ls"]
+CMD /setup_on_ubuntu_docker.sh
