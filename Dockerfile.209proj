@@ -1,6 +1,3 @@
-# FROM nvidia/cuda
-# FROM nvidia/cuda:8.0-cudnn6-devel
-# FROM nvidia/cuda:8.0-cudnn5-devel
 FROM ubuntu
 
 RUN apt-get update \
@@ -25,6 +22,7 @@ RUN pip3 install -r /w209_spring_2022_thu_4_pm_team_4_web/requirements.txt
 
 
 RUN pip3 install jupyter
+RUN rm -rf /var/lib/apt/lists/*
 
 COPY setup_on_ubuntu_docker.sh setup_on_ubuntu_docker.sh
 
