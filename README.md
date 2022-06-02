@@ -8,7 +8,7 @@ Video of setup Seqence:
 
 https://www.youtube.com/watch?v=dKLMDP_nV-o
 
-**Requirements: Python3.X, pip**
+**Requirements: Python3.X, pip, git**
 
 Suggested tools -- Visual Studio Code
 
@@ -42,4 +42,7 @@ Some Test Pages:
 /worldmap
 
 
+***Running From Docker -- Requires Docker to be running***
+
+. build_and_run_209_docker.sh
 
