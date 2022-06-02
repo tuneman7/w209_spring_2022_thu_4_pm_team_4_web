@@ -13,5 +13,5 @@ docker rm ${APP_NAME}
 #build docker from the docker file
 echo "docker build -t ${IMAGE_NAME} -f ${DOCKER_FILE}"
 docker build -t ${IMAGE_NAME} -f ${DOCKER_FILE} .
-echo "docker run -d --name ${APP_NAME} -p  8888:8888 -p 5001:5000  ${IMAGE_NAME} "
-docker run -d --name ${APP_NAME} -p  8888:8888 -p 5001:5000  ${IMAGE_NAME} 
+echo "docker run --name ${APP_NAME} -p  8888:8888 -p 5001:5000  ${IMAGE_NAME} "
+docker run --name ${APP_NAME} -p  8888:8888 -p 5001:5000  ${IMAGE_NAME} 

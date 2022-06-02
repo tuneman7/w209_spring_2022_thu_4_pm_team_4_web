@@ -151,6 +151,7 @@ function show_event_modal(event_name)
 function show_event_details(event_name,event_text,year_begin,year_end,event_title,information_url,number_of_slides)
 {
 
+    nav_to_section('world_events');
     total_slides = number_of_slides;
 
     if(year_end=='')
@@ -196,6 +197,7 @@ function show_event_details(event_name,event_text,year_begin,year_end,event_titl
 
 function move_forward()
 {
+    nav_to_section('world_events');
     slide_no +=1;
     page_loading();
     render_world_event_graphs(current_event_name,slide_no);
@@ -218,6 +220,7 @@ function back_to_events()
 
 function back_to_list()
 {
+    nav_to_section('world_events');
     if(slide_no==1)
     {
     $("#event_detail_rendering").hide();
