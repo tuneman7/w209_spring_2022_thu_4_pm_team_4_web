@@ -38,4 +38,4 @@ EXPOSE 5000
 #CMD jupyter notebook --no-browser --ip=0.0.0.0 --allow-root
 #ENTRYPOINT ["/w209_spring_2022_thu_4_pm_team_4_web/setup_on_ubuntu_docker.sh"]
 #ENTRYPOINT ["ls"]
-CMD setup_on_ubuntu_docker.sh
+CMD /setup_on_ubuntu_docker.sh
