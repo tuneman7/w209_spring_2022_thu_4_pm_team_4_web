@@ -1,4 +1,4 @@
-cd ./w209_spring_2022_thu_4_pm_team_4_web
+cd *web
 git pull
 chmod -R 777 ./*.*
 ./rd.sh &
@@ -9,5 +9,5 @@ echo "*  ACCESS FLASK APP AT:  *"
 echo "* http://127.0.0.1:5001  *"
 echo "**************************"
 echo "**************************"
-cd /
+cd /app
 jupyter notebook --no-browser --ip=0.0.0.0 --allow-root 
