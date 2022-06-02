@@ -35,11 +35,11 @@ Run:
 . rd.sh
 
 
-Some Test Pages:
-/china
-/china1
-/piechart
-/worldmap
+Some Test Pages:   
+/china  
+/china1   
+/piechart  
+/worldmap  
 
 
 ***Running From Docker -- Requires Docker to be running***
