@@ -28,8 +28,8 @@ COPY setup_on_ubuntu_docker.sh setup_on_ubuntu_docker.sh
 
 VOLUME /
 WORKDIR /
-#EXPOSE 8888
-#EXPOSE 5000
+EXPOSE 8888
+EXPOSE 5000
 
 
 #  CMD jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token= --allow-root
