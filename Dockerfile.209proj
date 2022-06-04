@@ -16,18 +16,31 @@ RUN apt-get update\
 RUN pip3 install --upgrade pip
 RUN pip3 install 'ipython<6'
 
+
+RUN mkdir /app
+
+RUN mkdir /app/w209_spring_2022_thu_4_pm_team_4_web
+
+RUN chmod -R 777 /app/
+
+COPY setup_on_ubuntu_docker.sh /app/setup_on_ubuntu_docker.sh
+
+COPY ./ /app/w209_spring_2022_thu_4_pm_team_4_web
+
+
 VOLUME /app
 WORKDIR /app
 
-RUN git clone https://github.com/tuneman7/w209_spring_2022_thu_4_pm_team_4_web
 
 RUN pip3 install -r /app/w209_spring_2022_thu_4_pm_team_4_web/requirements.txt
-
 
 RUN pip3 install jupyter
 RUN rm -rf /var/lib/apt/lists/*
 
-COPY setup_on_ubuntu_docker.sh setup_on_ubuntu_docker.sh
+
+EXPOSE 8888
+EXPOSE 5000
+
 
 
 EXPOSE 8888
