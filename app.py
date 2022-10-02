@@ -595,7 +595,6 @@ def render_nafta_graphs():
     if request.method == 'POST':
         event_name = request.form["event_name"]
         slide_no = request.form["nafta_slide_no"]
-
     try:
         file_name = event_name.lower() +"_"+ slide_no+".txt"
         load_file_name = os.path.join(utility.get_this_dir(),"data","nafta_trade",file_name)
