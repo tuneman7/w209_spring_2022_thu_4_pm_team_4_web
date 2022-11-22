@@ -246,7 +246,6 @@ def home():
 
     print("is_new_user=",is_new_user)
 
-    my_altair = AltairRenderings()
     junk_json,map_json = my_altair.get_world_map()
     country_list = my_altair.get_top_20_countries()
 
