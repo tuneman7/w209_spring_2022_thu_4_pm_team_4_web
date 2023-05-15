@@ -1,3 +1,4 @@
+typing-extensions
 Fabric
 Flask-SQLAlchemy
 Flask-WTF
@@ -52,8 +53,11 @@ flask_mail
 blinker
 numpy
 pandas
-altair
+altair==4.2.2
 pandasql
 matplotlib
 vega_datasets
 jsonschema==3.2
+scipy
+seaborn
+statsmodels
