@@ -242,6 +242,7 @@ def fourchartmatrix():
 @app.route('/', methods=['POST', 'GET'])
 def home():
 
+    my_altair = AltairRenderings()
     is_new_user = check_if_new_user()
 
     print("is_new_user=",is_new_user)
