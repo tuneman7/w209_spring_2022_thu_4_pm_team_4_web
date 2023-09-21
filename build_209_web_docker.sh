@@ -1,4 +1,5 @@
 #!/bin/bash
+find . -type d -name __pycache__ -exec rm -r {} \+
 IMAGE_NAME=w209_proj_don_irwin
 APP_NAME=w209_proj_don_irwin
 DOCKER_FILE=Dockerfile.209proj

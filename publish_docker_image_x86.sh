@@ -1,4 +1,5 @@
 #!/bin/bash
+find . -type d -name __pycache__ -exec rm -r {} \+
 rm -rf ./myproj
 . build_209_web_docker.sh
 docker login
