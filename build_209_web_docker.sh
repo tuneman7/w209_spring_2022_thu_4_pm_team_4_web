@@ -3,7 +3,7 @@ IMAGE_NAME=w209_proj_don_irwin
 APP_NAME=w209_proj_don_irwin
 DOCKER_FILE=Dockerfile.209proj
 
-docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+#docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 echo "docker stop ${APP_NAME}"
 docker stop ${APP_NAME}
