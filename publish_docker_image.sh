@@ -1,2 +1,0 @@
-docker tag w209_proj_don_irwin donirwinberkeley/w209_proj_don_irwin
-docker push donirwinberkeley/w209_proj_don_irwin
